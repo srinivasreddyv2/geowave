@@ -6,6 +6,7 @@ public abstract class ServiceEnabledCommand<T> extends
 		DefaultOperation implements
 		Command
 {
+	protected String path = null;
 
 	abstract public T computeResults(
 			OperationParams params )
@@ -17,6 +18,13 @@ public abstract class ServiceEnabledCommand<T> extends
 	 * @return the HTTP method
 	 */
 	public HttpMethod getMethod() {
+		final String path = getPath();
+		if (path.contains(
+				"get")
+				|| path.contains(
+						"list")) {
+			return HttpMethod.GET;
+		}
 		return HttpMethod.POST;
 	}
 
@@ -26,7 +34,10 @@ public abstract class ServiceEnabledCommand<T> extends
 	 * @return the path (use {param} for path encoded params)
 	 */
 	public String getPath() {
-		return defaultGetPath();
+		if (path == null) {
+			path = defaultGetPath();
+		}
+		return path;
 	}
 
 	public String getId() {

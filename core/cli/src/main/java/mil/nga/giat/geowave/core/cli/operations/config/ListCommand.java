@@ -66,11 +66,6 @@ public class ListCommand extends
 	}
 
 	@Override
-	public HttpMethod getMethod() {
-		return HttpMethod.GET;
-	}
-
-	@Override
 	public Properties computeResults(
 			final OperationParams params ) {
 

@@ -94,5 +94,4 @@ public class ListPluginsCommand extends
 		}
 		return output;
 	}
-
 }

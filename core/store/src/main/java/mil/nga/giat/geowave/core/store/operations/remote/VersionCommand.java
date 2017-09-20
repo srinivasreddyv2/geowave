@@ -22,6 +22,7 @@ import com.beust.jcommander.Parameters;
 import mil.nga.giat.geowave.core.cli.annotations.GeowaveOperation;
 import mil.nga.giat.geowave.core.cli.api.OperationParams;
 import mil.nga.giat.geowave.core.cli.api.ServiceEnabledCommand;
+import mil.nga.giat.geowave.core.cli.api.ServiceEnabledCommand.HttpMethod;
 import mil.nga.giat.geowave.core.cli.operations.config.options.ConfigOptions;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.StoreFactoryOptions;
@@ -93,4 +94,8 @@ public class VersionCommand extends
 		return null;
 	}
 
+	@Override
+	public HttpMethod getMethod() {
+		return HttpMethod.GET;
+	}
 }

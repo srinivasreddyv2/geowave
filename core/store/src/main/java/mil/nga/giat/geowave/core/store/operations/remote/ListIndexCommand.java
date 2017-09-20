@@ -104,5 +104,4 @@ public class ListIndexCommand extends
 		}
 		return result;
 	}
-
 }
