@@ -42,7 +42,7 @@ public class SwaggerOperationParser<T>
 	}
 
 	public JsonObject[] processField(
-			final Field f ) {
+			Field f ) {
 		Parameter parameter = null;
 		try {
 			parameter = f.getAnnotation(
@@ -64,15 +64,34 @@ public class SwaggerOperationParser<T>
 					"Cannot get parameter delegate",
 					e);
 		}
-
 		if (parameter != null) {
-			final JsonObject param_json = new JsonObject();
+			
+		}
+		else if (parametersDelegate != null) {
+			final List<JsonObject> delegateList = new ArrayList<>();
+			for (final Field field : FieldUtils.getAllFields(
+					f.getType())) {
+				final JsonObject[] fieldArray = processField(
+						field);
+				if (fieldArray != null) {
+					delegateList.addAll(
+							Arrays.asList(
+									fieldArray));
+				}
+			}
+			return delegateList.toArray(
+					new JsonObject[0]);
+		}
+	}
 
-			// first get the field name
-			final String f_name = f.getName();
-			param_json.addProperty(
-					"name",
-					f_name);
+	public JsonObject[] processField(
+			final String name,
+			Class<?> type,
+			String description,
+			boolean required) {
+
+			final JsonObject param_json = new JsonObject();
+			boolean mainParam = false;
 
 			// set the "in" type (all query in this case)
 			// and also set the type based on the field
@@ -81,21 +100,72 @@ public class SwaggerOperationParser<T>
 					"query");
 
 			final String swaggerType = JavaToSwaggerType(
-					f.getType());
+					type);
 			final String typeInfoForDescription = "";
 			if (swaggerType == "array") {
-				// handle case for core params for a command
-				if (f.getName() == "parameters") {
-					param_json.addProperty(
-							"type",
-							swaggerType);
-					final JsonObject items_json = new JsonObject();
-					items_json.addProperty(
-							"type",
-							"string");
-					param_json.add(
-							"items",
-							items_json);
+				// handle case for core/main params for a command
+				// for now we parse based on assumptions within description
+				// TODO see Issue #1185 for details on a more explicit main
+				// parameter suggestion
+				if (name == "parameters") {
+					final String desc = description;
+					if (!desc.isEmpty() && desc.matches(
+							"(<*>' '*)+")) {
+						int currentEndParamIndex = 0;
+						do {
+							final int currentStartParamIndex = desc.indexOf(
+									'<',
+									currentEndParamIndex);
+							if ((currentStartParamIndex < 0) || (currentStartParamIndex >= (desc.length() - 1))) {
+								break;
+							}
+							currentEndParamIndex = desc.indexOf(
+									'>',
+									currentStartParamIndex + 1);
+							final String retVal = desc.substring(
+									currentStartParamIndex + 1,
+									currentEndParamIndex).trim();
+							if (!retVal.isEmpty()) {
+								if (retVal.startsWith(
+										"comma separated list of ")) {
+									final JsonObject items_json = new JsonObject();
+									items_json.addProperty(
+											"type",
+											"string");
+									param_json.add(
+											"items",
+											items_json);
+								}
+								else {
+
+								}
+								param_json.addProperty(
+										"type",
+										String);
+								final JsonObject items_json = new JsonObject();
+								items_json.addProperty(
+										"type",
+										"string");
+								param_json.add(
+										"items",
+										items_json);
+							}
+						}
+						while ((currentEndParamIndex > 0) && (currentEndParamIndex < desc.length()));
+					}
+					else {
+						param_json.addProperty(
+								"type",
+								swaggerType);
+						final JsonObject items_json = new JsonObject();
+						items_json.addProperty(
+								"type",
+								"string");
+						param_json.add(
+								"items",
+								items_json);
+					}
+					mainParam = true;
 				}
 				else {
 					param_json.addProperty(
@@ -105,7 +175,7 @@ public class SwaggerOperationParser<T>
 					items_json.addProperty(
 							"type",
 							JavaToSwaggerType(
-									f.getType().getComponentType()));
+									type.getComponentType()));
 					param_json.add(
 							"items",
 							items_json);
@@ -136,8 +206,8 @@ public class SwaggerOperationParser<T>
 			}
 
 			// get the description if there is one
-			if (!parameter.description().isEmpty()) {
-				String desc = parameter.description() + typeInfoForDescription;
+			if (!description.isEmpty()) {
+				String desc = description + typeInfoForDescription;
 				desc = desc.replace(
 						"<",
 						"[");
@@ -148,40 +218,19 @@ public class SwaggerOperationParser<T>
 						"description",
 						desc);
 			}
+			// get the field name
+			param_json.addProperty(
+					"name",
+					name);
 
 			// find out if this parameter is required
-			if (parameter.required() || (f_name == "parameters")) {
-				param_json.addProperty(
-						"required",
-						true);
-			}
-			else {
-				param_json.addProperty(
-						"required",
-						false);
-			}
+			param_json.addProperty(
+					"required",
+					required);
 
 			return new JsonObject[] {
 				param_json
 			};
-		}
-		else if (parametersDelegate != null) {
-			// return;
-			final List<JsonObject> delegateList = new ArrayList<>();
-			for (final Field field : FieldUtils.getAllFields(
-					f.getType())) {
-				final JsonObject[] fieldArray = processField(
-						field);
-				if (fieldArray != null) {
-					delegateList.addAll(
-							Arrays.asList(
-									fieldArray));
-				}
-			}
-			return delegateList.toArray(
-					new JsonObject[0]);
-		}
-		return null;
 	}
 
 	private JsonObject parseParameters() {

@@ -25,6 +25,8 @@ import mil.nga.giat.geowave.core.cli.api.ServiceEnabledCommand;
 import mil.nga.giat.geowave.core.cli.api.ServiceEnabledCommand.HttpMethod;
 import mil.nga.giat.geowave.core.cli.operations.config.options.ConfigOptions;
 import mil.nga.giat.geowave.core.cli.parser.ManualOperationParams;
+import mil.nga.giat.geowave.service.rest.field.RestFieldFactory;
+import mil.nga.giat.geowave.service.rest.field.RestFieldValue;
 import scala.actors.threadpool.Arrays;
 
 public class GeoWaveOperationServiceWrapper<T> extends
@@ -150,26 +152,49 @@ public class GeoWaveOperationServiceWrapper<T> extends
 			throws MissingArgumentException,
 			InstantiationException,
 			IllegalAccessException {
+		List<RestFieldValue<?>> fields = RestFieldFactory.createRestFieldValues(
+				instance);
+		for (RestFieldValue<?> f : fields) {
+			if (List.class.isAssignableFrom(
+					f.getType())) {
+				objValue = Short.valueOf(
+						strValue);
+			}
+			else {
 
-		for (final Field field : FieldUtils.getFieldsWithAnnotation(
-				// TODO Take out this loop?
-				instance.getClass(),
-				Parameter.class)) {
-			processField(
-					form,
-					instance,
-					field);
-
-		}
-
-		for (final Field field : FieldUtils.getFieldsWithAnnotation(
-				// TODO Take out this loop?
-				instance.getClass(),
-				ParametersDelegate.class)) {
-			processField(
-					form,
-					instance,
-					field);
+				final String strValue = getFieldValue(
+						form,
+						f.getName());
+				final String[] parameters = getFieldValues(
+						form,
+						f.getName());
+				final Object objValue;
+				if (Long.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Long.valueOf(
+							strValue);
+				}
+				else if (Integer.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Integer.valueOf(
+							strValue);
+				}
+				else if (Short.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Short.valueOf(
+							strValue);
+				}
+				else if (Byte.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Byte.valueOf(
+							strValue);
+				}
+				else if (Boolean.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Boolean.valueOf(
+							strValue);
+				}
+			}
 		}
 	}
 
