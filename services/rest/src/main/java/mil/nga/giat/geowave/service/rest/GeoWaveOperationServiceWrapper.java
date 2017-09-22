@@ -4,7 +4,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -152,23 +151,25 @@ public class GeoWaveOperationServiceWrapper<T> extends
 			throws MissingArgumentException,
 			InstantiationException,
 			IllegalAccessException {
-		List<RestFieldValue<?>> fields = RestFieldFactory.createRestFieldValues(
+		final List<RestFieldValue<?>> fields = RestFieldFactory.createRestFieldValues(
 				instance);
-		for (RestFieldValue<?> f : fields) {
+		for (final RestFieldValue f : fields) {
+
+			Object objValue = null;
 			if (List.class.isAssignableFrom(
 					f.getType())) {
-				objValue = Short.valueOf(
-						strValue);
+				final String[] parameters = getFieldValues(
+						form,
+						f.getName());
+
+				objValue = Arrays.asList(
+						parameters);
 			}
 			else {
 
 				final String strValue = getFieldValue(
 						form,
 						f.getName());
-				final String[] parameters = getFieldValues(
-						form,
-						f.getName());
-				final Object objValue;
 				if (Long.class.isAssignableFrom(
 						f.getType())) {
 					objValue = Long.valueOf(
@@ -189,188 +190,36 @@ public class GeoWaveOperationServiceWrapper<T> extends
 					objValue = Byte.valueOf(
 							strValue);
 				}
+				else if (Double.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Double.valueOf(
+							strValue);
+				}
+				else if (Float.class.isAssignableFrom(
+						f.getType())) {
+					objValue = Float.valueOf(
+							strValue);
+				}
 				else if (Boolean.class.isAssignableFrom(
 						f.getType())) {
 					objValue = Boolean.valueOf(
 							strValue);
 				}
-			}
-		}
-	}
 
-	private void processField(
-			final Form form,
-			final Object instance,
-			final Field field )
-			throws MissingArgumentException,
-			InstantiationException,
-			IllegalAccessException {
-		final Parameter parameter = field.getAnnotation(
-				Parameter.class);
-
-		ParametersDelegate parametersDelegate = null;
-		parametersDelegate = field.getAnnotation(
-				ParametersDelegate.class);
-
-		if (parameter != null) {
-			if (field.getType().isEnum()) {
-				final String value = getFieldValue(
-						form,
-						field.getName());
-				if (value != null) {
-					field.setAccessible(
-							true); // Get around restrictions on
-									// private fields. JCommander
-									// does this too.
-					try {
-						final Enum<?> retv = Enum.valueOf(
-								(Class<Enum>) field.getType(),
-								value);
-
-						field.set(
-								instance,
-								retv);
-					}
-					catch (final IllegalAccessException e) {
-						throw new RuntimeException(
-								e);
-					}
-				}
-				else if (parameter.required()) {
-					throw new MissingArgumentException(
-							field.getName());
-				}
-			}
-
-			else if (field.getType() == String.class) {
-				final String value = getFieldValue(
-						form,
-						field.getName());
-				if (value != null) {
-					field.setAccessible(
-							true); // Get around restrictions on
-									// private fields. JCommander
-									// does this too.
-					try {
-						field.set(
-								instance,
-								value);
-					}
-					catch (final IllegalAccessException e) {
-						throw new RuntimeException(
-								e);
-					}
-				}
-				else if (parameter.required()) {
-					throw new MissingArgumentException(
-							field.getName());
-				}
-			}
-			else if ((field.getType() == Boolean.class) || (field.getType() == boolean.class)) {
-				final String value = getFieldValue(
-						form,
-						field.getName());
-				if (value != null) {
-					field.setAccessible(
-							true);
-					try {
-						field.set(
-								instance,
-								Boolean.valueOf(
-										value));
-					}
-					catch (final IllegalAccessException e) {
-						throw new RuntimeException(
-								e);
-					}
-				}
-				else if (parameter.required()) {
-					throw new MissingArgumentException(
-							field.getName());
-				}
-			}
-			else if ((field.getType() == Integer.class) || (field.getType() == int.class)) {
-				final String value = getFieldValue(
-						form,
-						field.getName());
-				if (value != null) {
-					field.setAccessible(
-							true);
-					try {
-						field.set(
-								instance,
-								Integer.valueOf(
-										value));
-					}
-					catch (final IllegalAccessException e) {
-						throw new RuntimeException(
-								e);
-					}
-				}
-				else if (parameter.required()) {
-					throw new MissingArgumentException(
-							field.getName());
-				}
-			}
-			else if ((field.getType() == Long.class) || (field.getType() == long.class)) {
-				final String value = getFieldValue(
-						form,
-						field.getName());
-				if (value != null) {
-					field.setAccessible(
-							true);
-					try {
-						field.set(
-								instance,
-								Long.valueOf(
-										value));
-					}
-					catch (final IllegalAccessException e) {
-						throw new RuntimeException(
-								e);
-					}
-				}
-				else if (parameter.required()) {
-					throw new MissingArgumentException(
-							field.getName());
-				}
-			}
-			else if (field.getType() == List.class) {
-				field.setAccessible(
-						true);
-				final String[] parameters = getFieldValues(
-						form,
-						field.getName());
-
-				try {
-					field.set(
-							instance,
-							Arrays.asList(
-									parameters));
-				}
-				catch (final IllegalAccessException e) {
+				else {
 					throw new RuntimeException(
-							e);
+							"Unsupported format on field " + f);
 				}
 			}
-			else {
-				throw new RuntimeException(
-						"Unsupported format on field " + field);
+			if (objValue != null) {
+				f.setValue(
+						objValue);
+			}
+			else if (f.isRequired()) {
+				throw new MissingArgumentException(
+						f.getName());
 			}
 		}
-		else if (parametersDelegate != null) {
-			final Object delegateObj = field.getType().newInstance();
-
-			injectParameters(
-					form,
-					delegateObj);
-			field.setAccessible(
-					true);
-			field.set(
-					instance,
-					delegateObj);
-		}
-
 	}
 
 	private String[] getFieldValues(
