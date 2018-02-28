@@ -415,7 +415,6 @@ public class DistortionGroupManagement
 					DISTORTION_FIELD_ID,
 					entry.getDistortionValue());
 			return new AdapterPersistenceEncoding(
-					getAdapterId(),
 					entry.getDataId(),
 					new PersistentDataset<CommonIndexValue>(),
 					new PersistentDataset<Object>(

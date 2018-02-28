@@ -122,8 +122,6 @@ public class FeatureHyperLogLogStaticticsTest
 		final Set<String> firstSet = new HashSet<String>();
 		final Set<String> secondSet = new HashSet<String>();
 		final FeatureHyperLogLogStatistics stat = new FeatureHyperLogLogStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pid",
 				16);
 
@@ -134,8 +132,6 @@ public class FeatureHyperLogLogStaticticsTest
 		}
 
 		final FeatureHyperLogLogStatistics stat2 = new FeatureHyperLogLogStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pid",
 				16);
 

@@ -38,6 +38,9 @@ import mil.nga.giat.geowave.core.store.IndexWriter;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
@@ -65,13 +68,7 @@ public class GeoWaveOutputFormat extends
 			InterruptedException {
 		try {
 			final Map<String, String> configOptions = getStoreOptionsMap(context);
-			final AdapterStore persistentAdapterStore = GeoWaveStoreFinder.createAdapterStore(configOptions);
-			final DataAdapter<?>[] adapters = JobContextAdapterStore.getDataAdapters(context);
-			for (final DataAdapter<?> a : adapters) {
-				if (!persistentAdapterStore.adapterExists(a.getAdapterId())) {
-					persistentAdapterStore.addAdapter(a);
-				}
-			}
+			final PersistentAdapterStore persistentAdapterStore = GeoWaveStoreFinder.createAdapterStore(configOptions);
 
 			final IndexStore persistentIndexStore = GeoWaveStoreFinder.createIndexStore(configOptions);
 			final Index<?, ?>[] indices = JobContextIndexStore.getIndices(context);
@@ -106,7 +103,7 @@ public class GeoWaveOutputFormat extends
 					persistentIndexStore.addIndex(i);
 				}
 			}
-			final AdapterStore jobContextAdapterStore = new JobContextAdapterStore(
+			final TransientAdapterStore jobContextAdapterStore = new JobContextAdapterStore(
 					context,
 					persistentAdapterStore);
 			final IndexStore jobContextIndexStore = new JobContextIndexStore(
@@ -188,6 +185,13 @@ public class GeoWaveOutputFormat extends
 				context);
 	}
 
+	public static InternalAdapterStore getJobContextInternalAdapterStore(
+			final JobContext context ) {
+		return GeoWaveConfiguratorBase.getJobContextInternalAdapterStore(
+				CLASS,
+				context);
+	}
+
 	public static DataStorePluginOptions getStoreOptions(
 			final JobContext context ) {
 		return GeoWaveConfiguratorBase.getStoreOptions(
@@ -261,7 +265,7 @@ public class GeoWaveOutputFormat extends
 			RecordWriter<GeoWaveOutputKey<Object>, Object>
 	{
 		private final Map<ByteArrayId, IndexWriter<?>> adapterIdToIndexWriterCache = new HashMap<>();
-		private final AdapterStore adapterStore;
+		private final TransientAdapterStore adapterStore;
 		private final IndexStore indexStore;
 		private final DataStore dataStore;
 
@@ -269,7 +273,7 @@ public class GeoWaveOutputFormat extends
 				final TaskAttemptContext context,
 				final DataStore dataStore,
 				final IndexStore indexStore,
-				final AdapterStore adapterStore ) {
+				final TransientAdapterStore adapterStore ) {
 			this.dataStore = dataStore;
 			this.adapterStore = adapterStore;
 			this.indexStore = indexStore;

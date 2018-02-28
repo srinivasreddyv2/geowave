@@ -27,6 +27,7 @@ import com.google.common.primitives.UnsignedBytes;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayRange;
+import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.SinglePartitionQueryRanges;
 import mil.nga.giat.geowave.core.index.StringUtils;
@@ -35,6 +36,7 @@ import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 import mil.nga.giat.geowave.core.store.data.DeferredReadCommonIndexedPersistenceEncoding;
 import mil.nga.giat.geowave.core.store.data.PersistentDataset;
@@ -99,7 +101,7 @@ public class MemoryDataStoreOperations implements
 	@Override
 	public boolean deleteAll(
 			final ByteArrayId tableName,
-			final ByteArrayId adapterId,
+			final Short internalAdapterId,
 			final String... additionalAuthorizations ) {
 		return false;
 	}
@@ -114,7 +116,7 @@ public class MemoryDataStoreOperations implements
 	@Override
 	public Writer createWriter(
 			final ByteArrayId indexId,
-			final ByteArrayId adapterId ) {
+			final short adapterId ) {
 		return new MyIndexWriter<>(
 				indexId);
 	}
@@ -242,8 +244,7 @@ public class MemoryDataStoreOperations implements
 									return readerParams.getFilter().accept(
 											readerParams.getIndex().getIndexModel(),
 											new DeferredReadCommonIndexedPersistenceEncoding(
-													new ByteArrayId(
-															input.getRow().getAdapterId()),
+													input.getRow().getInternalAdapterId(),
 													new ByteArrayId(
 															input.getRow().getDataId()),
 													new ByteArrayId(
@@ -405,7 +406,7 @@ public class MemoryDataStoreOperations implements
 							new byte[] {
 								0
 							},
-							new byte[] {},
+							(short) 0,// new byte[] {},
 							comparisonPartitionKey.getBytes(),
 							comparisonSortKey.getBytes(),
 							0),
@@ -441,8 +442,8 @@ public class MemoryDataStoreOperations implements
 				return dataIdCompare;
 			}
 			final int adapterIdCompare = UnsignedBytes.lexicographicalComparator().compare(
-					row.getAdapterId(),
-					other.getRow().getAdapterId());
+					ByteArrayUtils.shortToByteArray(row.getInternalAdapterId()),
+					ByteArrayUtils.shortToByteArray(other.getRow().getInternalAdapterId()));
 			if (adapterIdCompare != 0) {
 				return adapterIdCompare;
 			}
@@ -851,7 +852,7 @@ public class MemoryDataStoreOperations implements
 	@Override
 	public boolean mergeData(
 			PrimaryIndex index,
-			AdapterStore adapterStore,
+			PersistentAdapterStore adapterStore,
 			AdapterIndexMappingStore adapterIndexMappingStore ) {
 		// considering memory data store is for test purposes, this
 		// implementation is unnecessary

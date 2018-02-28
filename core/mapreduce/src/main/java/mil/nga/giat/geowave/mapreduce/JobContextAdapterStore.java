@@ -25,6 +25,10 @@ import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.CloseableIteratorWrapper;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 
 /**
  * This class implements an adapter store by first checking the job context for
@@ -33,16 +37,17 @@ import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
  * context.
  */
 public class JobContextAdapterStore implements
-		AdapterStore
+		TransientAdapterStore
 {
 	private static final Class<?> CLASS = JobContextAdapterStore.class;
 	private final JobContext context;
-	private final AdapterStore persistentAdapterStore;
+	private PersistentAdapterStore persistentAdapterStore = null;
+	private final InternalAdapterStore persistentInternalAdapterStore = null;
 	private final Map<ByteArrayId, DataAdapter<?>> adapterCache = new HashMap<ByteArrayId, DataAdapter<?>>();
 
 	public JobContextAdapterStore(
 			final JobContext context,
-			final AdapterStore persistentAdapterStore ) {
+			final PersistentAdapterStore persistentAdapterStore ) {
 		this.context = context;
 		this.persistentAdapterStore = persistentAdapterStore;
 
@@ -89,8 +94,9 @@ public class JobContextAdapterStore implements
 				context,
 				adapterId);
 		if (adapter == null) {
+
 			// then try to get it from the persistent store
-			adapter = persistentAdapterStore.getAdapter(adapterId);
+			adapter = persistentAdapterStore.getAdapter(persistentInternalAdapterStore.getInternalAdapterId(adapterId));
 		}
 
 		if (adapter != null) {
@@ -108,7 +114,7 @@ public class JobContextAdapterStore implements
 
 	@Override
 	public CloseableIterator<DataAdapter<?>> getAdapters() {
-		final CloseableIterator<DataAdapter<?>> it = persistentAdapterStore.getAdapters();
+		final CloseableIterator<InternalDataAdapter<?>> it = persistentAdapterStore.getAdapters();
 		// cache any results
 		return new CloseableIteratorWrapper<DataAdapter<?>>(
 				it,

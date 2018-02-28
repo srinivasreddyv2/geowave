@@ -34,20 +34,16 @@ public class MaxDuplicatesStatistics<T> extends
 	}
 
 	private MaxDuplicatesStatistics(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statsId,
 			final int maxDuplicates ) {
 		super(
-				dataAdapterId,
 				statsId);
 		this.maxDuplicates = maxDuplicates;
 	}
 
 	public MaxDuplicatesStatistics(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -64,14 +60,13 @@ public class MaxDuplicatesStatistics<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new MaxDuplicatesStatistics<>(
-				dataAdapterId,
 				statisticsId,
 				maxDuplicates);
 	}
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buf = super.binaryBuffer(8);
+		final ByteBuffer buf = ByteBuffer.allocate(8);
 		buf.putInt(maxDuplicates);
 		return buf.array();
 	}
@@ -79,7 +74,7 @@ public class MaxDuplicatesStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		maxDuplicates = buf.getInt();
 	}
 

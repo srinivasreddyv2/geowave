@@ -34,14 +34,7 @@ public class OverviewStatistics extends
 	private Resolution[] resolutions = new Resolution[] {};
 
 	public OverviewStatistics() {
-		super();
-	}
-
-	public OverviewStatistics(
-			final ByteArrayId dataAdapterId ) {
-		super(
-				dataAdapterId,
-				STATS_TYPE);
+		super(STATS_TYPE);
 	}
 
 	@Override
@@ -57,7 +50,7 @@ public class OverviewStatistics extends
 														// size
 			}
 
-			final ByteBuffer buf = super.binaryBuffer(byteCount);
+			final ByteBuffer buf = ByteBuffer.allocate(byteCount);
 			buf.putInt(resolutionBinaries.size());
 			for (final byte[] resBinary : resolutionBinaries) {
 				buf.putInt(resBinary.length);
@@ -70,7 +63,7 @@ public class OverviewStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		final int resLength = buf.getInt();
 		synchronized (this) {
 			resolutions = new Resolution[resLength];

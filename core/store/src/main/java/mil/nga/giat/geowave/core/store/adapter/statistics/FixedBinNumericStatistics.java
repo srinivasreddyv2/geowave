@@ -20,6 +20,7 @@ import net.sf.json.JSONObject;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.FixedBinNumericHistogram.FixedBinNumericHistogramFactory;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogram;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogramFactory;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
@@ -56,31 +57,25 @@ public abstract class FixedBinNumericStatistics<T> extends
 	}
 
 	public FixedBinNumericStatistics(
-			final ByteArrayId adapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				adapterId,
 				statisticsId);
 	}
 
 	public FixedBinNumericStatistics(
-			final ByteArrayId adapterId,
 			final ByteArrayId statisticsId,
 			final int bins ) {
 		super(
-				adapterId,
 				statisticsId);
 		histogram = HistFactory.create(bins);
 	}
 
 	public FixedBinNumericStatistics(
-			final ByteArrayId adapterId,
 			final ByteArrayId statisticsId,
 			final int bins,
 			final double minValue,
 			final double maxValue ) {
 		super(
-				adapterId,
 				statisticsId);
 		histogram = HistFactory.create(
 				bins,
@@ -131,7 +126,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 	@Override
 	public byte[] toBinary() {
 
-		final ByteBuffer buffer = super.binaryBuffer(histogram.bufferSize());
+		final ByteBuffer buffer = ByteBuffer.allocate(histogram.bufferSize());
 		histogram.toBinary(buffer);
 		final byte result[] = new byte[buffer.position()];
 		buffer.rewind();
@@ -142,7 +137,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		histogram.fromBinary(buffer);
 	}
 
@@ -160,8 +155,8 @@ public abstract class FixedBinNumericStatistics<T> extends
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"histogram[adapter=").append(
-				super.getDataAdapterId().getString());
+				"histogram[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", identifier=").append(
 				getFieldIdentifier());
@@ -202,12 +197,16 @@ public abstract class FixedBinNumericStatistics<T> extends
 	 * Convert Fixed Bin Numeric statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 
 		jo.put(
 				"field_identifier",

@@ -37,8 +37,7 @@ public class RowMergingVisibilityCombiner extends
 			final Key key,
 			final byte[] binary ) {
 		return rowTransform.getRowAsMergeableObject(
-				new ByteArrayId(
-						key.getColumnFamily().getBytes()),
+						ByteArrayUtils.byteArrayToShort(key.getColumnFamily().getBytes()),
 				new ByteArrayId(
 						key.getColumnQualifier().getBytes()),
 				binary);

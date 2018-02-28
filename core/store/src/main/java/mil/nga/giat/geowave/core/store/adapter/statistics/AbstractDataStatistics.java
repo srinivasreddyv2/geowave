@@ -13,6 +13,7 @@ package mil.nga.giat.geowave.core.store.adapter.statistics;
 import java.nio.ByteBuffer;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -26,36 +27,37 @@ abstract public class AbstractDataStatistics<T> implements
 	/**
 	 * ID of source data adapter
 	 */
-	protected ByteArrayId dataAdapterId;
+	protected short internalDataAdapterId;
 	protected byte[] visibility;
 	/**
 	 * ID of statistic to be tracked
 	 */
 	protected ByteArrayId statisticsId;
 
-	protected AbstractDataStatistics() {}
-
-	public AbstractDataStatistics(
-			final ByteArrayId dataAdapterId,
-			final ByteArrayId statisticsId ) {
-		this.dataAdapterId = dataAdapterId;
+	public void setStatisticsId(
+			ByteArrayId statisticsId ) {
 		this.statisticsId = statisticsId;
 	}
 
-	@Override
-	public ByteArrayId getDataAdapterId() {
-		return dataAdapterId;
-	}
+	protected AbstractDataStatistics() {}
 
-	@Override
-	public void setDataAdapterId(
-			final ByteArrayId dataAdapterId ) {
-		this.dataAdapterId = dataAdapterId;
+	public AbstractDataStatistics(
+			final ByteArrayId statisticsId ) {
+		this.statisticsId = statisticsId;
 	}
 
 	@Override
 	public byte[] getVisibility() {
 		return visibility;
+	}
+
+	public short getInternalDataAdapterId() {
+		return internalDataAdapterId;
+	}
+
+	public void setInternalDataAdapterId(
+			short internalDataAdapterId ) {
+		this.internalDataAdapterId = internalDataAdapterId;
 	}
 
 	@Override
@@ -67,37 +69,6 @@ abstract public class AbstractDataStatistics<T> implements
 	@Override
 	public ByteArrayId getStatisticsId() {
 		return statisticsId;
-	}
-
-	protected ByteBuffer binaryBuffer(
-			final int size ) {
-		final byte aidBytes[] = dataAdapterId.getBytes();
-		final byte sidBytes[] = statisticsId.getBytes();
-		final ByteBuffer buffer = ByteBuffer.allocate(size + 8 + sidBytes.length + aidBytes.length);
-		buffer.putInt(aidBytes.length);
-		buffer.putInt(sidBytes.length);
-		buffer.put(aidBytes);
-		buffer.put(sidBytes);
-
-		return buffer;
-	}
-
-	protected ByteBuffer binaryBuffer(
-			final byte[] bytes ) {
-
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-		final int alen = buffer.getInt();
-		final byte aidBytes[] = new byte[alen];
-		final int slen = buffer.getInt();
-		final byte sidBytes[] = new byte[slen];
-
-		buffer.get(aidBytes);
-		dataAdapterId = new ByteArrayId(
-				aidBytes);
-		buffer.get(sidBytes);
-		statisticsId = new ByteArrayId(
-				sidBytes);
-		return buffer;
 	}
 
 	protected static ByteArrayId composeId(
@@ -130,7 +101,8 @@ abstract public class AbstractDataStatistics<T> implements
 		return newStats;
 	}
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
@@ -138,7 +110,7 @@ abstract public class AbstractDataStatistics<T> implements
 				"AbstractDataStatistics");
 		jo.put(
 				"dataAdapterID",
-				dataAdapterId.getString());
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());
@@ -147,7 +119,7 @@ abstract public class AbstractDataStatistics<T> implements
 
 	@Override
 	public String toString() {
-		return "AbstractDataStatistics [dataAdapterId=" + dataAdapterId.getString() + ", statisticsId="
+		return "AbstractDataStatistics [internalDataAdapterId=" + internalDataAdapterId + ", statisticsId="
 				+ statisticsId.getString() + "]";
 	}
 }

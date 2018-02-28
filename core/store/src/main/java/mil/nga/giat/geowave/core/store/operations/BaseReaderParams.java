@@ -13,15 +13,15 @@ import mil.nga.giat.geowave.core.store.filter.DistributableQueryFilter;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
 
-abstract public class BaseReaderParams
+abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?>>
 {
 
 	private final PrimaryIndex index;
 	private final AdapterStore adapterStore;
-	private final List<ByteArrayId> adapterIds;
+	private final List<IdType> adapterIds;
 	private final double[] maxResolutionSubsamplingPerDimension;
-	private final Pair<DataAdapter<?>, Aggregation<?, ?, ?>> aggregation;
-	private final Pair<List<String>, DataAdapter<?>> fieldSubsets;
+	private final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation;
+	private final Pair<List<String>, AdapterType> fieldSubsets;
 	private final boolean isMixedVisibility;
 	private final Integer limit;
 	private final String[] additionalAuthorizations;
@@ -29,10 +29,10 @@ abstract public class BaseReaderParams
 	public BaseReaderParams(
 			final PrimaryIndex index,
 			final AdapterStore adapterStore,
-			final List<ByteArrayId> adapterIds,
+			final List<IdType> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
-			final Pair<DataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
-			final Pair<List<String>, DataAdapter<?>> fieldSubsets,
+			final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation,
+			final Pair<List<String>, AdapterType> fieldSubsets,
 			final boolean isMixedVisibility,
 			final Integer limit,
 			final String... additionalAuthorizations ) {
@@ -55,7 +55,7 @@ abstract public class BaseReaderParams
 		return adapterStore;
 	}
 
-	public List<ByteArrayId> getAdapterIds() {
+	public List<IdType> getAdapterIds() {
 		return adapterIds;
 	}
 
@@ -63,11 +63,11 @@ abstract public class BaseReaderParams
 		return maxResolutionSubsamplingPerDimension;
 	}
 
-	public Pair<DataAdapter<?>, Aggregation<?, ?, ?>> getAggregation() {
+	public Pair<AdapterType, Aggregation<?, ?, ?>> getAggregation() {
 		return aggregation;
 	}
 
-	public Pair<List<String>, DataAdapter<?>> getFieldSubsets() {
+	public Pair<List<String>, AdapterType> getFieldSubsets() {
 		return fieldSubsets;
 	}
 

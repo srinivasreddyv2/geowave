@@ -15,7 +15,7 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 
 import mil.nga.giat.geowave.adapter.raster.FitToIndexGridCoverage;
-import mil.nga.giat.geowave.adapter.raster.adapter.MergeableRasterTile;
+import mil.nga.giat.geowave.adapter.raster.adapter.ServerMergeableRasterTile;
 import mil.nga.giat.geowave.adapter.raster.adapter.RasterDataAdapter;
 import mil.nga.giat.geowave.adapter.raster.adapter.RasterTile;
 import mil.nga.giat.geowave.adapter.raster.adapter.merge.RasterTileMergeStrategy;
@@ -47,7 +47,7 @@ public class NoDataMergeStrategy implements
 		// if next tile is null or if this tile does not have metadata, just
 		// keep this tile as is
 		if ((nextTile != null) && (thisTile.getMetadata() != null)) {
-			if (nextTile instanceof MergeableRasterTile) {
+			if (nextTile instanceof ServerMergeableRasterTile) {
 				final NoDataMetadata thisTileMetadata = thisTile.getMetadata();
 				final NoDataMetadata nextTileMetadata = nextTile.getMetadata();
 

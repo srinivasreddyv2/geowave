@@ -31,10 +31,8 @@ public class FeatureTimeRangeStatistics extends
 	}
 
 	public FeatureTimeRangeStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName ) {
 		super(
-				dataAdapterId,
 				fieldName);
 	}
 
@@ -86,7 +84,6 @@ public class FeatureTimeRangeStatistics extends
 
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureTimeRangeStatistics(
-				this.dataAdapterId,
 				getFieldName());
 	}
 
@@ -98,8 +95,8 @@ public class FeatureTimeRangeStatistics extends
 		c.setTimeInMillis((long) getMax());
 		Date max = c.getTime();
 		buffer.append(
-				"range[adapter=").append(
-				super.getDataAdapterId().getString());
+				"range[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", field=").append(
 				getFieldName());

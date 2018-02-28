@@ -71,6 +71,7 @@ import mil.nga.giat.geowave.core.store.IndexWriter;
 import mil.nga.giat.geowave.core.store.StoreFactoryOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
 import mil.nga.giat.geowave.core.store.cli.remote.ClearCommand;
@@ -273,10 +274,13 @@ public class KDEJobRunner extends
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 		job.setNumReduceTasks(8);
 		job.setSpeculativeExecution(false);
-		final AdapterStore adapterStore = inputDataStoreOptions.createAdapterStore();
+		final PersistentAdapterStore adapterStore = inputDataStoreOptions.createAdapterStore();
 		final IndexStore indexStore = inputDataStoreOptions.createIndexStore();
-		final DataAdapter<?> adapter = adapterStore.getAdapter(new ByteArrayId(
+		
+		short internalAdapterId = inputDataStoreOptions.createInternalAdapterStore().getInternalAdapterId(new ByteArrayId(
 				kdeCommandLineOptions.getFeatureType()));
+		final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdapterId).getAdapter();
+		
 		final QueryOptions queryOptions = new QueryOptions(
 				adapter);
 

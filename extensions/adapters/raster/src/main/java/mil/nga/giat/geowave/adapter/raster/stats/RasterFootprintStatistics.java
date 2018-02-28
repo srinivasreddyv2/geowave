@@ -43,7 +43,6 @@ public class RasterFootprintStatistics extends
 	public RasterFootprintStatistics(
 			final ByteArrayId dataAdapterId ) {
 		super(
-				dataAdapterId,
 				STATS_TYPE);
 	}
 
@@ -56,7 +55,7 @@ public class RasterFootprintStatistics extends
 		else {
 			bytes = new WKBWriter().write(footprint);
 		}
-		final ByteBuffer buf = super.binaryBuffer(bytes.length);
+		final ByteBuffer buf = ByteBuffer.allocate(bytes.length);
 		buf.put(bytes);
 		return buf.array();
 	}
@@ -64,7 +63,7 @@ public class RasterFootprintStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		final byte[] payload = buf.array();
 		if (payload.length > 0) {
 			try {

@@ -20,7 +20,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.opengis.coverage.grid.GridCoverage;
 
-import mil.nga.giat.geowave.adapter.raster.adapter.MergeableRasterTile;
+import mil.nga.giat.geowave.adapter.raster.adapter.ServerMergeableRasterTile;
 import mil.nga.giat.geowave.adapter.raster.adapter.RasterDataAdapter;
 import mil.nga.giat.geowave.adapter.raster.adapter.merge.nodata.NoDataMergeStrategy;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
@@ -88,7 +88,7 @@ public class RasterTileResizeHelper
 			throws IOException,
 			InterruptedException {
 		GridCoverage mergedCoverage = null;
-		MergeableRasterTile<?> mergedTile = null;
+		ServerMergeableRasterTile<?> mergedTile = null;
 		boolean needsMerge = false;
 		final Iterator it = values.iterator();
 		while (it.hasNext()) {
@@ -102,7 +102,7 @@ public class RasterTileResizeHelper
 						mergedTile = newAdapter.getRasterTileFromCoverage(mergedCoverage);
 						needsMerge = true;
 					}
-					final MergeableRasterTile thisTile = newAdapter.getRasterTileFromCoverage((GridCoverage) value);
+					final ServerMergeableRasterTile thisTile = newAdapter.getRasterTileFromCoverage((GridCoverage) value);
 					if (mergedTile != null) {
 						mergedTile.merge(thisTile);
 					}

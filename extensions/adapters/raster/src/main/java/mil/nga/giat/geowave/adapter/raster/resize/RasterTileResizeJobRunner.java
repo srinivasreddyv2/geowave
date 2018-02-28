@@ -33,6 +33,7 @@ import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.IndexWriter;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.core.store.index.Index;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
@@ -118,9 +119,11 @@ public class RasterTileResizeJobRunner extends
 				job.getConfiguration(),
 				inputStoreOptions);
 
-		final DataAdapter adapter = inputStoreOptions.createAdapterStore().getAdapter(
-				new ByteArrayId(
-						rasterResizeOptions.getInputCoverageName()));
+		final InternalAdapterStore internalAdapterStore = inputStoreOptions.createInternalAdapterStore();
+		short internalAdpaterId = internalAdapterStore.getInternalAdapterId(new ByteArrayId(
+				rasterResizeOptions.getInputCoverageName()));
+		final DataAdapter adapter = inputStoreOptions.createAdapterStore().getAdapter(internalAdpaterId).getAdapter();
+		
 		if (adapter == null) {
 			throw new IllegalArgumentException(
 					"Adapter for coverage '" + rasterResizeOptions.getInputCoverageName()

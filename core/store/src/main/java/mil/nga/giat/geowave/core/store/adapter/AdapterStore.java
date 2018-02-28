@@ -17,7 +17,7 @@ import mil.nga.giat.geowave.core.store.CloseableIterator;
  * This is responsible for persisting data adapters (either in memory or to disk
  * depending on the implementation).
  */
-public interface AdapterStore
+public interface AdapterStore<K, V extends DataAdapter<?>>
 {
 	/**
 	 * Add the adapter to the store
@@ -26,7 +26,7 @@ public interface AdapterStore
 	 *            the adapter
 	 */
 	public void addAdapter(
-			DataAdapter<?> adapter );
+			V adapter );
 
 	/**
 	 * Get an adapter from the store by its unique ID
@@ -35,8 +35,8 @@ public interface AdapterStore
 	 *            the unique adapter ID
 	 * @return the adapter, null if it doesn't exist
 	 */
-	public DataAdapter<?> getAdapter(
-			ByteArrayId adapterId );
+	public V getAdapter(
+			K internalAdapterId );
 
 	/**
 	 * Check for the existence of the adapter with the given unique ID
@@ -46,14 +46,14 @@ public interface AdapterStore
 	 * @return a boolean flag indicating whether the adapter exists
 	 */
 	public boolean adapterExists(
-			ByteArrayId adapterId );
+			K internalAdapterId );
 
 	/**
 	 * Get the full set of adapters within this store
 	 * 
 	 * @return an iterator over all of the adapters in this store
 	 */
-	public CloseableIterator<DataAdapter<?>> getAdapters();
+	public CloseableIterator<V> getAdapters();
 
 	public void removeAll();
 

@@ -27,18 +27,23 @@ public class RowMergingAdapterOptionProvider implements
 	public static final String ADAPTER_IDS_OPTION = "adapters";
 
 	private final RowMergingDataAdapter<?, ?> adapter;
+	private short internalAdapterId;
 
 	public RowMergingAdapterOptionProvider(
+			short internalAdapterId,
 			final RowMergingDataAdapter<?, ?> adapter ) {
+		this.internalAdapterId = internalAdapterId;
 		this.adapter = adapter;
 	}
 
 	@Override
 	public Map<String, String> getOptions(
 			final Map<String, String> existingOptions ) {
-		final Map<String, String> newOptions = adapter.getOptions(existingOptions);
+		final Map<String, String> newOptions = adapter.getOptions(
+				internalAdapterId,
+				existingOptions);
 
-		String nextAdapterIdsValue = adapter.getAdapterId().getString();
+		String nextAdapterIdsValue = Short.toString(internalAdapterId);
 
 		if ((existingOptions != null) && existingOptions.containsKey(ADAPTER_IDS_OPTION)) {
 			final String existingAdapterIds = existingOptions.get(ADAPTER_IDS_OPTION);

@@ -38,14 +38,12 @@ public class RowHistogramDataStaticticsTest
 		return GeoWaveKeyImpl.createKeys(
 				insertionIds,
 				new byte[] {},
-				new byte[] {})[0];
+				(short) 0)[0];
 	}
 
 	@Test
 	public void testIngest() {
 		final RowRangeHistogramStatistics<Integer> stats = new RowRangeHistogramStatistics<Integer>(
-				new ByteArrayId(
-						"20030"),
 				new ByteArrayId(
 						"20030"));
 
@@ -85,8 +83,6 @@ public class RowHistogramDataStaticticsTest
 				0.04);
 
 		final RowRangeHistogramStatistics<Integer> stats2 = new RowRangeHistogramStatistics<Integer>(
-				new ByteArrayId(
-						"20030"),
 				new ByteArrayId(
 						"20030"));
 

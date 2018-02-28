@@ -16,6 +16,8 @@ import java.util.Map;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 
 import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.io.Writable;
@@ -37,17 +39,17 @@ import org.apache.hadoop.io.Writable;
  */
 public class HadoopWritableSerializationTool
 {
-	private final AdapterStore adapterStore;
+	private final TransientAdapterStore adapterStore;
 	private final Map<ByteArrayId, HadoopWritableSerializer<Object, Writable>> serializers = new HashMap<ByteArrayId, HadoopWritableSerializer<Object, Writable>>();
 	private final ObjectWritable objectWritable = new ObjectWritable();
 
 	public HadoopWritableSerializationTool(
-			final AdapterStore adapterStore ) {
+			final TransientAdapterStore adapterStore ) {
 		super();
 		this.adapterStore = adapterStore;
 	}
 
-	public AdapterStore getAdapterStore() {
+	public TransientAdapterStore getAdapterStore() {
 		return adapterStore;
 	}
 
@@ -57,16 +59,16 @@ public class HadoopWritableSerializationTool
 	}
 
 	public HadoopWritableSerializer<Object, Writable> getHadoopWritableSerializerForAdapter(
-			final ByteArrayId adapterID ) {
+			final ByteArrayId adapterId ) {
 
-		HadoopWritableSerializer<Object, Writable> serializer = serializers.get(adapterID);
+		HadoopWritableSerializer<Object, Writable> serializer = serializers.get(adapterId);
 		if (serializer == null) {
 			DataAdapter<?> adapter;
-			if ((adapterStore != null) && ((adapter = adapterStore.getAdapter(adapterID)) != null)
+			if ((adapterStore != null) && ((adapter = adapterStore.getAdapter(adapterId)) != null)
 					&& (adapter instanceof HadoopDataAdapter)) {
 				serializer = ((HadoopDataAdapter<Object, Writable>) adapter).createWritableSerializer();
 				serializers.put(
-						adapterID,
+						adapterId,
 						serializer);
 			}
 			else {

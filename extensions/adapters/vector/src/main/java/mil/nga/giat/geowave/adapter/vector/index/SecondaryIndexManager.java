@@ -149,7 +149,6 @@ public class SecondaryIndexManager implements
 
 			case NumericSecondaryIndexConfiguration.INDEX_KEY:
 				stat = new FeatureNumericHistogramStatistics(
-						dataAdapter.getAdapterId(),
 						fieldId.getString());
 				statistics.add(stat);
 				supportedSecondaryIndices.add(new SecondaryIndex<SimpleFeature>(
@@ -162,7 +161,6 @@ public class SecondaryIndexManager implements
 
 			case TextSecondaryIndexConfiguration.INDEX_KEY:
 				stat = new FeatureHyperLogLogStatistics(
-						dataAdapter.getAdapterId(),
 						fieldId.getString(),
 						16);
 				statistics.add(stat);
@@ -176,7 +174,6 @@ public class SecondaryIndexManager implements
 
 			case TemporalSecondaryIndexConfiguration.INDEX_KEY:
 				stat = new FeatureNumericHistogramStatistics(
-						dataAdapter.getAdapterId(),
 						fieldId.getString());
 				statistics.add(stat);
 				supportedSecondaryIndices.add(new SecondaryIndex<SimpleFeature>(

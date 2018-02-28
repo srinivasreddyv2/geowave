@@ -34,10 +34,12 @@ import com.google.common.collect.Iterators;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.CloseableIteratorWrapper;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.base.BaseDataStore;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveKey;
 import mil.nga.giat.geowave.core.store.filter.FilterList;
@@ -92,7 +94,7 @@ public class GeoWaveRecordReader<T> extends
 	protected DistributableQuery query;
 	protected QueryOptions queryOptions;
 	protected boolean isOutputWritable;
-	protected AdapterStore adapterStore;
+	protected TransientAdapterStore adapterStore;
 	protected AdapterIndexMappingStore aimStore;
 	protected IndexStore indexStore;
 	protected BaseDataStore dataStore;
@@ -102,7 +104,7 @@ public class GeoWaveRecordReader<T> extends
 			final DistributableQuery query,
 			final QueryOptions queryOptions,
 			final boolean isOutputWritable,
-			final AdapterStore adapterStore,
+			final TransientAdapterStore adapterStore,
 			final AdapterIndexMappingStore aimStore,
 			final IndexStore indexStore,
 			final MapReduceDataStoreOperations operations ) {
@@ -228,36 +230,26 @@ public class GeoWaveRecordReader<T> extends
 		final QueryFilter singleFilter = ((queryFilters == null) || queryFilters.isEmpty()) ? null : queryFilters
 				.size() == 1 ? queryFilters.get(0) : new FilterList<QueryFilter>(
 				queryFilters);
-		try {
-			final Reader reader = operations.createReader(new RecordReaderParams(
-					index,
-					adapterStore,
-					rangeQueryOptions.getValidAdapterIds(
-							adapterStore,
-							aimStore),
-					rangeQueryOptions.getMaxResolutionSubsamplingPerDimension(),
-					rangeQueryOptions.getAggregation(),
-					rangeQueryOptions.getFieldIdsAdapterPair(),
-					mixedVisibility,
-					range,
-					queryOptions.getLimit(),
-					rangeQueryOptions.getAuthorizations()));
-			return new CloseableIteratorWrapper(
-					new ReaderClosableWrapper(
-							reader),
-					new InputFormatIteratorWrapper<>(
-							reader,
-							singleFilter,
-							adapterStore,
-							index,
-							isOutputWritable));
-		}
-		catch (final IOException e) {
-			LOGGER.warn(
-					"Unable to get adapter IDs",
-					e);
-		}
-		return new CloseableIterator.Empty();
+		final Reader reader = operations.createReader(new RecordReaderParams(
+				index,
+				adapterStore,
+				queryOptions.getAdapterIds(),
+				rangeQueryOptions.getMaxResolutionSubsamplingPerDimension(),
+				rangeQueryOptions.getAggregation(),
+				rangeQueryOptions.getFieldIdsAdapterPair(),
+				mixedVisibility,
+				range,
+				queryOptions.getLimit(),
+				rangeQueryOptions.getAuthorizations()));
+		return new CloseableIteratorWrapper(
+				new ReaderClosableWrapper(
+						reader),
+				new InputFormatIteratorWrapper<>(
+						reader,
+						singleFilter,
+						adapterStore,
+						index,
+						isOutputWritable));
 	}
 
 	@Override

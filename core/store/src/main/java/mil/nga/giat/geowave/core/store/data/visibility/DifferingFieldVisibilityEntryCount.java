@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.AbstractDataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatisticsStore;
@@ -47,20 +48,16 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	}
 
 	private DifferingFieldVisibilityEntryCount(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId,
 			final long entriesWithDifferingFieldVisibilities ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 		this.entriesWithDifferingFieldVisibilities = entriesWithDifferingFieldVisibilities;
 	}
 
 	public DifferingFieldVisibilityEntryCount(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -74,14 +71,13 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new DifferingFieldVisibilityEntryCount<>(
-				dataAdapterId,
 				statisticsId,
 				entriesWithDifferingFieldVisibilities);
 	}
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buf = super.binaryBuffer(8);
+		final ByteBuffer buf = ByteBuffer.allocate(8);
 		buf.putLong(entriesWithDifferingFieldVisibilities);
 		return buf.array();
 	}
@@ -89,7 +85,7 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		entriesWithDifferingFieldVisibilities = buf.getLong();
 	}
 
@@ -135,11 +131,11 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 
 	public static DifferingFieldVisibilityEntryCount getVisibilityCounts(
 			final PrimaryIndex index,
-			final List<ByteArrayId> adapterIdsToQuery,
+			final List<Short> adapterIdsToQuery,
 			final DataStatisticsStore statisticsStore,
 			final String... authorizations ) {
 		DifferingFieldVisibilityEntryCount combinedVisibilityCount = null;
-		for (final ByteArrayId adapterId : adapterIdsToQuery) {
+		for (final short adapterId : adapterIdsToQuery) {
 			final DifferingFieldVisibilityEntryCount adapterVisibilityCount = (DifferingFieldVisibilityEntryCount) statisticsStore
 					.getDataStatistics(
 							adapterId,
@@ -159,12 +155,16 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	 * Convert Differing Visibility statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());

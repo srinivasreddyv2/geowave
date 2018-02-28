@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.sfc.data.NumericRange;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 
 abstract public class NumericRangeDataStatistics<T> extends
@@ -32,10 +33,8 @@ abstract public class NumericRangeDataStatistics<T> extends
 	}
 
 	public NumericRangeDataStatistics(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				dataAdapterId,
 				statisticsId);
 	}
 
@@ -60,7 +59,7 @@ abstract public class NumericRangeDataStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buffer = super.binaryBuffer(16);
+		final ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.putDouble(min);
 		buffer.putDouble(max);
 		return buffer.array();
@@ -69,7 +68,7 @@ abstract public class NumericRangeDataStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		min = buffer.getDouble();
 		max = buffer.getDouble();
 	}
@@ -111,8 +110,8 @@ abstract public class NumericRangeDataStatistics<T> extends
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"range[adapter=").append(
-				super.getDataAdapterId().getString());
+				"range[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		if (isSet()) {
 			buffer.append(
 					", min=").append(
@@ -132,13 +131,16 @@ abstract public class NumericRangeDataStatistics<T> extends
 	 * Convert Feature Numeric Range statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				"GENERIC_RANGE");
-
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());

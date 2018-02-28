@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayRange;
+import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.IndexUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
@@ -90,7 +91,7 @@ public class HBaseReader implements
 		this.wholeRowEncoding = recordReaderParams.isMixedVisibility() && !recordReaderParams.isServersideAggregation();
 		this.clientSideRowMerging = false;
 
-		initRecordScanner();
+		//initRecordScanner();
 	}
 
 	@Override
@@ -140,81 +141,81 @@ public class HBaseReader implements
 				});
 	}
 
-	protected void initRecordScanner() {
-		final FilterList filterList = new FilterList();
-		final ByteArrayRange range = HBaseSplitsProvider.toHBaseRange(recordReaderParams.getRowRange());
-
-		final Scan rscanner = createStandardScanner(recordReaderParams);
-		// Use this instead of setStartRow/setStopRow for single rowkeys
-		if (Bytes.equals(
-				range.getStart().getBytes(),
-				range.getEnd().getBytes())) {
-			rscanner.setRowPrefixFilter(range.getStart().getBytes());
-		}
-		else {
-			rscanner.setStartRow(range.getStart().getBytes());
-
-			if (recordReaderParams.getRowRange().isEndSortKeyInclusive()) {
-				byte[] stopRowInclusive = HBaseUtils.getInclusiveEndKey(range.getEnd().getBytes());
-
-				rscanner.setStopRow(stopRowInclusive);
-			}
-			else {
-				rscanner.setStopRow(range.getEnd().getBytes());
-			}
-		}
-
-		if (operations.isServerSideLibraryEnabled()) {
-			addSkipFilter(
-					recordReaderParams,
-					filterList);
-
-			// Add distributable filters if requested, this has to be last
-			// in the filter list for the dedupe filter to work correctly
-
-			if (recordReaderParams.getFilter() != null) {
-				addDistFilter(
-						recordReaderParams,
-						filterList);
-			}
-			else {
-				addIndexFilter(
-						recordReaderParams,
-						filterList);
-			}
-		}
-
-		setLimit(
-				recordReaderParams,
-				filterList);
-		if (!filterList.getFilters().isEmpty()) {
-			if (filterList.getFilters().size() > 1){
-				rscanner.setFilter(filterList);
-			}
-			else{
-				rscanner.setFilter(filterList.getFilters().get(0));
-			}
-		}
-		try {
-			Iterable<Result> iterable = operations.getScannedResults(
-					rscanner,
-					recordReaderParams.getIndex().getId().getString(),
-					recordReaderParams.getAdditionalAuthorizations());
-			if (iterable instanceof ResultScanner) {
-				this.scanner = (ResultScanner) iterable;
-			}
-			this.scanIt = iterable.iterator();
-		}
-		catch (final IOException e) {
-			LOGGER.error(
-					"Could not get the results from scanner",
-					e);
-			this.scanner = null;
-			this.scanIt = null;
-			return;
-		}
-
-	}
+//	protected void initRecordScanner() {
+//		final FilterList filterList = new FilterList();
+//		final ByteArrayRange range = HBaseSplitsProvider.toHBaseRange(recordReaderParams.getRowRange());
+//
+//		final Scan rscanner = createStandardScanner(recordReaderParams);
+//		// Use this instead of setStartRow/setStopRow for single rowkeys
+//		if (Bytes.equals(
+//				range.getStart().getBytes(),
+//				range.getEnd().getBytes())) {
+//			rscanner.setRowPrefixFilter(range.getStart().getBytes());
+//		}
+//		else {
+//			rscanner.setStartRow(range.getStart().getBytes());
+//
+//			if (recordReaderParams.getRowRange().isEndSortKeyInclusive()) {
+//				byte[] stopRowInclusive = HBaseUtils.getInclusiveEndKey(range.getEnd().getBytes());
+//
+//				rscanner.setStopRow(stopRowInclusive);
+//			}
+//			else {
+//				rscanner.setStopRow(range.getEnd().getBytes());
+//			}
+//		}
+//
+//		if (operations.isServerSideLibraryEnabled()) {
+//			addSkipFilter(
+//					recordReaderParams,
+//					filterList);
+//
+//			// Add distributable filters if requested, this has to be last
+//			// in the filter list for the dedupe filter to work correctly
+//
+//			if (recordReaderParams.getFilter() != null) {
+//				addDistFilter(
+//						recordReaderParams,
+//						filterList);
+//			}
+//			else {
+//				addIndexFilter(
+//						recordReaderParams,
+//						filterList);
+//			}
+//		}
+//
+//		setLimit(
+//				recordReaderParams,
+//				filterList);
+//		if (!filterList.getFilters().isEmpty()) {
+//			if (filterList.getFilters().size() > 1){
+//				rscanner.setFilter(filterList);
+//			}
+//			else{
+//				rscanner.setFilter(filterList.getFilters().get(0));
+//			}
+//		}
+//		try {
+//			Iterable<Result> iterable = operations.getScannedResults(
+//					rscanner,
+//					recordReaderParams.getIndex().getId().getString(),
+//					recordReaderParams.getAdditionalAuthorizations());
+//			if (iterable instanceof ResultScanner) {
+//				this.scanner = (ResultScanner) iterable;
+//			}
+//			this.scanIt = iterable.iterator();
+//		}
+//		catch (final IOException e) {
+//			LOGGER.error(
+//					"Could not get the results from scanner",
+//					e);
+//			this.scanner = null;
+//			this.scanIt = null;
+//			return;
+//		}
+//
+//	}
 
 	protected void initScanner() {
 		final FilterList filterList = new FilterList();
@@ -325,6 +326,7 @@ public class HBaseReader implements
 			BaseReaderParams params,
 			FilterList filterList ) {
 		final HBaseDistributableFilter hbdFilter = new HBaseDistributableFilter();
+
 		if (wholeRowEncoding) {
 			hbdFilter.setWholeRowFilter(true);
 		}
@@ -384,7 +386,7 @@ public class HBaseReader implements
 	}
 
 	protected Scan createStandardScanner(
-			BaseReaderParams readerParams ) {
+			ReaderParams readerParams ) {
 		final Scan scanner = new Scan();
 
 		// Performance tuning per store options
@@ -397,24 +399,22 @@ public class HBaseReader implements
 				readerParams);
 
 		if ((readerParams.getAdapterIds() != null) && !readerParams.getAdapterIds().isEmpty()) {
-			for (final ByteArrayId adapterId : readerParams.getAdapterIds()) {
+			for (final Short adapterId : readerParams.getAdapterIds()) {
 				// TODO: This prevents the client from sending bad column family
 				// requests to hbase. There may be a more efficient way to do
 				// this, via the datastore's AIM store.
 
-				if (operations.verifyColumnFamily(
-						adapterId.getString(),
-						true, // because they're not added
-						readerParams.getIndex().getId().getString(),
-						false)) {
-					scanner.addFamily(adapterId.getBytes());
-				}
-				else {
-					LOGGER.info("Adapter ID: " + adapterId.getString() + " not found in table: "
+				if (operations.verifyColumnFamily(adapterId, true, // because they're not added
+						readerParams.getIndex().getId().getString(), false)) {
+					scanner.addFamily(ByteArrayUtils.shortToByteArray(adapterId));
+				} else {
+					LOGGER.warn("Adapter ID: " + adapterId + " not found in table: "
 							+ readerParams.getIndex().getId().getString());
 				}
 			}
 		}
+	
+
 
 		return scanner;
 	}

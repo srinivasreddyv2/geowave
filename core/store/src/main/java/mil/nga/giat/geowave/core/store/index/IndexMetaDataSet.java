@@ -19,6 +19,7 @@ import mil.nga.giat.geowave.core.index.InsertionIds;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.index.SortedIndexStrategy;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.AbstractDataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatisticsStore;
@@ -40,21 +41,17 @@ public class IndexMetaDataSet<T> extends
 	public IndexMetaDataSet() {}
 
 	private IndexMetaDataSet(
-			final ByteArrayId adapterId,
 			final ByteArrayId statisticsId,
 			final List<IndexMetaData> metaData ) {
 		super(
-				adapterId,
 				composeId(statisticsId));
 		this.metaData = metaData;
 	}
 
 	public IndexMetaDataSet(
-			final ByteArrayId adapterId,
 			final ByteArrayId statisticsId,
 			final SortedIndexStrategy<?, ?> indexStrategy ) {
 		super(
-				adapterId,
 				composeId(statisticsId));
 		this.metaData = indexStrategy.createMetaData();
 	}
@@ -69,7 +66,6 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new IndexMetaDataSet<T>(
-				dataAdapterId,
 				statisticsId,
 				this.metaData);
 	}
@@ -81,7 +77,7 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public byte[] toBinary() {
 		final byte[] metaBytes = PersistenceUtils.toBinary(metaData);
-		final ByteBuffer buffer = super.binaryBuffer(metaBytes.length);
+		final ByteBuffer buffer = ByteBuffer.allocate(metaBytes.length);
 		buffer.put(metaBytes);
 		return buffer.array();
 	}
@@ -90,7 +86,7 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final byte[] metaBytes = new byte[buffer.remaining()];
 		buffer.get(metaBytes);
 
@@ -139,11 +135,11 @@ public class IndexMetaDataSet<T> extends
 
 	public static IndexMetaData[] getIndexMetadata(
 			final PrimaryIndex index,
-			final List<ByteArrayId> adapterIdsToQuery,
+			final List<Short> adapterIdsToQuery,
 			final DataStatisticsStore statisticsStore,
 			final String... authorizations ) {
 		IndexMetaDataSet combinedMetaData = null;
-		for (final ByteArrayId adapterId : adapterIdsToQuery) {
+		for (final short adapterId : adapterIdsToQuery) {
 			final IndexMetaDataSet adapterMetadata = (IndexMetaDataSet) statisticsStore.getDataStatistics(
 					adapterId,
 					IndexMetaDataSet.composeId(index.getId()),
@@ -162,13 +158,16 @@ public class IndexMetaDataSet<T> extends
 	 * Convert Index Metadata statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
-
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());

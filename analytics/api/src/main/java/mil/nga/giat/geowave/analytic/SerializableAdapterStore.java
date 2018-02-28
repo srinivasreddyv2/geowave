@@ -20,6 +20,7 @@ import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 
 /**
  * 
@@ -31,7 +32,7 @@ import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
  */
 
 public class SerializableAdapterStore implements
-		AdapterStore,
+TransientAdapterStore,
 		Serializable
 {
 
@@ -42,19 +43,19 @@ public class SerializableAdapterStore implements
 
 	final static Logger LOGGER = LoggerFactory.getLogger(SerializableAdapterStore.class);
 
-	transient AdapterStore adapterStore;
+	transient TransientAdapterStore adapterStore;
 
 	public SerializableAdapterStore() {
 
 	}
 
 	public SerializableAdapterStore(
-			AdapterStore adapterStore ) {
+			TransientAdapterStore adapterStore ) {
 		super();
 		this.adapterStore = adapterStore;
 	}
 
-	private AdapterStore getAdapterStore() {
+	private TransientAdapterStore getAdapterStore() {
 		if (adapterStore == null) {
 			throw new IllegalStateException(
 					"AdapterStore has not been initialized");
@@ -110,7 +111,7 @@ public class SerializableAdapterStore implements
 			throws IOException,
 			ClassNotFoundException {
 		if (in.readBoolean()) {
-			adapterStore = (AdapterStore) in.readObject();
+			adapterStore = (TransientAdapterStore) in.readObject();
 		}
 		else {
 			LOGGER.warn("Unable to initialized AdapterStore; the store is not serializable");

@@ -22,6 +22,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
 import mil.nga.giat.geowave.mapreduce.URLClassloaderUtils;
@@ -30,7 +31,8 @@ public class MergingServerOp implements
 		HBaseServerOp
 {
 	public static Object MUTEX = new Object();
-	protected Set<ByteArrayId> columnFamilyIds = new HashSet<>();
+	protected Set<GeowaveColumnId> columnFamilyIds = new HashSet<>();
+	//protected Set<ByteArrayId> columnFamilyIds = new HashSet<>();
 	private static final String OLD_MAX_VERSIONS_KEY = "MAX_VERSIONS";
 
 	protected Mergeable getMergeable(
@@ -84,8 +86,14 @@ public class MergingServerOp implements
 						final Cell cell = iter.next();
 						// TODO consider avoiding extra byte array allocations
 						final byte[] familyBytes = CellUtil.cloneFamily(cell);
-						final ByteArrayId familyId = new ByteArrayId(
-								familyBytes);
+						GeowaveColumnId familyId=null;
+						if(columnFamilyIds.iterator().next() instanceof shortColumnId) {
+							 familyId = new shortColumnId(ByteArrayUtils.byteArrayToShort(familyBytes));
+						}
+						else if (columnFamilyIds.iterator().next() instanceof byteArrayColumnId){
+							familyId = new byteArrayColumnId(new ByteArrayId(familyBytes));
+						}
+						
 						if (columnFamilyIds.contains(familyId)) {
 							final PartialCellEquality key = new PartialCellEquality(
 									cell,
@@ -221,13 +229,13 @@ public class MergingServerOp implements
 				Splitter.on(
 						",").split(
 						columnStr),
-				new Function<String, ByteArrayId>() {
+				new Function<String, GeowaveColumnId>() {
 
 					@Override
-					public ByteArrayId apply(
+					public GeowaveColumnId apply(
 							final String input ) {
-						return new ByteArrayId(
-								input);
+						return new byteArrayColumnId(new ByteArrayId(
+								input));
 					}
 				}));
 	}

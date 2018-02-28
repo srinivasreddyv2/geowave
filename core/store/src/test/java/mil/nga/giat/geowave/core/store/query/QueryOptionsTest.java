@@ -17,23 +17,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
+import mil.nga.giat.geowave.core.store.BaseDataStoreOptions;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AbstractDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
 import mil.nga.giat.geowave.core.store.adapter.MockComponents;
 import mil.nga.giat.geowave.core.store.adapter.NativeFieldHandler;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.PersistentIndexFieldHandler;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
+import mil.nga.giat.geowave.core.store.base.BaseQueryOptions;
 import mil.nga.giat.geowave.core.store.index.CommonIndexValue;
 import mil.nga.giat.geowave.core.store.index.Index;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
@@ -75,41 +87,100 @@ public class QueryOptionsTest
 				new MockComponents.TestIndexModel(
 						"QOT_tm3"));
 
-		final AdapterStore adapterStore = new AdapterStore() {
+		final InternalAdapterStore internalAdapterStore = new InternalAdapterStore() {
+
+			BiMap<ByteArrayId, Short> cache = HashBiMap.create();
+
+			@Override
+			public ByteArrayId getAdapterId(
+					short internalAdapterId ) {
+				// TODO Auto-generated method stub
+				return cache.inverse().get(
+						internalAdapterId);
+			}
+
+			@Override
+			public Short getInternalAdapterId(
+					ByteArrayId adapterId ) {
+				// TODO Auto-generated method stub
+				return cache.get(adapterId);
+			}
+
+			@Override
+			public short addAdapterId(
+					ByteArrayId adapterId ) {
+				// TODO Auto-generated method stub
+				Short id = cache.get(adapterId);
+				if (id != null) {
+					return id;
+				}
+
+				cache.put(
+						new ByteArrayId(
+								"QOT_1"),
+						(short) 1);
+				cache.put(
+						new ByteArrayId(
+								"QOT_2"),
+						(short) 2);
+				cache.put(
+						new ByteArrayId(
+								"QOT_3"),
+						(short) 3);
+
+				return cache.get(adapterId);
+
+			}
+
+			@Override
+			public boolean remove(
+					ByteArrayId adapterId ) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		};
+
+		final PersistentAdapterStore adapterStore = new PersistentAdapterStore() {
 
 			@Override
 			public void addAdapter(
-					final DataAdapter<?> adapter ) {}
+					final InternalDataAdapter<?> adapter ) {}
 
 			@Override
-			public DataAdapter<?> getAdapter(
-					final ByteArrayId adapterId ) {
+			public InternalDataAdapter<?> getAdapter(
+					final Short internalAdapterId ) {
+
+				ByteArrayId adapterId = internalAdapterStore.getAdapterId(internalAdapterId);
 				final MockComponents.MockAbstractDataAdapter adapter = new MockComponents.MockAbstractDataAdapter() {
 					@Override
 					public ByteArrayId getAdapterId() {
 						return adapterId;
 					}
 				};
-				return adapter.getAdapterId().equals(
-						adapterId) ? adapter : null;
+
+				InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper<>(
+						adapter,
+						internalAdapterId);
+				return internalDataAdapter;
+
 			}
 
 			@Override
 			public boolean adapterExists(
-					final ByteArrayId adapterId ) {
+					final Short internalAdapterId ) {
 				return true;
 			}
 
 			@Override
-			public CloseableIterator<DataAdapter<?>> getAdapters() {
+			public CloseableIterator<InternalDataAdapter<?>> getAdapters() {
 				return new CloseableIterator.Wrapper(
 						Arrays.asList(
-								getAdapter(new ByteArrayId(
-										"QOT_1")),
-								getAdapter(new ByteArrayId(
-										"QOT_2")),
-								getAdapter(new ByteArrayId(
-										"QOT_3"))).iterator());
+								getAdapter(new Short(
+										(short) 1)),
+								getAdapter(new Short(
+										(short) 2)),
+								getAdapter(new Short(
+										(short) 3))).iterator());
 			}
 
 			@Override
@@ -121,15 +192,17 @@ public class QueryOptionsTest
 
 		};
 
-		final List<Pair<PrimaryIndex, List<DataAdapter<Object>>>> result = ops.getAdaptersWithMinimalSetOfIndices(
+		BaseQueryOptions bops = new BaseQueryOptions(
+				ops,
+				internalAdapterStore);
+		final List<Pair<PrimaryIndex, List<InternalDataAdapter<?>>>> result = bops.getAdaptersWithMinimalSetOfIndices(
 				adapterStore,
 				new AdapterIndexMappingStore() {
 
 					@Override
 					public AdapterToIndexMapping getIndicesForAdapter(
-							final ByteArrayId adapterId ) {
-						if (adapterId.getString().equals(
-								"QOT_1")) {
+							final short adapterId ) {
+						if (adapterId == 1) {
 							return new AdapterToIndexMapping(
 									adapterId,
 									new PrimaryIndex[] {
@@ -137,8 +210,7 @@ public class QueryOptionsTest
 										index2
 									});
 						}
-						else if (adapterId.getString().equals(
-								"QOT_2")) {
+						else if (adapterId == 2) {
 							return new AdapterToIndexMapping(
 									adapterId,
 									new PrimaryIndex[] {
@@ -225,20 +297,20 @@ public class QueryOptionsTest
 						0).getLeft());
 		result.get(
 				0).getRight().contains(
-				adapterStore.getAdapter(new ByteArrayId(
-						"QOT_1")));
+				adapterStore.getAdapter(new Short(
+						(short) 1)));
 		result.get(
 				0).getRight().contains(
-				adapterStore.getAdapter(new ByteArrayId(
-						"QOT_2")));
+				adapterStore.getAdapter(new Short(
+						(short) 12)));
 		assertEquals(
 				index2,
 				result.get(
 						1).getLeft());
 		result.get(
 				1).getRight().contains(
-				adapterStore.getAdapter(new ByteArrayId(
-						"QOT_3")));
+				adapterStore.getAdapter(new Short(
+						(short) 3)));
 	}
 
 	@Test
@@ -248,7 +320,7 @@ public class QueryOptionsTest
 		final QueryOptions ops2 = new QueryOptions();
 		ops2.fromBinary(ops.toBinary());
 		assertTrue(ops2.getAdapters(
-				new AdapterStore() {
+				new TransientAdapterStore() {
 
 					@Override
 					public void addAdapter(
@@ -280,7 +352,6 @@ public class QueryOptionsTest
 					@Override
 					public void removeAdapter(
 							final ByteArrayId adapterId ) {}
-
 				})
 				.next()
 				.getAdapterId() != null);
@@ -289,7 +360,7 @@ public class QueryOptionsTest
 	@Test
 	public void testAdapters()
 			throws IOException {
-		final AdapterStore adapterStore = new AdapterStore() {
+		final AdapterStore adapterStore = new TransientAdapterStore() {
 
 			@Override
 			public void addAdapter(
@@ -330,14 +401,12 @@ public class QueryOptionsTest
 								"567"))));
 		assertEquals(
 				2,
-				ops.getAdapterIds(
-						adapterStore).size());
+				ops.getAdapterIds().size());
 		final QueryOptions ops2 = new QueryOptions();
 		ops2.fromBinary(ops.toBinary());
 		assertEquals(
 				2,
-				ops2.getAdapterIds(
-						adapterStore).size());
+				ops2.getAdapterIds().size());
 
 	}
 

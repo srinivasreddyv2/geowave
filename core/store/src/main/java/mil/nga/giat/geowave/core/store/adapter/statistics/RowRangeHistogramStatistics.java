@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.ByteUtils;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.MinimalBinDistanceHistogram.MinimalBinDistanceHistogramFactory;
 import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogram;
@@ -47,10 +48,8 @@ public class RowRangeHistogramStatistics<T> extends
 	}
 
 	public RowRangeHistogramStatistics(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -69,7 +68,6 @@ public class RowRangeHistogramStatistics<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new RowRangeHistogramStatistics<T>(
-				dataAdapterId,
 				decomposeFromId(statisticsId));// indexId
 	}
 
@@ -221,7 +219,7 @@ public class RowRangeHistogramStatistics<T> extends
 			}
 			bufferSize += e.getValue().bufferSize();
 		}
-		final ByteBuffer buffer = super.binaryBuffer(bufferSize);
+		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
 		buffer.putInt(histogramPerPartition.size());
 		for (final Entry<ByteArrayId, NumericHistogram> e : histogramPerPartition.entrySet()) {
 			if (e.getKey() == null) {
@@ -240,7 +238,7 @@ public class RowRangeHistogramStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final int numPartitions = buffer.getInt();
 		final Map<ByteArrayId, NumericHistogram> internalHistogramPerPartition = new HashMap<ByteArrayId, NumericHistogram>();
 		for (int i = 0; i < numPartitions; i++) {
@@ -332,13 +330,16 @@ public class RowRangeHistogramStatistics<T> extends
 	 */
 
 	@Override
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
-
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());

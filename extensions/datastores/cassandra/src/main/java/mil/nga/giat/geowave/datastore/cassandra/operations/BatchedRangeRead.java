@@ -23,16 +23,16 @@ public class BatchedRangeRead
 	private final CassandraOperations operations;
 	private final PreparedStatement preparedRead;
 	private final Collection<SinglePartitionQueryRanges> ranges;
-	private final List<ByteArrayId> adapterIds;
+	private final List<Short> internalAdapterIds;
 
 	protected BatchedRangeRead(
 			final PreparedStatement preparedRead,
 			final CassandraOperations operations,
-			final List<ByteArrayId> adapterIds,
+			final List<Short> internalAdapterIds,
 			final Collection<SinglePartitionQueryRanges> ranges ) {
 		this.preparedRead = preparedRead;
 		this.operations = operations;
-		this.adapterIds = adapterIds;
+		this.internalAdapterIds = internalAdapterIds;
 		this.ranges = ranges;
 	}
 
@@ -68,11 +68,12 @@ public class BatchedRangeRead
 
 				boundRead.set(
 						CassandraField.GW_ADAPTER_ID_KEY.getBindMarkerName(),
-						Lists.transform(
-								adapterIds,
-								new ByteArrayIdToByteBuffer()),
-						TypeCodec.list(TypeCodec.blob()));
-
+						internalAdapterIds,
+//						Lists.transform(
+//								adapterIds,
+//								new ByteArrayIdToByteBuffer()),
+//						TypeCodec.list(TypeCodec.blob()));
+						TypeCodec.list(TypeCodec.smallInt()));
 				statements.add(boundRead);
 			}
 

@@ -49,8 +49,10 @@ import mil.nga.giat.geowave.core.store.IndexWriter;
 import mil.nga.giat.geowave.core.store.adapter.AbstractDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.NativeFieldHandler;
 import mil.nga.giat.geowave.core.store.adapter.NativeFieldHandler.RowBuilder;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.PersistentIndexFieldHandler;
 import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.statistics.CountDataStatistics;
@@ -76,6 +78,7 @@ import mil.nga.giat.geowave.core.store.metadata.AdapterIndexMappingStoreImpl;
 import mil.nga.giat.geowave.core.store.metadata.AdapterStoreImpl;
 import mil.nga.giat.geowave.core.store.metadata.DataStatisticsStoreImpl;
 import mil.nga.giat.geowave.core.store.metadata.IndexStoreImpl;
+import mil.nga.giat.geowave.core.store.metadata.InternalAdapterStoreImpl;
 import mil.nga.giat.geowave.core.store.query.DataIdQuery;
 import mil.nga.giat.geowave.core.store.query.EverythingQuery;
 import mil.nga.giat.geowave.core.store.query.QueryOptions;
@@ -95,7 +98,9 @@ public class AccumuloDataStoreStatsTest
 
 	IndexStore indexStore;
 
-	AdapterStore adapterStore;
+	PersistentAdapterStore adapterStore;
+	
+	InternalAdapterStore internalAdapterStore;
 
 	DataStatisticsStore statsStore;
 
@@ -140,6 +145,9 @@ public class AccumuloDataStoreStatsTest
 		secondaryIndexDataStore = new AccumuloSecondaryIndexDataStore(
 				accumuloOperations,
 				options);
+		
+		internalAdapterStore = new InternalAdapterStoreImpl(
+				accumuloOperations);
 
 		mockDataStore = new AccumuloDataStore(
 				indexStore,
@@ -150,7 +158,8 @@ public class AccumuloDataStoreStatsTest
 						accumuloOperations,
 						options),
 				accumuloOperations,
-				accumuloOptions);
+				accumuloOptions,
+				internalAdapterStore);
 	}
 
 	public static final VisibilityWriter<TestGeometry> visWriterAAA = new VisibilityWriter<TestGeometry>() {
@@ -284,8 +293,10 @@ public class AccumuloDataStoreStatsTest
 					3,
 					count);
 		}
+		
+		short internalAdapterId = internalAdapterStore.getInternalAdapterId(adapter.getAdapterId());
 		CountDataStatistics<?> countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
@@ -294,7 +305,7 @@ public class AccumuloDataStoreStatsTest
 				countStats.getCount());
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa");
 		assertEquals(
@@ -302,7 +313,7 @@ public class AccumuloDataStoreStatsTest
 				countStats.getCount());
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"bbb");
 		assertEquals(
@@ -310,21 +321,21 @@ public class AccumuloDataStoreStatsTest
 				countStats.getCount());
 
 		BoundingBoxDataStatistics<?> bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"aaa");
 		assertTrue((bboxStats.getMinX() == 25) && (bboxStats.getMaxX() == 26) && (bboxStats.getMinY() == 32)
 				&& (bboxStats.getMaxY() == 32));
 
 		bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"bbb");
 		assertTrue((bboxStats.getMinX() == 27) && (bboxStats.getMaxX() == 27) && (bboxStats.getMinY() == 32)
 				&& (bboxStats.getMaxY() == 32));
 
 		bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
@@ -377,7 +388,7 @@ public class AccumuloDataStoreStatsTest
 		}
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
@@ -419,7 +430,7 @@ public class AccumuloDataStoreStatsTest
 		}
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
@@ -428,14 +439,14 @@ public class AccumuloDataStoreStatsTest
 				2,
 				countStats.getCount());
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa");
 		assertEquals(
 				1,
 				countStats.getCount());
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"bbb");
 		assertEquals(
@@ -443,21 +454,21 @@ public class AccumuloDataStoreStatsTest
 				countStats.getCount());
 
 		bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"aaa");
 		assertTrue((bboxStats.getMinX() == 25) && (bboxStats.getMaxX() == 26) && (bboxStats.getMinY() == 32)
 				&& (bboxStats.getMaxY() == 32));
 
 		bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"bbb");
 		assertTrue((bboxStats.getMinX() == 27) && (bboxStats.getMaxX() == 27) && (bboxStats.getMinY() == 32)
 				&& (bboxStats.getMaxY() == 32));
 
 		bboxStats = (BoundingBoxDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				BoundingBoxDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
@@ -524,11 +535,12 @@ public class AccumuloDataStoreStatsTest
 		}
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"aaa",
 				"bbb");
 		assertNull(countStats);
+		
 		try (IndexWriter<TestGeometry> indexWriter = mockDataStore.createWriter(
 				adapter,
 				index)) {
@@ -540,30 +552,30 @@ public class AccumuloDataStoreStatsTest
 		}
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"bbb");
 		assertTrue(countStats != null);
 		assertTrue(countStats.getCount() == 1);
 
 		RowRangeHistogramStatistics<?> histogramStats = (RowRangeHistogramStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				RowRangeHistogramStatistics.composeId(index.getId()),
 				"bbb");
 
 		assertTrue(histogramStats != null);
 		statsStore.removeAllStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				"bbb");
 
 		countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
 				"bbb");
 		assertNull(countStats);
 
 		histogramStats = (RowRangeHistogramStatistics<?>) statsStore.getDataStatistics(
-				adapter.getAdapterId(),
+				internalAdapterId,
 				RowRangeHistogramStatistics.composeId(index.getId()),
 				"bbb");
 
@@ -711,15 +723,14 @@ public class AccumuloDataStoreStatsTest
 				final ByteArrayId statisticsId ) {
 			if (BoundingBoxDataStatistics.STATS_TYPE.equals(statisticsId)) {
 				return new GeoBoundingBoxStatistics(
-						getAdapterId());
+						statisticsId);
 			}
 			else if (CountDataStatistics.STATS_TYPE.equals(statisticsId)) {
 				return new CountDataStatistics<>(
-						getAdapterId());
+						statisticsId);
 			}
 			LOGGER.warn("Unrecognized statistics ID " + statisticsId.getString() + " using count statistic");
 			return new CountDataStatistics<>(
-					getAdapterId(),
 					statisticsId);
 		}
 
@@ -829,7 +840,7 @@ public class AccumuloDataStoreStatsTest
 		protected GeoBoundingBoxStatistics() {
 			super();
 		}
-
+		
 		public GeoBoundingBoxStatistics(
 				final ByteArrayId dataAdapterId ) {
 			super(

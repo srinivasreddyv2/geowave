@@ -13,6 +13,7 @@ package mil.nga.giat.geowave.adapter.vector.stats;
 import mil.nga.giat.geowave.adapter.vector.util.FeatureDataUtils;
 import mil.nga.giat.geowave.core.geotime.store.statistics.BoundingBoxDataStatistics;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 
 import net.sf.json.JSONException;
@@ -43,22 +44,18 @@ public class FeatureBoundingBoxStatistics extends
 	}
 
 	public FeatureBoundingBoxStatistics(
-			final ByteArrayId dataAdapterId,
 			final String statisticsId ) {
 		this(
-				dataAdapterId,
 				statisticsId,
 				null,
 				null);
 	}
 
 	public FeatureBoundingBoxStatistics(
-			final ByteArrayId dataAdapterId,
 			final String statisticsId,
 			final SimpleFeatureType reprojectedType,
 			final MathTransform transform ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						statisticsId));
@@ -117,7 +114,6 @@ public class FeatureBoundingBoxStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureBoundingBoxStatistics(
-				dataAdapterId,
 				getFieldName(),
 				reprojectedType,
 				transform);
@@ -126,8 +122,8 @@ public class FeatureBoundingBoxStatistics extends
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"bbox[adapter=").append(
-				super.getDataAdapterId().getString());
+				"bbox[internalAdapter=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", field=").append(
 				getFieldName());
@@ -156,12 +152,15 @@ public class FeatureBoundingBoxStatistics extends
 	 * Convert Feature Bounding Box statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(InternalAdapterStore store)
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"statisticsId",
 				statisticsId.getString());

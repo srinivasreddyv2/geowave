@@ -12,6 +12,7 @@ package mil.nga.giat.geowave.adapter.vector.stats;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.sfc.data.NumericRange;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.NumericRangeDataStatistics;
 
@@ -31,10 +32,8 @@ public class FeatureNumericRangeStatistics extends
 	}
 
 	public FeatureNumericRangeStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName));
@@ -67,15 +66,14 @@ public class FeatureNumericRangeStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureNumericRangeStatistics(
-				dataAdapterId,
 				getFieldName());
 	}
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"range[adapter=").append(
-				super.getDataAdapterId().getString());
+				"range[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", field=").append(
 				getFieldName());
@@ -98,12 +96,15 @@ public class FeatureNumericRangeStatistics extends
 	 * Convert Feature Numeric Range statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(InternalAdapterStore store)
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"field_identifier",
 				getFieldName());
@@ -135,10 +136,8 @@ public class FeatureNumericRangeStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
-				final ByteArrayId dataAdapterId,
 				final String fieldName ) {
 			return new FeatureNumericRangeStatistics(
-					dataAdapterId,
 					fieldName);
 		}
 	}

@@ -49,21 +49,17 @@ public class FeatureFixedBinNumericStatistics extends
 	}
 
 	public FeatureFixedBinNumericStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName));
 	}
 
 	public FeatureFixedBinNumericStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName,
 			final int bins ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName),
@@ -71,13 +67,11 @@ public class FeatureFixedBinNumericStatistics extends
 	}
 
 	public FeatureFixedBinNumericStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName,
 			final int bins,
 			final double minValue,
 			final double maxValue ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName),
@@ -101,7 +95,6 @@ public class FeatureFixedBinNumericStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureFixedBinNumericStatistics(
-				dataAdapterId,
 				getFieldName());
 	}
 
@@ -184,10 +177,8 @@ public class FeatureFixedBinNumericStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
-				final ByteArrayId dataAdapterId,
 				final String fieldName ) {
 			return new FeatureFixedBinNumericStatistics(
-					dataAdapterId,
 					fieldName,
 					bins,
 					minValue,

@@ -55,7 +55,7 @@ public abstract class GeoWaveMapper extends
 		mapNativeValue(
 				key,
 				serializationTool.fromWritable(
-						key.getAdapterId(),
+						key.getInternalAdapterId(),
 						value),
 				new NativeMapContext<GeoWaveInputKey, ObjectWritable>(
 						context,

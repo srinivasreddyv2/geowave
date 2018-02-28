@@ -21,7 +21,7 @@ import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapt
 public interface AdapterIndexMappingStore
 {
 	public AdapterToIndexMapping getIndicesForAdapter(
-			ByteArrayId adapterId );
+			short internalAdapterId );
 
 	/**
 	 * If an adapter is already associated with indices and the provided indices

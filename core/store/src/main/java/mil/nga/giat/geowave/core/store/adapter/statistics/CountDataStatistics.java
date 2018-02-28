@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.callback.DeleteCallback;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 
@@ -35,19 +36,14 @@ public class CountDataStatistics<T> extends
 	}
 
 	public CountDataStatistics(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsID ) {
 		super(
-				dataAdapterId,
 				statisticsID);
 	}
 
-	public CountDataStatistics(
-			final ByteArrayId dataAdapterId ) {
-		super(
-				dataAdapterId,
-				STATS_TYPE);
-	}
+	/*
+	 * public CountDataStatistics( ) { super( STATS_TYPE); }
+	 */
 
 	public boolean isSet() {
 		return count != Long.MIN_VALUE;
@@ -59,7 +55,7 @@ public class CountDataStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buffer = super.binaryBuffer(8);
+		final ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.putLong(count);
 		return buffer.array();
 	}
@@ -67,7 +63,7 @@ public class CountDataStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		count = buffer.getLong();
 	}
 
@@ -121,8 +117,8 @@ public class CountDataStatistics<T> extends
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"count[adapter=").append(
-				super.getDataAdapterId().getString());
+				"count[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", count=").append(
 				count);
@@ -134,7 +130,8 @@ public class CountDataStatistics<T> extends
 	 * Convert Count statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(
@@ -143,6 +140,9 @@ public class CountDataStatistics<T> extends
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());
+		jo.put(
+				"dataAdapterID",
+				store.getAdapterId(internalDataAdapterId));
 		jo.put(
 				"count",
 				count);

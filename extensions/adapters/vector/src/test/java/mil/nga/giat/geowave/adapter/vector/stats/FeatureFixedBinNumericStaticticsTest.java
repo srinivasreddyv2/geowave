@@ -98,8 +98,6 @@ public class FeatureFixedBinNumericStaticticsTest
 	public void testPositive() {
 
 		final FeatureFixedBinNumericStatistics stat = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		final Random rand = new Random(
@@ -116,8 +114,6 @@ public class FeatureFixedBinNumericStaticticsTest
 		}
 
 		final FeatureFixedBinNumericStatistics stat2 = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		next += 1000;
@@ -172,8 +168,6 @@ public class FeatureFixedBinNumericStaticticsTest
 	public void testRapidIncreaseInRange() {
 
 		final FeatureFixedBinNumericStatistics stat1 = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		final Random rand = new Random(
@@ -185,8 +179,6 @@ public class FeatureFixedBinNumericStaticticsTest
 		}
 
 		FeatureFixedBinNumericStatistics stat2 = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		next = 4839434.547854578;
@@ -204,8 +196,6 @@ public class FeatureFixedBinNumericStaticticsTest
 		stat1.merge(stat2);
 
 		stat2 = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		for (int i = 0; i < 40000; i++) {
@@ -214,8 +204,6 @@ public class FeatureFixedBinNumericStaticticsTest
 		}
 
 		final FeatureFixedBinNumericStatistics stat3 = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		next = 54589058545734.049454545458;
@@ -242,8 +230,6 @@ public class FeatureFixedBinNumericStaticticsTest
 	public void testMix() {
 
 		final FeatureFixedBinNumericStatistics stat = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		final Random rand = new Random(
@@ -306,8 +292,6 @@ public class FeatureFixedBinNumericStaticticsTest
 	public void testMix2() {
 
 		final FeatureFixedBinNumericStatistics stat = new FeatureFixedBinNumericStatistics(
-				new ByteArrayId(
-						"sp.geostuff"),
 				"pop");
 
 		final Random rand = new Random(

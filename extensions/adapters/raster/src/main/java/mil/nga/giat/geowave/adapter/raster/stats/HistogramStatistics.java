@@ -66,8 +66,7 @@ public class HistogramStatistics extends
 			final ByteArrayId dataAdapterId,
 			final HistogramConfig histogramConfig ) {
 		super(
-				dataAdapterId,
-				STATS_TYPE);
+			STATS_TYPE);
 		this.histogramConfig = histogramConfig;
 	}
 
@@ -114,7 +113,7 @@ public class HistogramStatistics extends
 		}
 		final byte[] configBinary = PersistenceUtils.toBinary(histogramConfig);
 		totalBytes += (configBinary.length + 4);
-		final ByteBuffer buf = super.binaryBuffer(totalBytes);
+		final ByteBuffer buf = ByteBuffer.allocate(totalBytes);
 		buf.putInt(configBinary.length);
 		buf.put(configBinary);
 		buf.putInt(perEntryBinary.size());
@@ -127,7 +126,7 @@ public class HistogramStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		final byte[] configBinary = new byte[buf.getInt()];
 		buf.get(configBinary);
 		histogramConfig = (HistogramConfig) PersistenceUtils.fromBinary(configBinary);

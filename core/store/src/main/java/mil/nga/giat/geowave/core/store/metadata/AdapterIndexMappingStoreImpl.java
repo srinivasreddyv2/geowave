@@ -1,9 +1,11 @@
 package mil.nga.giat.geowave.core.store.metadata;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.DataStoreOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
 import mil.nga.giat.geowave.core.store.operations.DataStoreOperations;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
@@ -37,25 +39,29 @@ public class AdapterIndexMappingStoreImpl extends
 	public boolean mappingExists(
 			final AdapterToIndexMapping persistedObject ) {
 		return objectExists(
-				persistedObject.getAdapterId(),
+				new ByteArrayId(
+						ByteArrayUtils.shortToByteArray(persistedObject.getInternalAdapterId())),
 				null);
 	}
 
 	@Override
 	protected ByteArrayId getPrimaryId(
 			final AdapterToIndexMapping persistedObject ) {
-		return persistedObject.getAdapterId();
+		return new ByteArrayId(
+				ByteArrayUtils.shortToByteArray(persistedObject.getInternalAdapterId()));
 	}
 
 	@Override
 	public AdapterToIndexMapping getIndicesForAdapter(
-			final ByteArrayId adapterId ) {
+			final short internalAdapterId ) {
+
 		final AdapterToIndexMapping mapping = super.getObject(
-				adapterId,
+				new ByteArrayId(
+						ByteArrayUtils.shortToByteArray(internalAdapterId)),
 				null,
 				null);
 		return (mapping != null) ? mapping : new AdapterToIndexMapping(
-				adapterId,
+				internalAdapterId,
 				new ByteArrayId[0]);
 	}
 
@@ -63,11 +69,13 @@ public class AdapterIndexMappingStoreImpl extends
 	public void addAdapterIndexMapping(
 			final AdapterToIndexMapping mapping )
 			throws MismatchedIndexToAdapterMapping {
+		ByteArrayId internalAdapterId = new ByteArrayId(
+				ByteArrayUtils.shortToByteArray(mapping.getInternalAdapterId()));
 		if (objectExists(
-				mapping.getAdapterId(),
+				internalAdapterId,
 				null)) {
 			final AdapterToIndexMapping oldMapping = super.getObject(
-					mapping.getAdapterId(),
+					internalAdapterId,
 					null,
 					null);
 			if (!oldMapping.equals(mapping)) {

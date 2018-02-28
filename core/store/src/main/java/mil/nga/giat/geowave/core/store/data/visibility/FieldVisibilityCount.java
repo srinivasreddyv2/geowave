@@ -39,20 +39,16 @@ public class FieldVisibilityCount<T> extends
 	}
 
 	private FieldVisibilityCount(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId,
 			final Map<ByteArrayId, Long> countsPerVisibility ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 		this.countsPerVisibility = countsPerVisibility;
 	}
 
 	public FieldVisibilityCount(
-			final ByteArrayId dataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
-				dataAdapterId,
 				composeId(statisticsId));
 		countsPerVisibility = new HashMap<ByteArrayId, Long>();
 	}
@@ -78,7 +74,7 @@ public class FieldVisibilityCount<T> extends
 			serializedCounts.add(serializedEntry);
 			bufferSize += serializedEntry.length;
 		}
-		ByteBuffer buf = super.binaryBuffer(bufferSize);
+		ByteBuffer buf = ByteBuffer.allocate(bufferSize);
 		buf.putInt(serializedCounts.size());
 		for (byte[] count : serializedCounts) {
 			buf.put(count);
@@ -89,7 +85,6 @@ public class FieldVisibilityCount<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new FieldVisibilityCount<T>(
-				dataAdapterId,
 				statisticsId,
 				this.countsPerVisibility);
 	}
@@ -97,7 +92,7 @@ public class FieldVisibilityCount<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = super.binaryBuffer(bytes);
+		final ByteBuffer buf = ByteBuffer.wrap(bytes);
 		final int size = buf.getInt();
 		countsPerVisibility.clear();
 		for (int i = 0; i < size; i++) {

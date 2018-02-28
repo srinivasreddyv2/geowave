@@ -15,24 +15,30 @@ import net.sf.json.JSONObject;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.callback.IngestCallback;
 
 public interface DataStatistics<T> extends
 		Mergeable,
 		IngestCallback<T>
 {
-	public ByteArrayId getDataAdapterId();
+	public short getInternalDataAdapterId();
 
-	public void setDataAdapterId(
-			ByteArrayId dataAdapterId );
+	public void setInternalDataAdapterId(
+			short dataAdapterId );
 
 	public ByteArrayId getStatisticsId();
+
+	public void setStatisticsId(
+			ByteArrayId statisticsId );
 
 	public void setVisibility(
 			byte[] visibility );
 
 	public byte[] getVisibility();
 
-	public JSONObject toJSONObject()
+	public JSONObject toJSONObject(
+			InternalAdapterStore adapterStore )
 			throws JSONException;
 }

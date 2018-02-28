@@ -20,6 +20,7 @@ import org.opengis.filter.Filter;
 
 import mil.nga.giat.geowave.adapter.vector.GeotoolsFeatureDataAdapter;
 import mil.nga.giat.geowave.adapter.vector.util.FeatureDataUtils;
+import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.store.adapter.AbstractAdapterPersistenceEncoding;
@@ -51,14 +52,15 @@ public class CQLQueryFilter implements
 		this.filter = FilterToCQLTool.fixDWithin(filter);
 		this.adapter = adapter;
 	}
+	public ByteArrayId getAdapterId() {
+		return adapter.getAdapterId();
+	}
 
 	@Override
 	public boolean accept(
 			final CommonIndexModel indexModel,
 			final IndexedPersistenceEncoding persistenceEncoding ) {
 		if ((filter != null) && (indexModel != null) && (adapter != null)) {
-			if (adapter.getAdapterId().equals(
-					persistenceEncoding.getAdapterId())) {
 				final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
 				if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
 					((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(
@@ -73,7 +75,7 @@ public class CQLQueryFilter implements
 					}
 				}
 				final IndexedAdapterPersistenceEncoding encoding = new IndexedAdapterPersistenceEncoding(
-						persistenceEncoding.getAdapterId(),
+						persistenceEncoding.getInternalAdapterId(),
 						persistenceEncoding.getDataId(),
 						persistenceEncoding.getInsertionPartitionKey(),
 						persistenceEncoding.getInsertionSortKey(),
@@ -98,7 +100,7 @@ public class CQLQueryFilter implements
 					return false;
 				}
 				return filter.evaluate(feature);
-			}
+			
 		}
 		return true;
 	}

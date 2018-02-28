@@ -12,7 +12,7 @@ import mil.nga.giat.geowave.core.store.operations.BaseReaderParams;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
 
 public class RecordReaderParams extends
-		BaseReaderParams
+		BaseReaderParams<ByteArrayId, DataAdapter<?>>
 {
 	private final GeoWaveRowRange rowRange;
 

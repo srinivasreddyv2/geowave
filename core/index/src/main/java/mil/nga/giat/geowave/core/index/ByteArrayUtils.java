@@ -231,4 +231,19 @@ public class ByteArrayUtils
 				part1,
 				part2);
 	}
+
+	public static byte[] shortToByteArray(
+			short input ) {
+		return new byte[] {
+			(byte) (input & 0xFF),
+			(byte) ((input >> 8) & 0xFF)
+		};
+	}
+
+	public static short byteArrayToShort(
+			byte[] bytes ) {
+		int r = bytes[1] & 0xFF;
+		r = (r << 8) | (bytes[0] & 0xFF);
+		return (short) r;
+	}
 }

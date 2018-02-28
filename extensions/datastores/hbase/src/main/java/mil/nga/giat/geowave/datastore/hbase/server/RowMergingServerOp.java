@@ -28,8 +28,7 @@ public class RowMergingServerOp extends
 			final Cell cell,
 			final byte[] bytes ) {
 		return rowTransform.getRowAsMergeableObject(
-				new ByteArrayId(
-						CellUtil.cloneFamily(cell)),
+										ByteArrayUtils.byteArrayToShort(CellUtil.cloneFamily(cell)),
 				new ByteArrayId(
 						CellUtil.cloneQualifier(cell)),
 				bytes);
@@ -58,19 +57,21 @@ public class RowMergingServerOp extends
 			throw new IllegalArgumentException(
 					"The column must not be empty");
 		}
+		
 		columnFamilyIds = Sets.newHashSet(Iterables.transform(
 				Splitter.on(
 						",").split(
 						columnStr),
-				new Function<String, ByteArrayId>() {
+				new Function<String, GeowaveColumnId>() {
 
 					@Override
-					public ByteArrayId apply(
+					public GeowaveColumnId apply(
 							final String input ) {
-						return new ByteArrayId(
-								input);
+						return new shortColumnId(
+								Short.valueOf(input));
 					}
 				}));
+		
 		final String rowTransformStr = options.get(RowMergingAdapterOptionProvider.ROW_TRANSFORM_KEY);
 		final byte[] rowTransformBytes = ByteArrayUtils.byteArrayFromString(rowTransformStr);
 		rowTransform = (RowTransform<Mergeable>) URLClassloaderUtils.fromBinary(rowTransformBytes);

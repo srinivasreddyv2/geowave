@@ -37,6 +37,7 @@ import mil.nga.giat.geowave.core.index.sfc.data.NumericRange;
 import mil.nga.giat.geowave.core.store.adapter.AdapterPersistenceEncoding;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.index.CommonIndexModel;
 
 /**
@@ -78,7 +79,7 @@ public class AdapterBasedPartitioner extends
 	public AdapterBasedPartitioner(
 			final CommonIndexModel indexModel,
 			final double[] distancesPerDimension,
-			final AdapterStore adapterStore ) {
+			final TransientAdapterStore adapterStore ) {
 		super(
 				indexModel,
 				distancesPerDimension);

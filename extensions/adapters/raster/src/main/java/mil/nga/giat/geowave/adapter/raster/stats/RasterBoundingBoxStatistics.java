@@ -28,8 +28,7 @@ public class RasterBoundingBoxStatistics extends
 
 	public RasterBoundingBoxStatistics(
 			final ByteArrayId dataAdapterId ) {
-		super(
-				dataAdapterId);
+		super(dataAdapterId);
 	}
 
 	@Override

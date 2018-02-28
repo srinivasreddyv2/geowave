@@ -55,10 +55,8 @@ public class FeatureNumericHistogramStatistics extends
 	}
 
 	public FeatureNumericHistogramStatistics(
-			final ByteArrayId dataAdapterId,
 			final String fieldName ) {
 		super(
-				dataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName));
@@ -79,7 +77,6 @@ public class FeatureNumericHistogramStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureNumericHistogramStatistics(
-				dataAdapterId,
 				getFieldName());
 	}
 
@@ -177,7 +174,7 @@ public class FeatureNumericHistogramStatistics extends
 		final int positiveBytes = positiveHistogram.getEstimatedFootprintInBytes();
 		final int bytesNeeded = positiveBytes
 				+ (negativeHistogram == null ? 0 : negativeHistogram.getEstimatedFootprintInBytes());
-		final ByteBuffer buffer = super.binaryBuffer(bytesNeeded + 5);
+		final ByteBuffer buffer = ByteBuffer.allocate(bytesNeeded + 5);
 		final int startPosition = buffer.position();
 		buffer.putInt(startPosition); // buffer out an int
 		positiveHistogram.encodeIntoCompressedByteBuffer(buffer);
@@ -201,7 +198,7 @@ public class FeatureNumericHistogramStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = super.binaryBuffer(bytes);
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		final int endPosition = buffer.getInt();
 		try {
 			positiveHistogram = DoubleHistogram.decodeFromCompressedByteBuffer(
@@ -259,8 +256,8 @@ public class FeatureNumericHistogramStatistics extends
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
-				"histogram[adapter=").append(
-				super.getDataAdapterId().getString());
+				"histogram[internalDataAdapterId=").append(
+				super.getInternalDataAdapterId());
 		buffer.append(
 				", field=").append(
 				getFieldName());
@@ -372,10 +369,8 @@ public class FeatureNumericHistogramStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
-				final ByteArrayId dataAdapterId,
 				final String fieldName ) {
 			return new FeatureNumericHistogramStatistics(
-					dataAdapterId,
 					fieldName);
 		}
 	}

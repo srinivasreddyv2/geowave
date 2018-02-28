@@ -1,10 +1,20 @@
 package mil.nga.giat.geowave.core.store.metadata;
 
+import java.nio.ByteBuffer;
+
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.index.ByteArrayUtils;
+import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.DataStoreOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
+import mil.nga.giat.geowave.core.store.entities.GeoWaveMetadata;
 import mil.nga.giat.geowave.core.store.operations.DataStoreOperations;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
 
@@ -17,8 +27,8 @@ import mil.nga.giat.geowave.core.store.operations.MetadataType;
  * all. The objects are stored in their own table.
  */
 public class AdapterStoreImpl extends
-		AbstractGeoWavePersistence<DataAdapter<?>> implements
-		AdapterStore
+		AbstractGeoWavePersistence<InternalDataAdapter<?>> implements
+		PersistentAdapterStore
 {
 
 	public AdapterStoreImpl(
@@ -32,34 +42,52 @@ public class AdapterStoreImpl extends
 
 	@Override
 	public void addAdapter(
-			final DataAdapter<?> adapter ) {
+			final InternalDataAdapter<?> adapter ) {
 		addObject(adapter);
 	}
 
 	@Override
-	public DataAdapter<?> getAdapter(
-			final ByteArrayId adapterId ) {
+	public InternalDataAdapter<?> getAdapter(
+			final Short internalAdapterId ) {
 		return getObject(
-				adapterId,
+				new ByteArrayId(
+						ByteArrayUtils.shortToByteArray(internalAdapterId)),
 				null);
 	}
 
 	@Override
+	protected InternalDataAdapter<?> fromValue(
+			GeoWaveMetadata entry ) {
+		WritableDataAdapter<?> adapter = (WritableDataAdapter<?>) PersistenceUtils.fromBinary(entry.getValue());
+		return new InternalDataAdapterWrapper<>(
+				adapter,
+				ByteArrayUtils.byteArrayToShort(entry.getPrimaryId()));
+	}
+
+	@Override
+	protected byte[] getValue(
+			InternalDataAdapter<?> object ) {
+		return PersistenceUtils.toBinary(object.getAdapter());
+	}
+
+	@Override
 	public boolean adapterExists(
-			final ByteArrayId adapterId ) {
+			final Short internalAdapterId ) {
 		return objectExists(
-				adapterId,
+				new ByteArrayId(
+						ByteArrayUtils.shortToByteArray(internalAdapterId)),
 				null);
 	}
 
 	@Override
 	protected ByteArrayId getPrimaryId(
-			final DataAdapter<?> persistedObject ) {
-		return persistedObject.getAdapterId();
+			final InternalDataAdapter<?> persistedObject ) {
+		return new ByteArrayId(
+				ByteArrayUtils.shortToByteArray(persistedObject.getInternalAdapterId()));
 	}
 
 	@Override
-	public CloseableIterator<DataAdapter<?>> getAdapters() {
+	public CloseableIterator<InternalDataAdapter<?>> getAdapters() {
 		return getObjects();
 	}
 

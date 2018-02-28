@@ -110,8 +110,8 @@ public class TemporalRangeTest extends
 						28.232)));
 
 		final FeatureTimeRangeStatistics stats = new FeatureTimeRangeStatistics(
-				new ByteArrayId(
-						"a"),
+		/*		new ByteArrayId(
+						"a"),*/
 				"when");
 		stats.entryIngested(newFeature);
 

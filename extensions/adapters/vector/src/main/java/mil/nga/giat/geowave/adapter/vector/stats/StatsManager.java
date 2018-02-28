@@ -124,7 +124,6 @@ public class StatsManager
 
 				addStats(
 						new FeatureTimeRangeStatistics(
-								dataAdapter.getAdapterId(),
 								descriptor.getLocalName()),
 						new ByteArrayId(
 								descriptor.getLocalName()));
@@ -133,7 +132,6 @@ public class StatsManager
 			else if (Geometry.class.isAssignableFrom(descriptor.getType().getBinding())) {
 				addStats(
 						new FeatureBoundingBoxStatistics(
-								dataAdapter.getAdapterId(),
 								descriptor.getLocalName(),
 								reprojectedType,
 								transform),
@@ -159,7 +157,6 @@ public class StatsManager
 				for (final StatsConfig<SimpleFeature> statConfig : featureConfigs) {
 					addStats(
 							statConfig.create(
-									dataAdapter.getAdapterId(),
 									descriptor.getLocalName()),
 							new ByteArrayId(
 									descriptor.getLocalName()));
@@ -173,14 +170,12 @@ public class StatsManager
 			else if (Number.class.isAssignableFrom(descriptor.getType().getBinding())) {
 				addStats(
 						new FeatureNumericRangeStatistics(
-								dataAdapter.getAdapterId(),
 								descriptor.getLocalName()),
 						new ByteArrayId(
 								descriptor.getLocalName()));
 
 				addStats(
 						new FeatureFixedBinNumericStatistics(
-								dataAdapter.getAdapterId(),
 								descriptor.getLocalName()),
 						new ByteArrayId(
 								descriptor.getLocalName()));
@@ -230,7 +225,6 @@ public class StatsManager
 
 		LOGGER.warn("Unrecognized statistics ID " + statisticsId.getString() + ", using count statistic.");
 		return new CountDataStatistics<SimpleFeature>(
-				dataAdapter.getAdapterId(),
 				statisticsId);
 	}
 
