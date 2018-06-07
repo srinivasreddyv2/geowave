@@ -28,7 +28,7 @@ public class RowMergingServerOp extends
 			final Cell cell,
 			final byte[] bytes ) {
 		return rowTransform.getRowAsMergeableObject(
-										ByteArrayUtils.byteArrayToShort(CellUtil.cloneFamily(cell)),
+				ByteArrayUtils.byteArrayToShort(CellUtil.cloneFamily(cell)),
 				new ByteArrayId(
 						CellUtil.cloneQualifier(cell)),
 				bytes);
@@ -57,7 +57,7 @@ public class RowMergingServerOp extends
 			throw new IllegalArgumentException(
 					"The column must not be empty");
 		}
-		
+
 		columnFamilyIds = Sets.newHashSet(Iterables.transform(
 				Splitter.on(
 						",").split(
@@ -71,7 +71,7 @@ public class RowMergingServerOp extends
 								Short.valueOf(input));
 					}
 				}));
-		
+
 		final String rowTransformStr = options.get(RowMergingAdapterOptionProvider.ROW_TRANSFORM_KEY);
 		final byte[] rowTransformBytes = ByteArrayUtils.byteArrayFromString(rowTransformStr);
 		rowTransform = (RowTransform<Mergeable>) URLClassloaderUtils.fromBinary(rowTransformBytes);

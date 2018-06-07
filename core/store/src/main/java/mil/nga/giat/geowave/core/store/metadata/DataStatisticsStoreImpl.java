@@ -106,7 +106,8 @@ public class DataStatisticsStoreImpl extends
 			final String... authorizations ) {
 		return internalGetObject(
 				statisticsId,
-				new ByteArrayId(ByteArrayUtils.shortToByteArray(internalAdapterId)),
+				new ByteArrayId(
+						ByteArrayUtils.shortToByteArray(internalAdapterId)),
 				// for data statistics we don't want to log if its not found
 				false,
 				authorizations);

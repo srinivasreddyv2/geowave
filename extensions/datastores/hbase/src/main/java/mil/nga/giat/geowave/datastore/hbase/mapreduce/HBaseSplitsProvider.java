@@ -59,7 +59,7 @@ public class HBaseSplitsProvider extends
 			final TreeSet<IntermediateSplitInfo> splits,
 			final DataStoreOperations operations,
 			final PrimaryIndex index,
-			final List<Short> adapterIds ,
+			final List<Short> adapterIds,
 			final Map<PrimaryIndex, RowRangeHistogramStatistics<?>> statsCache,
 			final TransientAdapterStore adapterStore,
 			final DataStatisticsStore statsStore,

@@ -32,7 +32,7 @@ public class MergingServerOp implements
 {
 	public static Object MUTEX = new Object();
 	protected Set<GeowaveColumnId> columnFamilyIds = new HashSet<>();
-	//protected Set<ByteArrayId> columnFamilyIds = new HashSet<>();
+	// protected Set<ByteArrayId> columnFamilyIds = new HashSet<>();
 	private static final String OLD_MAX_VERSIONS_KEY = "MAX_VERSIONS";
 
 	protected Mergeable getMergeable(
@@ -86,14 +86,17 @@ public class MergingServerOp implements
 						final Cell cell = iter.next();
 						// TODO consider avoiding extra byte array allocations
 						final byte[] familyBytes = CellUtil.cloneFamily(cell);
-						GeowaveColumnId familyId=null;
-						if(columnFamilyIds.iterator().next() instanceof shortColumnId) {
-							 familyId = new shortColumnId(ByteArrayUtils.byteArrayToShort(familyBytes));
+						GeowaveColumnId familyId = null;
+						if (columnFamilyIds.iterator().next() instanceof shortColumnId) {
+							familyId = new shortColumnId(
+									ByteArrayUtils.byteArrayToShort(familyBytes));
 						}
-						else if (columnFamilyIds.iterator().next() instanceof byteArrayColumnId){
-							familyId = new byteArrayColumnId(new ByteArrayId(familyBytes));
+						else if (columnFamilyIds.iterator().next() instanceof byteArrayColumnId) {
+							familyId = new byteArrayColumnId(
+									new ByteArrayId(
+											familyBytes));
 						}
-						
+
 						if (columnFamilyIds.contains(familyId)) {
 							final PartialCellEquality key = new PartialCellEquality(
 									cell,
@@ -234,8 +237,9 @@ public class MergingServerOp implements
 					@Override
 					public GeowaveColumnId apply(
 							final String input ) {
-						return new byteArrayColumnId(new ByteArrayId(
-								input));
+						return new byteArrayColumnId(
+								new ByteArrayId(
+										input));
 					}
 				}));
 	}

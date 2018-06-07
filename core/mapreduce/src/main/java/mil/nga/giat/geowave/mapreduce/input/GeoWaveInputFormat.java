@@ -95,7 +95,12 @@ public class GeoWaveInputFormat<T> extends
 				CLASS,
 				context);
 	}
-
+	public static TransientAdapterStore getJobContextInernalAdapterStore(
+			final JobContext context ) {
+		return GeoWaveConfiguratorBase.getJobContextInternalAdapterStore(
+				CLASS,
+				context);
+	}
 	public static DataStatisticsStore getJobContextDataStatisticsStore(
 			final JobContext context ) {
 		// TODO, this doesn't create a data statistics store wrapping a
@@ -252,6 +257,7 @@ public class GeoWaveInputFormat<T> extends
 					getQuery(context),
 					getQueryOptions(context),
 					getJobContextAdapterStore(context),
+					getJobContextInternalAdapterStore(context),
 					getJobContextAdapterIndexMappingStore(context),
 					getJobContextDataStatisticsStore(context),
 					getJobContextIndexStore(context),

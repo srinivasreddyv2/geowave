@@ -112,8 +112,9 @@ public class MemoryPersistentAdapterStore implements
 	}
 
 	@Override
-	public void removeAdapter(ByteArrayId adapterId) {
+	public void removeAdapter(
+			ByteArrayId adapterId ) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

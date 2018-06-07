@@ -89,7 +89,7 @@ public class AggregationEndpoint extends
 			final RpcCallback<AggregationProtos.AggregationResponse> done ) {
 		FilterList filterList = null;
 		DataAdapter dataAdapter = null;
-		Short internalAdapterId =null;
+		Short internalAdapterId = null;
 		AggregationProtos.AggregationResponse response = null;
 		ByteString value = ByteString.EMPTY;
 

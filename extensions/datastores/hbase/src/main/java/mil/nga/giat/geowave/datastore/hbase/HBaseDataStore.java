@@ -64,7 +64,7 @@ public class HBaseDataStore extends
 			final SecondaryIndexDataStore secondaryIndexDataStore,
 			final HBaseOperations operations,
 			final HBaseOptions options,
-			final InternalAdapterStore adapterMappingStore) {
+			final InternalAdapterStore adapterMappingStore ) {
 		super(
 				indexStore,
 				adapterStore,

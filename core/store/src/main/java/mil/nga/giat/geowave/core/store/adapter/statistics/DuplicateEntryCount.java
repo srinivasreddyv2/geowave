@@ -149,7 +149,8 @@ public class DuplicateEntryCount<T> extends
 	 * Convert Duplicate Count statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject(InternalAdapterStore store)
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		final JSONObject jo = new JSONObject();
 		jo.put(

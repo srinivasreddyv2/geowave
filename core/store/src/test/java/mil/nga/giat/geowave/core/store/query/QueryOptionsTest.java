@@ -319,42 +319,8 @@ public class QueryOptionsTest
 		ops.setAdapter(new MockComponents.MockAbstractDataAdapter());
 		final QueryOptions ops2 = new QueryOptions();
 		ops2.fromBinary(ops.toBinary());
-		assertTrue(ops2.getAdapters(
-				new TransientAdapterStore() {
-
-					@Override
-					public void addAdapter(
-							final DataAdapter<?> adapter ) {}
-
-					@Override
-					public DataAdapter<?> getAdapter(
-							final ByteArrayId adapterId ) {
-						final MockComponents.MockAbstractDataAdapter adapter = new MockComponents.MockAbstractDataAdapter();
-						return adapter.getAdapterId().equals(
-								adapterId) ? adapter : null;
-					}
-
-					@Override
-					public boolean adapterExists(
-							final ByteArrayId adapterId ) {
-						return true;
-					}
-
-					@Override
-					public CloseableIterator<DataAdapter<?>> getAdapters() {
-						return new CloseableIterator.Wrapper(
-								Collections.emptyListIterator());
-					}
-
-					@Override
-					public void removeAll() {}
-
-					@Override
-					public void removeAdapter(
-							final ByteArrayId adapterId ) {}
-				})
-				.next()
-				.getAdapterId() != null);
+		assertTrue(ops2.getAdapters().get(
+				0).getAdapterId() != null);
 	}
 
 	@Test
