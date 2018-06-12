@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -34,8 +34,9 @@ abstract public class AbstractDataStatistics<T> implements
 	 */
 	protected ByteArrayId statisticsId;
 
+	@Override
 	public void setStatisticsId(
-			ByteArrayId statisticsId ) {
+			final ByteArrayId statisticsId ) {
 		this.statisticsId = statisticsId;
 	}
 
@@ -51,12 +52,14 @@ abstract public class AbstractDataStatistics<T> implements
 		return visibility;
 	}
 
+	@Override
 	public short getInternalDataAdapterId() {
 		return internalDataAdapterId;
 	}
 
+	@Override
 	public void setInternalDataAdapterId(
-			short internalDataAdapterId ) {
+			final short internalDataAdapterId ) {
 		this.internalDataAdapterId = internalDataAdapterId;
 	}
 
@@ -69,6 +72,31 @@ abstract public class AbstractDataStatistics<T> implements
 	@Override
 	public ByteArrayId getStatisticsId() {
 		return statisticsId;
+	}
+
+	protected ByteBuffer binaryBuffer(
+			final int size ) {
+		final byte sidBytes[] = statisticsId.getBytes();
+		final ByteBuffer buffer = ByteBuffer.allocate(size + 4 + sidBytes.length);
+		buffer.putShort(internalDataAdapterId);
+		buffer.putShort((short) sidBytes.length);
+		buffer.put(sidBytes);
+
+		return buffer;
+	}
+
+	protected ByteBuffer binaryBuffer(
+			final byte[] bytes ) {
+
+		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		internalDataAdapterId = buffer.getShort();
+		final int slen = Short.toUnsignedInt(buffer.getShort());
+		final byte sidBytes[] = new byte[slen];
+
+		buffer.get(sidBytes);
+		statisticsId = new ByteArrayId(
+				sidBytes);
+		return buffer;
 	}
 
 	protected static ByteArrayId composeId(
@@ -101,10 +129,11 @@ abstract public class AbstractDataStatistics<T> implements
 		return newStats;
 	}
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				"AbstractDataStatistics");

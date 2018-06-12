@@ -96,8 +96,7 @@ public class VectorMRExportJobRunner extends
 		final List<String> adapterIds = mrOptions.getAdapterIds();
 		final PersistentAdapterStore adapterStore = storeOptions.createAdapterStore();
 		final InternalAdapterStore internalAdapterStore = storeOptions.createInternalAdapterStore();
-		
-		
+
 		if ((adapterIds != null) && !adapterIds.isEmpty()) {
 			options.setAdapters(Lists.transform(
 					adapterIds,
@@ -140,10 +139,11 @@ public class VectorMRExportJobRunner extends
 				return -1;
 			}
 			final String adapterId = adapterIds.get(0);
-			
+
 			Short internalAdpaterId = internalAdapterStore.getInternalAdapterId(new ByteArrayId(
 					adapterId));
-			final InternalDataAdapter<?> adapter = storeOptions.createAdapterStore().getAdapter(internalAdpaterId);
+			final InternalDataAdapter<?> adapter = storeOptions.createAdapterStore().getAdapter(
+					internalAdpaterId);
 			if (adapter == null) {
 				JCommander.getConsole().println(
 						"Type '" + adapterId + "' not found");

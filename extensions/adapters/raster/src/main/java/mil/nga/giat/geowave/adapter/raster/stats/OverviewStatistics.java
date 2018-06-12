@@ -50,7 +50,7 @@ public class OverviewStatistics extends
 														// size
 			}
 
-			final ByteBuffer buf = ByteBuffer.allocate(byteCount);
+			final ByteBuffer buf = super.binaryBuffer(byteCount);
 			buf.putInt(resolutionBinaries.size());
 			for (final byte[] resBinary : resolutionBinaries) {
 				buf.putInt(resBinary.length);
@@ -63,7 +63,7 @@ public class OverviewStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = ByteBuffer.wrap(bytes);
+		final ByteBuffer buf = super.binaryBuffer(bytes);
 		final int resLength = buf.getInt();
 		synchronized (this) {
 			resolutions = new Resolution[resLength];

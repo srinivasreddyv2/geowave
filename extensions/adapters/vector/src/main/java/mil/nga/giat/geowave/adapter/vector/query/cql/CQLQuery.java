@@ -60,7 +60,8 @@ import mil.nga.giat.geowave.core.store.query.DistributableQuery;
 import mil.nga.giat.geowave.core.store.query.Query;
 
 public class CQLQuery implements
-		DistributableQuery, AdapterQuery
+		DistributableQuery,
+		AdapterQuery
 {
 	private final static Logger LOGGER = LoggerFactory.getLogger(CQLQuery.class);
 	private Query baseQuery;

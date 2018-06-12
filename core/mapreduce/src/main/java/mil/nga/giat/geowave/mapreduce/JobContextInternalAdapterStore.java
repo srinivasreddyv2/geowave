@@ -1,10 +1,10 @@
 package mil.nga.giat.geowave.mapreduce;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.JobContext;
+
+import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 
 public class JobContextInternalAdapterStore implements
 		InternalAdapterStore
@@ -22,20 +22,20 @@ public class JobContextInternalAdapterStore implements
 
 	@Override
 	public ByteArrayId getAdapterId(
-			short internalAdapterId ) {
+			final short internalAdapterId ) {
 		return persistentInternalAdapterStore.getAdapterId(internalAdapterId);
 	}
 
 	@Override
 	public Short getInternalAdapterId(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		// TODO figure out where to add internal adapter IDs to the job context
 		// and read it from the job context instead
 		return persistentInternalAdapterStore.getInternalAdapterId(adapterId);
 	}
 
 	protected Short getInternalAdapterIdFromJobContext(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		// TODO figure out where to add internal adapter IDs to the job context
 		// and read it from the job context instead
 		return GeoWaveConfiguratorBase.getInternalAdapterId(
@@ -46,26 +46,37 @@ public class JobContextInternalAdapterStore implements
 
 	@Override
 	public short addAdapterId(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		return persistentInternalAdapterStore.addAdapterId(adapterId);
 	}
 
 	@Override
 	public boolean remove(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		return persistentInternalAdapterStore.remove(adapterId);
 	}
 
 	public static void addInternalDataAdapter(
 			final Configuration configuration,
 			final ByteArrayId adapterId,
-			short internalAdapterId ) {
+			final short internalAdapterId ) {
 		// TODO figure out where to add this
 		GeoWaveConfiguratorBase.addInternalAdapterId(
 				CLASS,
 				configuration,
 				adapterId,
 				internalAdapterId);
+	}
+
+	@Override
+	public boolean remove(
+			final short internalAdapterId ) {
+		return persistentInternalAdapterStore.remove(internalAdapterId);
+	}
+
+	@Override
+	public void removeAll() {
+		persistentInternalAdapterStore.removeAll();
 	}
 
 }

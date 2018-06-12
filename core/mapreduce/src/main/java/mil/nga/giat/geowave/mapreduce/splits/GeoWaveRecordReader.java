@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -34,11 +34,10 @@ import com.google.common.collect.Iterators;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.CloseableIteratorWrapper;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.base.BaseDataStore;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveKey;
@@ -95,6 +94,7 @@ public class GeoWaveRecordReader<T> extends
 	protected QueryOptions queryOptions;
 	protected boolean isOutputWritable;
 	protected TransientAdapterStore adapterStore;
+	protected InternalAdapterStore internalAdapterStore;
 	protected AdapterIndexMappingStore aimStore;
 	protected IndexStore indexStore;
 	protected BaseDataStore dataStore;
@@ -105,6 +105,7 @@ public class GeoWaveRecordReader<T> extends
 			final QueryOptions queryOptions,
 			final boolean isOutputWritable,
 			final TransientAdapterStore adapterStore,
+			final InternalAdapterStore internalAdapterStore,
 			final AdapterIndexMappingStore aimStore,
 			final IndexStore indexStore,
 			final MapReduceDataStoreOperations operations ) {
@@ -112,6 +113,7 @@ public class GeoWaveRecordReader<T> extends
 		this.queryOptions = queryOptions;
 		this.isOutputWritable = isOutputWritable;
 		this.adapterStore = adapterStore;
+		this.internalAdapterStore = internalAdapterStore;
 		this.aimStore = aimStore;
 		this.indexStore = indexStore;
 		this.operations = operations;
@@ -248,6 +250,7 @@ public class GeoWaveRecordReader<T> extends
 						reader,
 						singleFilter,
 						adapterStore,
+						internalAdapterStore,
 						index,
 						isOutputWritable));
 	}

@@ -66,7 +66,7 @@ public class MaxDuplicatesStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buf = ByteBuffer.allocate(8);
+		final ByteBuffer buf = super.binaryBuffer(8);
 		buf.putInt(maxDuplicates);
 		return buf.array();
 	}
@@ -74,7 +74,7 @@ public class MaxDuplicatesStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = ByteBuffer.wrap(bytes);
+		final ByteBuffer buf = super.binaryBuffer(bytes);
 		maxDuplicates = buf.getInt();
 	}
 

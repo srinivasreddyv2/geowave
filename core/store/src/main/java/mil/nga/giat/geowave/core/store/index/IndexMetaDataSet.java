@@ -77,7 +77,7 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public byte[] toBinary() {
 		final byte[] metaBytes = PersistenceUtils.toBinary(metaData);
-		final ByteBuffer buffer = ByteBuffer.allocate(metaBytes.length);
+		final ByteBuffer buffer = super.binaryBuffer(metaBytes.length);
 		buffer.put(metaBytes);
 		return buffer.array();
 	}
@@ -86,7 +86,7 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		final byte[] metaBytes = new byte[buffer.remaining()];
 		buffer.get(metaBytes);
 

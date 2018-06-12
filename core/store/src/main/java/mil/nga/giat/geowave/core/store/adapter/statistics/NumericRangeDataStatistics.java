@@ -59,7 +59,7 @@ abstract public class NumericRangeDataStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buffer = ByteBuffer.allocate(16);
+		final ByteBuffer buffer = super.binaryBuffer(16);
 		buffer.putDouble(min);
 		buffer.putDouble(max);
 		return buffer.array();
@@ -68,7 +68,7 @@ abstract public class NumericRangeDataStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		min = buffer.getDouble();
 		max = buffer.getDouble();
 	}

@@ -19,7 +19,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 public interface GeotoolsFeatureDataAdapter extends
-WritableDataAdapter<SimpleFeature>,
+		WritableDataAdapter<SimpleFeature>,
 		StatisticsProvider<SimpleFeature>
 {
 	public SimpleFeatureType getFeatureType();

@@ -50,7 +50,8 @@ abstract public class TimeRangeDataStatistics<T> extends
 	 * Convert Time Range statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject(InternalAdapterStore store)
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(

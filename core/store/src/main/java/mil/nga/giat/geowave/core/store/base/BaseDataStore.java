@@ -13,7 +13,6 @@ package mil.nga.giat.geowave.core.store.base;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -26,22 +25,18 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Iterators;
 
-import mil.nga.giat.geowave.core.cli.VersionUtils;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.InsertionIds;
-import mil.nga.giat.geowave.core.store.AdapterMapping;
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.CloseableIteratorWrapper;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.DataStoreOptions;
 import mil.nga.giat.geowave.core.store.IndexWriter;
-import mil.nga.giat.geowave.core.store.StoreFactoryOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.IndexDependentDataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
@@ -49,7 +44,6 @@ import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatisticsStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DuplicateEntryCount;
-import mil.nga.giat.geowave.core.store.callback.DeleteCallback;
 import mil.nga.giat.geowave.core.store.callback.IngestCallback;
 import mil.nga.giat.geowave.core.store.callback.IngestCallbackList;
 import mil.nga.giat.geowave.core.store.callback.ScanCallback;
@@ -62,7 +56,6 @@ import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.index.SecondaryIndexDataStore;
 import mil.nga.giat.geowave.core.store.index.writer.IndependentAdapterIndexWriter;
 import mil.nga.giat.geowave.core.store.index.writer.IndexCompositeWriter;
-import mil.nga.giat.geowave.core.store.memory.MemoryAdapterStore;
 import mil.nga.giat.geowave.core.store.memory.MemoryPersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.operations.DataStoreOperations;
 import mil.nga.giat.geowave.core.store.operations.Deleter;
@@ -87,7 +80,7 @@ public class BaseDataStore implements
 	protected final AdapterIndexMappingStore indexMappingStore;
 	protected final DataStoreOperations baseOperations;
 	protected final DataStoreOptions baseOptions;
-	protected final InternalAdapterStore adapterMappingStore;
+	protected final InternalAdapterStore internalAdapterStore;
 
 	public BaseDataStore(
 			final IndexStore indexStore,
@@ -97,13 +90,13 @@ public class BaseDataStore implements
 			final SecondaryIndexDataStore secondaryIndexDataStore,
 			final DataStoreOperations operations,
 			final DataStoreOptions options,
-			final InternalAdapterStore adapterMappingStore ) {
+			final InternalAdapterStore internalAdapterStore ) {
 		this.indexStore = indexStore;
 		this.adapterStore = adapterStore;
 		this.statisticsStore = statisticsStore;
 		this.indexMappingStore = indexMappingStore;
 		this.secondaryIndexDataStore = secondaryIndexDataStore;
-		this.adapterMappingStore = adapterMappingStore;
+		this.internalAdapterStore = internalAdapterStore;
 
 		baseOperations = operations;
 		baseOptions = options;
@@ -131,9 +124,9 @@ public class BaseDataStore implements
 			throws MismatchedIndexToAdapterMapping {
 		adapter.init(indices);
 		// add internal adapter
-		InternalDataAdapter<T> internalAdapter = new InternalDataAdapterWrapper<T>(
+		final InternalDataAdapter<T> internalAdapter = new InternalDataAdapterWrapper<T>(
 				adapter,
-				adapterMappingStore.addAdapterId(adapter.getAdapterId()));
+				internalAdapterStore.addAdapterId(adapter.getAdapterId()));
 		store(internalAdapter);
 		indexMappingStore.addAdapterIndexMapping(new AdapterToIndexMapping(
 				internalAdapter.getInternalAdapterId(),
@@ -225,19 +218,19 @@ public class BaseDataStore implements
 		// indices
 		final BaseQueryOptions sanitizedQueryOptions = new BaseQueryOptions(
 				(queryOptions == null) ? new QueryOptions() : queryOptions,
-				adapterMappingStore);
+				internalAdapterStore);
 
 		// If CQL filter is set
 		if (query instanceof AdapterQuery) {
-			ByteArrayId CQlAdapterId = ((AdapterQuery) query).getAdapterId();
+			final ByteArrayId CQlAdapterId = ((AdapterQuery) query).getAdapterId();
 
 			if ((sanitizedQueryOptions.getAdapterIds() == null) || (sanitizedQueryOptions.getAdapterIds().isEmpty())) {
-				sanitizedQueryOptions.setInternalAdapterId(adapterMappingStore.getInternalAdapterId(CQlAdapterId));
+				sanitizedQueryOptions.setInternalAdapterId(internalAdapterStore.getInternalAdapterId(CQlAdapterId));
 			}
 			else if (sanitizedQueryOptions.getAdapterIds().size() == 1) {
 				if (!sanitizedQueryOptions.getAdapterIds().get(
 						0).equals(
-						adapterMappingStore.getInternalAdapterId(CQlAdapterId))) {
+						internalAdapterStore.getInternalAdapterId(CQlAdapterId))) {
 					LOGGER.error("CQL Query AdapterID does not match Query Options AdapterId");
 					throw new RuntimeException(
 							"CQL Query AdapterID does not match Query Options AdapterId");
@@ -373,21 +366,21 @@ public class BaseDataStore implements
 
 		final BaseQueryOptions sanitizedQueryOptions = new BaseQueryOptions(
 				queryOptions,
-				adapterMappingStore);
+				internalAdapterStore);
 		final AtomicBoolean aOk = new AtomicBoolean(
 				true);
 
 		// If CQL filter is set
 		if (query instanceof AdapterQuery) {
-			ByteArrayId CQlAdapterId = ((AdapterQuery) query).getAdapterId();
+			final ByteArrayId CQlAdapterId = ((AdapterQuery) query).getAdapterId();
 
 			if ((sanitizedQueryOptions.getAdapterIds() == null) || (sanitizedQueryOptions.getAdapterIds().isEmpty())) {
-				sanitizedQueryOptions.setInternalAdapterId(adapterMappingStore.getInternalAdapterId(CQlAdapterId));
+				sanitizedQueryOptions.setInternalAdapterId(internalAdapterStore.getInternalAdapterId(CQlAdapterId));
 			}
 			else if (sanitizedQueryOptions.getAdapterIds().size() == 1) {
 				if (!sanitizedQueryOptions.getAdapterIds().get(
 						0).equals(
-						adapterMappingStore.getInternalAdapterId(CQlAdapterId))) {
+						internalAdapterStore.getInternalAdapterId(CQlAdapterId))) {
 					LOGGER.error("CQL Query AdapterID does not match Query Options AdapterId");
 					throw new RuntimeException(
 							"CQL Query AdapterID does not match Query Options AdapterId");
@@ -559,6 +552,7 @@ public class BaseDataStore implements
 			indexStore.removeAll();
 			adapterStore.removeAll();
 			statisticsStore.removeAll();
+			internalAdapterStore.removeAll();
 			secondaryIndexDataStore.removeAll();
 			indexMappingStore.removeAll();
 
@@ -620,7 +614,7 @@ public class BaseDataStore implements
 			final DedupeFilter filter,
 			final BaseQueryOptions sanitizedQueryOptions,
 			final PersistentAdapterStore tempAdapterStore,
-			boolean delete ) {
+			final boolean delete ) {
 		final BaseConstraintsQuery constraintsQuery = new BaseConstraintsQuery(
 				adapterIdsToQuery,
 				index,
@@ -661,7 +655,7 @@ public class BaseDataStore implements
 			final BaseQueryOptions sanitizedQueryOptions,
 			final PersistentAdapterStore tempAdapterStore,
 			final List<Short> adapterIdsToQuery,
-			boolean delete ) {
+			final boolean delete ) {
 		final BaseRowPrefixQuery<Object> prefixQuery = new BaseRowPrefixQuery<Object>(
 				index,
 				partitionKey,
@@ -690,7 +684,7 @@ public class BaseDataStore implements
 			final DedupeFilter filter,
 			final BaseQueryOptions sanitizedQueryOptions,
 			final PersistentAdapterStore tempAdapterStore,
-			boolean delete ) {
+			final boolean delete ) {
 		final DifferingFieldVisibilityEntryCount visibilityCounts = DifferingFieldVisibilityEntryCount
 				.getVisibilityCounts(
 						index,

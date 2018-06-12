@@ -5,11 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
-import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.base.BaseDataStoreUtils;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
@@ -42,14 +39,16 @@ public class InputFormatIteratorWrapper<T> implements
 	public InputFormatIteratorWrapper(
 			final Reader reader,
 			final QueryFilter queryFilter,
-			final AdapterStore adapterStore,
+			final TransientAdapterStore adapterStore,
+			final InternalAdapterStore internalAdapterStore,
 			final PrimaryIndex index,
 			final boolean isOutputWritable ) {
 		this.reader = reader;
 		this.queryFilter = queryFilter;
 		this.index = index;
 		this.serializationTool = new HadoopWritableSerializationTool(
-				adapterStore);
+				adapterStore,
+				internalAdapterStore);
 		this.isOutputWritable = isOutputWritable;
 	}
 
@@ -60,7 +59,7 @@ public class InputFormatIteratorWrapper<T> implements
 				final Entry<GeoWaveInputKey, T> decodedValue = decodeRow(
 						nextRow,
 						queryFilter,
-						(InternalDataAdapter<T>) serializationTool.getAdapter(nextRow.getInternalAdapterId()),
+						(InternalDataAdapter<T>) serializationTool.getInternalAdapter(nextRow.getInternalAdapterId()),
 						index);
 				if (decodedValue != null) {
 					nextEntry = decodedValue;

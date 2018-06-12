@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -10,7 +10,6 @@
  ******************************************************************************/
 package mil.nga.giat.geowave.core.store.adapter;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 
 /**
@@ -21,7 +20,7 @@ public interface AdapterStore<K, V extends DataAdapter<?>>
 {
 	/**
 	 * Add the adapter to the store
-	 * 
+	 *
 	 * @param adapter
 	 *            the adapter
 	 */
@@ -30,7 +29,7 @@ public interface AdapterStore<K, V extends DataAdapter<?>>
 
 	/**
 	 * Get an adapter from the store by its unique ID
-	 * 
+	 *
 	 * @param adapterId
 	 *            the unique adapter ID
 	 * @return the adapter, null if it doesn't exist
@@ -40,7 +39,7 @@ public interface AdapterStore<K, V extends DataAdapter<?>>
 
 	/**
 	 * Check for the existence of the adapter with the given unique ID
-	 * 
+	 *
 	 * @param adapterId
 	 *            the unique ID to look up
 	 * @return a boolean flag indicating whether the adapter exists
@@ -50,7 +49,7 @@ public interface AdapterStore<K, V extends DataAdapter<?>>
 
 	/**
 	 * Get the full set of adapters within this store
-	 * 
+	 *
 	 * @return an iterator over all of the adapters in this store
 	 */
 	public CloseableIterator<V> getAdapters();
@@ -58,10 +57,10 @@ public interface AdapterStore<K, V extends DataAdapter<?>>
 	public void removeAll();
 
 	/**
-	 * 
+	 *
 	 * @param adapterId
 	 *            the adapter ID to remove
 	 */
 	public void removeAdapter(
-			ByteArrayId adapterId );
+			K adapterId );
 }

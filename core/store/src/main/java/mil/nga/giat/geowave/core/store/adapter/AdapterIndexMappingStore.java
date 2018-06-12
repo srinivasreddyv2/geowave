@@ -45,7 +45,7 @@ public interface AdapterIndexMappingStore
 	 * @param adapterId
 	 */
 	public void remove(
-			ByteArrayId adapterId );
+			short adapterId );
 
 	public void removeAll();
 }

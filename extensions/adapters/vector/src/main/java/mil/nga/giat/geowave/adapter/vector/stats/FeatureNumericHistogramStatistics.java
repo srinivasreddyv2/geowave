@@ -174,7 +174,7 @@ public class FeatureNumericHistogramStatistics extends
 		final int positiveBytes = positiveHistogram.getEstimatedFootprintInBytes();
 		final int bytesNeeded = positiveBytes
 				+ (negativeHistogram == null ? 0 : negativeHistogram.getEstimatedFootprintInBytes());
-		final ByteBuffer buffer = ByteBuffer.allocate(bytesNeeded + 5);
+		final ByteBuffer buffer = super.binaryBuffer(bytesNeeded + 5);
 		final int startPosition = buffer.position();
 		buffer.putInt(startPosition); // buffer out an int
 		positiveHistogram.encodeIntoCompressedByteBuffer(buffer);
@@ -198,7 +198,7 @@ public class FeatureNumericHistogramStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		final int endPosition = buffer.getInt();
 		try {
 			positiveHistogram = DoubleHistogram.decodeFromCompressedByteBuffer(

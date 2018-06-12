@@ -87,6 +87,9 @@ public abstract class AbstractGeoWavePersistence<T extends Persistable>
 			final T persistedObject );
 
 	public void removeAll() {
+		deleteObject(
+				null,
+				null);
 		cache.clear();
 	}
 
@@ -204,7 +207,7 @@ public abstract class AbstractGeoWavePersistence<T extends Persistable>
 	}
 
 	protected byte[] getValue(
-			T object ) {
+			final T object ) {
 		return PersistenceUtils.toBinary(object);
 	}
 
@@ -369,9 +372,9 @@ public abstract class AbstractGeoWavePersistence<T extends Persistable>
 	protected static boolean deleteObjects(
 			final ByteArrayId primaryId,
 			final ByteArrayId secondaryId,
-			DataStoreOperations operations,
-			MetadataType type,
-			AbstractGeoWavePersistence cacheDeleter,
+			final DataStoreOperations operations,
+			final MetadataType type,
+			final AbstractGeoWavePersistence cacheDeleter,
 			final String... authorizations ) {
 		try {
 			if (!operations.metadataExists(type)) {

@@ -1,15 +1,10 @@
 package mil.nga.giat.geowave.core.store.metadata;
 
-import java.nio.ByteBuffer;
-
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.DataStoreOptions;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
@@ -57,8 +52,8 @@ public class AdapterStoreImpl extends
 
 	@Override
 	protected InternalDataAdapter<?> fromValue(
-			GeoWaveMetadata entry ) {
-		WritableDataAdapter<?> adapter = (WritableDataAdapter<?>) PersistenceUtils.fromBinary(entry.getValue());
+			final GeoWaveMetadata entry ) {
+		final WritableDataAdapter<?> adapter = (WritableDataAdapter<?>) PersistenceUtils.fromBinary(entry.getValue());
 		return new InternalDataAdapterWrapper<>(
 				adapter,
 				ByteArrayUtils.byteArrayToShort(entry.getPrimaryId()));
@@ -66,7 +61,7 @@ public class AdapterStoreImpl extends
 
 	@Override
 	protected byte[] getValue(
-			InternalDataAdapter<?> object ) {
+			final InternalDataAdapter<?> object ) {
 		return PersistenceUtils.toBinary(object.getAdapter());
 	}
 
@@ -93,7 +88,8 @@ public class AdapterStoreImpl extends
 
 	@Override
 	public void removeAdapter(
-			ByteArrayId adapterId ) {
-		remove(adapterId);
+			final Short internalAdapterId ) {
+		remove(new ByteArrayId(
+				ByteArrayUtils.shortToByteArray(internalAdapterId)));
 	}
 }

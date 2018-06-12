@@ -135,7 +135,7 @@ public class GeoWaveGTDataStore extends
 	public PersistentAdapterStore getAdapterStore() {
 		return adapterStore;
 	}
-	
+
 	public InternalAdapterStore getInternalAdapterStore() {
 		return internalAdapterStore;
 	}
@@ -154,10 +154,11 @@ public class GeoWaveGTDataStore extends
 		if (currentSelections != null) {
 			return currentSelections;
 		}
-		
+
 		short internalAdapterId = internalAdapterStore.getInternalAdapterId(adapter.getAdapterId());
 
-		final AdapterToIndexMapping adapterIndexMapping = adapterIndexMappingStore.getIndicesForAdapter(internalAdapterId);
+		final AdapterToIndexMapping adapterIndexMapping = adapterIndexMappingStore
+				.getIndicesForAdapter(internalAdapterId);
 		if ((adapterIndexMapping != null) && adapterIndexMapping.isNotEmpty()) {
 			currentSelections = adapterIndexMapping.getIndices(indexStore);
 		}
@@ -189,7 +190,9 @@ public class GeoWaveGTDataStore extends
 			if (featureNameSpaceURI != null) {
 				adapter.setNamespace(featureNameSpaceURI.toString());
 			}
-			InternalDataAdapter<?> internalAdapter = new InternalDataAdapterWrapper(adapter, internalAdapterId);
+			InternalDataAdapter<?> internalAdapter = new InternalDataAdapterWrapper(
+					adapter,
+					internalAdapterId);
 			adapterStore.addAdapter(internalAdapter);
 		}
 	}

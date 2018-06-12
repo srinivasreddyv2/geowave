@@ -3,7 +3,6 @@ package mil.nga.giat.geowave.core.store;
 import java.nio.ByteBuffer;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.index.shortUtils;
 import mil.nga.giat.geowave.core.index.persist.Persistable;
 
 public class AdapterMapping implements

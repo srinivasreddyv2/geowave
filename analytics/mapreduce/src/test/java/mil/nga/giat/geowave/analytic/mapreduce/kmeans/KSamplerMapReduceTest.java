@@ -54,6 +54,7 @@ import mil.nga.giat.geowave.core.store.memory.MemoryRequiredOptions;
 import mil.nga.giat.geowave.core.store.memory.MemoryStoreFactoryFamily;
 import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 import mil.nga.giat.geowave.mapreduce.JobContextAdapterStore;
+import mil.nga.giat.geowave.mapreduce.JobContextInternalAdapterStore;
 import mil.nga.giat.geowave.mapreduce.input.GeoWaveInputKey;
 import mil.nga.giat.geowave.mapreduce.output.GeoWaveOutputKey;
 
@@ -61,6 +62,8 @@ public class KSamplerMapReduceTest
 {
 	MapDriver<GeoWaveInputKey, ObjectWritable, GeoWaveInputKey, ObjectWritable> mapDriver;
 	ReduceDriver<GeoWaveInputKey, ObjectWritable, GeoWaveOutputKey, TestObject> reduceDriver;
+	short internalAdapterId = 1234;
+	short other = 1236;
 	final TestObjectDataAdapter testObjectAapter = new TestObjectDataAdapter();
 	@Rule
 	public TestName name = new TestName();
@@ -177,6 +180,10 @@ public class KSamplerMapReduceTest
 		JobContextAdapterStore.addDataAdapter(
 				mapDriver.getConfiguration(),
 				testObjectAapter);
+		JobContextInternalAdapterStore.addInternalDataAdapter(
+				mapDriver.getConfiguration(),
+				testObjectAapter.getAdapterId(),
+				internalAdapterId);
 
 		mapDriver.getConfiguration().setInt(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -196,6 +203,14 @@ public class KSamplerMapReduceTest
 		JobContextAdapterStore.addDataAdapter(
 				reduceDriver.getConfiguration(),
 				testObjectAapter);
+		JobContextInternalAdapterStore.addInternalDataAdapter(
+				reduceDriver.getConfiguration(),
+				adapter.getAdapterId(),
+				other);
+		JobContextInternalAdapterStore.addInternalDataAdapter(
+				reduceDriver.getConfiguration(),
+				testObjectAapter.getAdapterId(),
+				internalAdapterId);
 
 		reduceDriver.getConfiguration().set(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -257,7 +272,7 @@ public class KSamplerMapReduceTest
 				SamplingRankFunction.class);
 
 		final GeoWaveInputKey inputKey = new GeoWaveInputKey();
-		inputKey.setAdapterId(testObjectAapter.getAdapterId());
+		inputKey.setInternalAdapterId(internalAdapterId);
 		inputKey.setDataId(new ByteArrayId(
 				"abc".getBytes()));
 
@@ -270,7 +285,7 @@ public class KSamplerMapReduceTest
 						"abc")));
 
 		final GeoWaveInputKey outputKey = new GeoWaveInputKey();
-		outputKey.setAdapterId(testObjectAapter.getAdapterId());
+		outputKey.setInternalAdapterId(internalAdapterId);
 
 		final ByteBuffer keyBuf = ByteBuffer.allocate(64);
 		keyBuf.putDouble(0.5);
@@ -319,7 +334,7 @@ public class KSamplerMapReduceTest
 				SamplingRankFunction.class);
 
 		final GeoWaveInputKey inputKey = new GeoWaveInputKey();
-		inputKey.setAdapterId(testObjectAapter.getAdapterId());
+		inputKey.setInternalAdapterId(internalAdapterId);
 		inputKey.setDataId(new ByteArrayId(
 				"abc".getBytes()));
 
@@ -332,7 +347,7 @@ public class KSamplerMapReduceTest
 						"abc")));
 
 		final GeoWaveInputKey outputKey = new GeoWaveInputKey();
-		outputKey.setAdapterId(testObjectAapter.getAdapterId());
+		outputKey.setInternalAdapterId(internalAdapterId);
 
 		final ByteBuffer keyBuf = ByteBuffer.allocate(64);
 		keyBuf.putDouble(0.0);
@@ -390,7 +405,7 @@ public class KSamplerMapReduceTest
 						"ghi")));
 
 		final GeoWaveInputKey inputKey1 = new GeoWaveInputKey();
-		inputKey1.setAdapterId(testObjectAapter.getAdapterId());
+		inputKey1.setInternalAdapterId(internalAdapterId);
 
 		ByteBuffer keyBuf = ByteBuffer.allocate(64);
 		keyBuf.putDouble(0.5);
@@ -401,7 +416,7 @@ public class KSamplerMapReduceTest
 
 		keyBuf = ByteBuffer.allocate(64);
 		final GeoWaveInputKey inputKey2 = new GeoWaveInputKey();
-		inputKey2.setAdapterId(testObjectAapter.getAdapterId());
+		inputKey2.setInternalAdapterId(internalAdapterId);
 		keyBuf.putDouble(0.6);
 		keyBuf.putInt(3);
 		keyBuf.put("111".getBytes());
@@ -410,7 +425,7 @@ public class KSamplerMapReduceTest
 
 		keyBuf = ByteBuffer.allocate(64);
 		final GeoWaveInputKey inputKey3 = new GeoWaveInputKey();
-		inputKey3.setAdapterId(testObjectAapter.getAdapterId());
+		inputKey3.setInternalAdapterId(internalAdapterId);
 		keyBuf.putDouble(0.7);
 		keyBuf.putInt(3);
 		keyBuf.put("111".getBytes());

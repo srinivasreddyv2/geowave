@@ -77,8 +77,7 @@ public class DateUtilities
 			Date end = null;
 
 			ByteArrayId timeStatsId = FeatureTimeRangeStatistics.composeId(startField);
-		
-			
+
 			DataStatistics<?> timeStat = statisticsStore.getDataStatistics(
 					internalAdapterId,
 					timeStatsId,

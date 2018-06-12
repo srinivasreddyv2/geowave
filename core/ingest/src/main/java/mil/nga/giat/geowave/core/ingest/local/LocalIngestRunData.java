@@ -46,37 +46,38 @@ import mil.nga.giat.geowave.core.store.memory.MemoryIndexStore;
 public class LocalIngestRunData implements
 		Closeable
 {
-	private static class AdapterIdKeyWithIndices{
+	private static class AdapterIdKeyWithIndices
+	{
 		private ByteArrayId adapterId;
 		private PrimaryIndex[] indices;
-		public AdapterIdKeyWithIndices(ByteArrayId adapterId,
-				PrimaryIndex[] indices) {
+
+		public AdapterIdKeyWithIndices(
+				ByteArrayId adapterId,
+				PrimaryIndex[] indices ) {
 			super();
 			this.adapterId = adapterId;
 			this.indices = indices;
 		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result
-					+ ((adapterId == null) ? 0 : adapterId.hashCode());
+			result = prime * result + ((adapterId == null) ? 0 : adapterId.hashCode());
 			return result;
 		}
+
 		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
+		public boolean equals(
+				Object obj ) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
 			AdapterIdKeyWithIndices other = (AdapterIdKeyWithIndices) obj;
 			if (adapterId == null) {
-				if (other.adapterId != null)
-					return false;
-			} else if (!adapterId.equals(other.adapterId))
-				return false;
+				if (other.adapterId != null) return false;
+			}
+			else if (!adapterId.equals(other.adapterId)) return false;
 			return true;
 		}
 	}
@@ -92,20 +93,20 @@ public class LocalIngestRunData implements
 		this.dataStore = dataStore;
 		indexWriterPool = new GenericKeyedObjectPool<>(
 				new IndexWriterFactory());
-		adapterStore = new MemoryAdapterStore(adapters.toArray(new WritableDataAdapter[0]));
+		adapterStore = new MemoryAdapterStore(
+				adapters.toArray(new WritableDataAdapter[0]));
 	}
 
 	public WritableDataAdapter<?> getDataAdapter(
 			final GeoWaveData<?> data ) {
 		return data.getAdapter(adapterStore);
 	}
-	
+
 	public void addAdapter(
 			final WritableDataAdapter<?> adapter ) {
 		adapterStore.addAdapter(adapter);
 	}
-	
-	
+
 	/**
 	 * Return an index writer from the pool. The pool will create a new one The
 	 * pool will not be cleaned up until the end. (No items will be cleaned up
@@ -117,9 +118,11 @@ public class LocalIngestRunData implements
 	 */
 	public IndexWriter getIndexWriter(
 			final ByteArrayId adapterId,
-			List<PrimaryIndex> indices)
+			List<PrimaryIndex> indices )
 			throws Exception {
-		return indexWriterPool.borrowObject(new AdapterIdKeyWithIndices(adapterId, indices.toArray(new PrimaryIndex[0])));
+		return indexWriterPool.borrowObject(new AdapterIdKeyWithIndices(
+				adapterId,
+				indices.toArray(new PrimaryIndex[0])));
 	}
 
 	/**
@@ -135,7 +138,9 @@ public class LocalIngestRunData implements
 			final IndexWriter writer )
 			throws Exception {
 		indexWriterPool.returnObject(
-				new AdapterIdKeyWithIndices(adapterId, new PrimaryIndex[0]),
+				new AdapterIdKeyWithIndices(
+						adapterId,
+						new PrimaryIndex[0]),
 				writer);
 	}
 

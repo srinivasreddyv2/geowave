@@ -71,8 +71,11 @@ public class GeoWaveDataStoreComponents
 		// indicies and writing it to the adapterStore, in cases where the
 		// featuredataadapter was created from geotools datastore's createSchema
 		adapter.init(adapterIndices);
-		short internalAdapterId =  gtStore.getInternalAdapterStore().getInternalAdapterId(adapter.getAdapterId());
-		InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper(adapter, internalAdapterId);
+		short internalAdapterId = gtStore.getInternalAdapterStore().getInternalAdapterId(
+				adapter.getAdapterId());
+		InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper(
+				adapter,
+				internalAdapterId);
 		gtStore.adapterStore.addAdapter(internalDataAdapter);
 	}
 

@@ -156,8 +156,7 @@ public class StatsManager
 
 				for (final StatsConfig<SimpleFeature> statConfig : featureConfigs) {
 					addStats(
-							statConfig.create(
-									descriptor.getLocalName()),
+							statConfig.create(descriptor.getLocalName()),
 							new ByteArrayId(
 									descriptor.getLocalName()));
 				}

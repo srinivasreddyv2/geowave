@@ -572,9 +572,9 @@ public class FeatureDataAdapter extends
 		if (reader == null) {
 			// Reader not in Map, go to the reprojected feature type and get the
 			// default reader
-			//System.err.println(fieldId);
+			// System.err.println(fieldId);
 
-		//	System.err.println(reprojectedFeatureType);
+			// System.err.println(reprojectedFeatureType);
 			final AttributeDescriptor descriptor = reprojectedFeatureType.getDescriptor(fieldId.getString());
 			final Class<?> bindingClass = descriptor.getType().getBinding();
 			reader = (FieldReader<Object>) FieldUtils.getDefaultReaderForClass(bindingClass);
@@ -1112,22 +1112,4 @@ public class FeatureDataAdapter extends
 		return crs;
 
 	}
-
-	public static void main(
-			String[] args )
-			throws IOException {
-
-		ByteArrayId AdapterName = new ByteArrayId(
-				StringUtils.stringToBinary("gdeltevent"));
-		int shortRange = Short.MAX_VALUE - Short.MIN_VALUE;
-		short adapterId = (short) ((AdapterName.hashCode() % shortRange) - Short.MIN_VALUE);
-		System.out.println(adapterId);
-		byte[] bytes = new byte[2];
-		// -1310
-		// 17063
-		ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
-		buffer.putShort(adapterId);
-		System.out.println(buffer.array());
-	}
-
 }

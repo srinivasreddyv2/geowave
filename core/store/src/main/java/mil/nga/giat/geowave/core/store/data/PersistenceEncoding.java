@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PersistenceEncoding<T>
 {
-	private short internalAdapterId;
+	private Short internalAdapterId;
 	private final ByteArrayId dataId;
 	protected final PersistentDataset<T> commonData;
 	private final PersistentDataset<byte[]> unknownData;
@@ -34,7 +34,7 @@ public class PersistenceEncoding<T>
 	protected final static double DOUBLE_TOLERANCE = 1E-12d;
 
 	public PersistenceEncoding(
-			final short internalAdapterId,
+			final Short internalAdapterId,
 			final ByteArrayId dataId,
 			final PersistentDataset<T> commonData,
 			final PersistentDataset<byte[]> unknownData ) {

@@ -5,7 +5,6 @@ import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
 import mil.nga.giat.geowave.core.store.DataStoreOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.exceptions.MismatchedIndexToAdapterMapping;
 import mil.nga.giat.geowave.core.store.operations.DataStoreOperations;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
@@ -69,7 +68,7 @@ public class AdapterIndexMappingStoreImpl extends
 	public void addAdapterIndexMapping(
 			final AdapterToIndexMapping mapping )
 			throws MismatchedIndexToAdapterMapping {
-		ByteArrayId internalAdapterId = new ByteArrayId(
+		final ByteArrayId internalAdapterId = new ByteArrayId(
 				ByteArrayUtils.shortToByteArray(mapping.getInternalAdapterId()));
 		if (objectExists(
 				internalAdapterId,
@@ -88,5 +87,12 @@ public class AdapterIndexMappingStoreImpl extends
 			addObject(mapping);
 		}
 
+	}
+
+	@Override
+	public void remove(
+			final short internalAdapterId ) {
+		super.remove(new ByteArrayId(
+				ByteArrayUtils.shortToByteArray(internalAdapterId)));
 	}
 }

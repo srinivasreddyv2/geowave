@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -13,9 +13,6 @@ package mil.nga.giat.geowave.core.geotime.store.statistics;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -30,6 +27,8 @@ import mil.nga.giat.geowave.core.store.adapter.statistics.AbstractDataStatistics
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 import mil.nga.giat.geowave.core.store.query.BasicQuery.ConstraintData;
 import mil.nga.giat.geowave.core.store.query.BasicQuery.ConstraintSet;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 abstract public class BoundingBoxDataStatistics<T> extends
 		AbstractDataStatistics<T>
@@ -41,7 +40,6 @@ abstract public class BoundingBoxDataStatistics<T> extends
 	protected double minY = Double.MAX_VALUE;
 	protected double maxX = -Double.MAX_VALUE;
 	protected double maxY = -Double.MAX_VALUE;
-
 
 	public BoundingBoxDataStatistics() {
 		super();
@@ -87,7 +85,7 @@ abstract public class BoundingBoxDataStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buffer = ByteBuffer.allocate(32);
+		final ByteBuffer buffer = super.binaryBuffer(32);
 		buffer.putDouble(minX);
 		buffer.putDouble(minY);
 		buffer.putDouble(maxX);
@@ -98,7 +96,7 @@ abstract public class BoundingBoxDataStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		minX = buffer.getDouble();
 		minY = buffer.getDouble();
 		maxX = buffer.getDouble();
@@ -184,7 +182,7 @@ abstract public class BoundingBoxDataStatistics<T> extends
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
 				"bbox[internalAdapter=").append(
-						Short.toString(super.getInternalDataAdapterId()));
+				Short.toString(super.getInternalDataAdapterId()));
 		if (isSet()) {
 			buffer.append(
 					", minX=").append(
@@ -210,10 +208,12 @@ abstract public class BoundingBoxDataStatistics<T> extends
 	 * Convert Fixed Bin Numeric statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject(InternalAdapterStore store)
+	@Override
+	public JSONObject toJSONObject(
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
-		
+		final JSONObject jo = new JSONObject();
+
 		jo.put(
 				"type",
 				STATS_TYPE.getString());

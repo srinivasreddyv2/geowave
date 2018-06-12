@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -50,6 +50,7 @@ import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.GeoWaveStoreFinder;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
@@ -73,114 +74,122 @@ public class ConvexHullJobRunnerTest
 				BasicFeatureTypes.DEFAULT_NAMESPACE,
 				ClusteringUtils.CLUSTERING_CRS).getFeatureType();
 
-		hullRunner.setMapReduceIntegrater(new MapReduceIntegration() {
-			@Override
-			public int submit(
-					final Configuration configuration,
-					final PropertyManagement runTimeProperties,
-					final GeoWaveAnalyticJobRunner tool )
-					throws Exception {
-				tool.setConf(configuration);
-				((ParameterHelper<Object>) StoreParam.INPUT_STORE.getHelper()).setValue(
-						configuration,
-						ConvexHullMapReduce.class,
-						StoreParam.INPUT_STORE.getHelper().getValue(
-								runTimeProperties));
-				return tool.run(new String[] {});
-			}
-
-			@Override
-			public Counters waitForCompletion(
-					final Job job )
-					throws ClassNotFoundException,
-					IOException,
-					InterruptedException {
-
-				Assert.assertEquals(
-						SequenceFileInputFormat.class,
-						job.getInputFormatClass());
-				Assert.assertEquals(
-						10,
-						job.getNumReduceTasks());
-				final ScopedJobConfiguration configWrapper = new ScopedJobConfiguration(
-						job.getConfiguration(),
-						ConvexHullMapReduce.class);
-				Assert.assertEquals(
-						"file://foo/bin",
-						job.getConfiguration().get(
-								"mapred.input.dir"));
-				final PersistableStore persistableStore = (PersistableStore) StoreParam.INPUT_STORE
-						.getHelper()
-						.getValue(
-								job,
+		hullRunner.setMapReduceIntegrater(
+				new MapReduceIntegration() {
+					@Override
+					public int submit(
+							final Configuration configuration,
+							final PropertyManagement runTimeProperties,
+							final GeoWaveAnalyticJobRunner tool )
+							throws Exception {
+						tool.setConf(
+								configuration);
+						((ParameterHelper<Object>) StoreParam.INPUT_STORE.getHelper()).setValue(
+								configuration,
 								ConvexHullMapReduce.class,
-								null);
-				final IndexStore indexStore = persistableStore.getDataStoreOptions().createIndexStore();
-				try {
-					Assert.assertTrue(indexStore.indexExists(new ByteArrayId(
-							"spatial")));
+								StoreParam.INPUT_STORE.getHelper().getValue(
+										runTimeProperties));
+						return tool.run(
+								new String[] {});
+					}
 
-					final PersistableStore persistableAdapterStore = (PersistableStore) StoreParam.INPUT_STORE
-							.getHelper()
-							.getValue(
-									job,
-									ConvexHullMapReduce.class,
-									null);
-					final AdapterStore adapterStore = persistableAdapterStore
-							.getDataStoreOptions()
-							.createAdapterStore();
+					@Override
+					public Counters waitForCompletion(
+							final Job job )
+							throws ClassNotFoundException,
+							IOException,
+							InterruptedException {
 
-					Assert.assertTrue(adapterStore.adapterExists(new ByteArrayId(
-							"centroidtest")));
+						Assert.assertEquals(
+								SequenceFileInputFormat.class,
+								job.getInputFormatClass());
+						Assert.assertEquals(
+								10,
+								job.getNumReduceTasks());
+						final ScopedJobConfiguration configWrapper = new ScopedJobConfiguration(
+								job.getConfiguration(),
+								ConvexHullMapReduce.class);
+						Assert.assertEquals(
+								"file://foo/bin",
+								job.getConfiguration().get(
+										"mapred.input.dir"));
+						final PersistableStore persistableStore = (PersistableStore) StoreParam.INPUT_STORE
+								.getHelper()
+								.getValue(
+										job,
+										ConvexHullMapReduce.class,
+										null);
+						final IndexStore indexStore = persistableStore.getDataStoreOptions().createIndexStore();
+						try {
+							Assert.assertTrue(
+									indexStore.indexExists(
+											new ByteArrayId(
+													"spatial")));
 
-					final Projection<?> projection = configWrapper.getInstance(
-							HullParameters.Hull.PROJECTION_CLASS,
-							Projection.class,
-							SimpleFeatureProjection.class);
+							final PersistableStore persistableAdapterStore = (PersistableStore) StoreParam.INPUT_STORE
+									.getHelper()
+									.getValue(
+											job,
+											ConvexHullMapReduce.class,
+											null);
+							final AdapterStore adapterStore = persistableAdapterStore
+									.getDataStoreOptions()
+									.createAdapterStore();
 
-					Assert.assertEquals(
-							SimpleFeatureProjection.class,
-							projection.getClass());
+							Assert.assertTrue(
+									adapterStore.adapterExists(
+											new ByteArrayId(
+													"centroidtest")));
 
-				}
-				catch (final InstantiationException e) {
-					throw new IOException(
-							"Unable to configure system",
-							e);
-				}
-				catch (final IllegalAccessException e) {
-					throw new IOException(
-							"Unable to configure system",
-							e);
-				}
+							final Projection<?> projection = configWrapper.getInstance(
+									HullParameters.Hull.PROJECTION_CLASS,
+									Projection.class,
+									SimpleFeatureProjection.class);
 
-				Assert.assertEquals(
-						10,
-						job.getNumReduceTasks());
-				Assert.assertEquals(
-						2,
-						configWrapper.getInt(
-								CentroidParameters.Centroid.ZOOM_LEVEL,
-								-1));
-				return new Counters();
-			}
+							Assert.assertEquals(
+									SimpleFeatureProjection.class,
+									projection.getClass());
 
-			@Override
-			public Job getJob(
-					final Tool tool )
-					throws IOException {
-				return new Job(
-						tool.getConf());
-			}
+						}
+						catch (final InstantiationException e) {
+							throw new IOException(
+									"Unable to configure system",
+									e);
+						}
+						catch (final IllegalAccessException e) {
+							throw new IOException(
+									"Unable to configure system",
+									e);
+						}
 
-			@Override
-			public Configuration getConfiguration(
-					final PropertyManagement runTimeProperties )
-					throws IOException {
-				return new Configuration();
-			}
-		});
-		hullRunner.setInputFormatConfiguration(new SequenceFileInputFormatConfiguration());
+						Assert.assertEquals(
+								10,
+								job.getNumReduceTasks());
+						Assert.assertEquals(
+								2,
+								configWrapper.getInt(
+										CentroidParameters.Centroid.ZOOM_LEVEL,
+										-1));
+						return new Counters();
+					}
+
+					@Override
+					public Job getJob(
+							final Tool tool )
+							throws IOException {
+						return new Job(
+								tool.getConf());
+					}
+
+					@Override
+					public Configuration getConfiguration(
+							final PropertyManagement runTimeProperties )
+							throws IOException {
+						return new Configuration();
+					}
+				});
+		hullRunner.setInputFormatConfiguration(
+				new SequenceFileInputFormatConfiguration());
 
 		runTimeProperties.store(
 				MRConfig.HDFS_BASE_DIR,
@@ -202,32 +211,40 @@ public class ConvexHullJobRunnerTest
 				HullParameters.Hull.INDEX_ID,
 				"spatial");
 
-		DataStorePluginOptions pluginOptions = new DataStorePluginOptions();
+		final DataStorePluginOptions pluginOptions = new DataStorePluginOptions();
 		GeoWaveStoreFinder.getRegisteredStoreFactoryFamilies().put(
 				"memory",
 				new MemoryStoreFactoryFamily());
-		pluginOptions.selectPlugin("memory");
-		MemoryRequiredOptions opts = (MemoryRequiredOptions) pluginOptions.getFactoryOptions();
+		pluginOptions.selectPlugin(
+				"memory");
+		final MemoryRequiredOptions opts = (MemoryRequiredOptions) pluginOptions.getFactoryOptions();
 		final String namespace = "test_" + getClass().getName() + "_" + name.getMethodName();
-		opts.setGeowaveNamespace(namespace);
-		PersistableStore store = new PersistableStore(
+		opts.setGeowaveNamespace(
+				namespace);
+		final PersistableStore store = new PersistableStore(
 				pluginOptions);
 
 		runTimeProperties.store(
 				StoreParam.INPUT_STORE,
 				store);
-		FeatureDataAdapter adapter = new FeatureDataAdapter(
+		final FeatureDataAdapter adapter = new FeatureDataAdapter(
 				ftype);
-		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(new SpatialOptions());
-		adapter.init(index);
+		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(
+				new SpatialOptions());
+		adapter.init(
+				index);
 		pluginOptions.createAdapterStore().addAdapter(
-				adapter);
+				new InternalDataAdapterWrapper<>(
+						adapter,
+						pluginOptions.createInternalAdapterStore().addAdapterId(
+								adapter.getAdapterId())));
 	}
 
 	@Test
 	public void test()
 			throws Exception {
 
-		hullRunner.run(runTimeProperties);
+		hullRunner.run(
+				runTimeProperties);
 	}
 }

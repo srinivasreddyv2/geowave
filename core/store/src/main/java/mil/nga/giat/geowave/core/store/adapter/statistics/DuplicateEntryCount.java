@@ -77,7 +77,7 @@ public class DuplicateEntryCount<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buf = ByteBuffer.allocate(8);
+		final ByteBuffer buf = super.binaryBuffer(8);
 		buf.putLong(entriesWithDuplicates);
 		return buf.array();
 	}
@@ -85,7 +85,7 @@ public class DuplicateEntryCount<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = ByteBuffer.wrap(bytes);
+		final ByteBuffer buf = super.binaryBuffer(bytes);
 		entriesWithDuplicates = buf.getLong();
 	}
 

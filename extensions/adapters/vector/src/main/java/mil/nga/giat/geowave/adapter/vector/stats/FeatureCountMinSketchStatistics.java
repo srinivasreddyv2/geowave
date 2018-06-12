@@ -126,7 +126,7 @@ public class FeatureCountMinSketchStatistics extends
 	@Override
 	public byte[] toBinary() {
 		byte[] data = CountMinSketch.serialize(sketch);
-		final ByteBuffer buffer = ByteBuffer.allocate(4 + data.length);
+		final ByteBuffer buffer = super.binaryBuffer(4 + data.length);
 		buffer.putInt(data.length);
 		buffer.put(data);
 		return buffer.array();
@@ -135,7 +135,7 @@ public class FeatureCountMinSketchStatistics extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		final byte[] data = new byte[buffer.getInt()];
 		buffer.get(data);
 		sketch = CountMinSketch.deserialize(data);
@@ -173,7 +173,8 @@ public class FeatureCountMinSketchStatistics extends
 	 * Convert FeatureCountMinSketch statistics to a JSON object
 	 */
 
-	public JSONObject toJSONObject(InternalAdapterStore store)
+	public JSONObject toJSONObject(
+			InternalAdapterStore store )
 			throws JSONException {
 		JSONObject jo = new JSONObject();
 		jo.put(

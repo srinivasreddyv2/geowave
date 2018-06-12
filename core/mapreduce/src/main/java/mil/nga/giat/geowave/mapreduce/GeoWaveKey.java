@@ -80,7 +80,7 @@ public abstract class GeoWaveKey implements
 		if (adapterId == null) {
 			if (other.adapterId != null) return false;
 		}
-		else if (adapterId != other.adapterId) return false;
+		else if (!adapterId.equals(other.adapterId)) return false;
 		return true;
 	}
 

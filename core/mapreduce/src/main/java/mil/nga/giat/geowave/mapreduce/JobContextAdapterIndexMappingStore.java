@@ -106,8 +106,8 @@ public class JobContextAdapterIndexMappingStore implements
 
 	@Override
 	public void remove(
-			ByteArrayId adapterId ) {
-		adapterCache.remove(adapterId);
+			short internalAdapterId ) {
+		adapterCache.remove(internalAdapterId);
 	}
 
 }

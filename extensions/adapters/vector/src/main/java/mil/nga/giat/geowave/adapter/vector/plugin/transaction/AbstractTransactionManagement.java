@@ -42,8 +42,9 @@ public abstract class AbstractTransactionManagement implements
 	public Map<ByteArrayId, DataStatistics<SimpleFeature>> getDataStatistics() {
 		final Map<ByteArrayId, DataStatistics<SimpleFeature>> stats = new HashMap<ByteArrayId, DataStatistics<SimpleFeature>>();
 		final GeotoolsFeatureDataAdapter adapter = components.getAdapter();
-		short internalAdapterId =  components.getGTstore().getInternalAdapterStore().getInternalAdapterId(adapter.getAdapterId());
-	
+		short internalAdapterId = components.getGTstore().getInternalAdapterStore().getInternalAdapterId(
+				adapter.getAdapterId());
+
 		try (CloseableIterator<DataStatistics<?>> it = components.getStatsStore().getDataStatistics(
 				internalAdapterId,
 				composeAuthorizations())) {

@@ -275,7 +275,8 @@ public class FeatureDataUtils
 		final PersistentAdapterStore adapterStore = dataStore.createAdapterStore();
 		final InternalAdapterStore internalAdapterStore = dataStore.createInternalAdapterStore();
 
-		final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
+		final DataAdapter<?> adapter = adapterStore.getAdapter(
+				internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
 
 		if ((adapter != null) && (adapter instanceof GeotoolsFeatureDataAdapter)) {
 			final GeotoolsFeatureDataAdapter gtAdapter = (GeotoolsFeatureDataAdapter) adapter;
@@ -314,7 +315,8 @@ public class FeatureDataUtils
 		final PersistentAdapterStore adapterStore = dataStore.createAdapterStore();
 		final InternalAdapterStore internalAdapterStore = dataStore.createInternalAdapterStore();
 
-		final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
+		final DataAdapter<?> adapter = adapterStore.getAdapter(
+				internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
 
 		if ((adapter != null) && (adapter instanceof GeotoolsFeatureDataAdapter)) {
 			final GeotoolsFeatureDataAdapter gtAdapter = (GeotoolsFeatureDataAdapter) adapter;
@@ -334,7 +336,8 @@ public class FeatureDataUtils
 		final PersistentAdapterStore adapterStore = dataStore.createAdapterStore();
 		final InternalAdapterStore internalAdapterStore = dataStore.createInternalAdapterStore();
 
-		final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
+		final DataAdapter<?> adapter = adapterStore.getAdapter(
+				internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
 
 		if ((adapter != null) && (adapter instanceof GeotoolsFeatureDataAdapter)) {
 			final GeotoolsFeatureDataAdapter gtAdapter = (GeotoolsFeatureDataAdapter) adapter;

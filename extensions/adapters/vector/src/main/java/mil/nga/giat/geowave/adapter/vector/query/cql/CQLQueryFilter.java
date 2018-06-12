@@ -52,6 +52,7 @@ public class CQLQueryFilter implements
 		this.filter = FilterToCQLTool.fixDWithin(filter);
 		this.adapter = adapter;
 	}
+
 	public ByteArrayId getAdapterId() {
 		return adapter.getAdapterId();
 	}
@@ -61,46 +62,46 @@ public class CQLQueryFilter implements
 			final CommonIndexModel indexModel,
 			final IndexedPersistenceEncoding persistenceEncoding ) {
 		if ((filter != null) && (indexModel != null) && (adapter != null)) {
-				final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
-				if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
-					((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(
-							adapter,
-							indexModel);
-					final PersistentDataset<Object> existingExtValues = ((AbstractAdapterPersistenceEncoding) persistenceEncoding)
-							.getAdapterExtendedData();
-					if (existingExtValues != null) {
-						for (final PersistentValue<Object> val : existingExtValues.getValues()) {
-							adapterExtendedValues.addValue(val);
-						}
+			final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
+			if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
+				((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(
+						adapter,
+						indexModel);
+				final PersistentDataset<Object> existingExtValues = ((AbstractAdapterPersistenceEncoding) persistenceEncoding)
+						.getAdapterExtendedData();
+				if (existingExtValues != null) {
+					for (final PersistentValue<Object> val : existingExtValues.getValues()) {
+						adapterExtendedValues.addValue(val);
 					}
 				}
-				final IndexedAdapterPersistenceEncoding encoding = new IndexedAdapterPersistenceEncoding(
-						persistenceEncoding.getInternalAdapterId(),
-						persistenceEncoding.getDataId(),
-						persistenceEncoding.getInsertionPartitionKey(),
-						persistenceEncoding.getInsertionSortKey(),
-						persistenceEncoding.getDuplicateCount(),
-						persistenceEncoding.getCommonData(),
-						new PersistentDataset<byte[]>(),
-						adapterExtendedValues);
+			}
+			final IndexedAdapterPersistenceEncoding encoding = new IndexedAdapterPersistenceEncoding(
+					persistenceEncoding.getInternalAdapterId(),
+					persistenceEncoding.getDataId(),
+					persistenceEncoding.getInsertionPartitionKey(),
+					persistenceEncoding.getInsertionSortKey(),
+					persistenceEncoding.getDuplicateCount(),
+					persistenceEncoding.getCommonData(),
+					new PersistentDataset<byte[]>(),
+					adapterExtendedValues);
 
-				final SimpleFeature feature = adapter.decode(
-						encoding,
-						new PrimaryIndex(
-								null, // because we know the feature data
-										// adapter doesn't use the numeric index
-										// strategy and only the common index
-										// model to decode the simple feature,
-										// we pass along a null strategy to
-										// eliminate the necessity to send a
-										// serialization of the strategy in the
-										// options of this iterator
-								indexModel));
-				if (feature == null) {
-					return false;
-				}
-				return filter.evaluate(feature);
-			
+			final SimpleFeature feature = adapter.decode(
+					encoding,
+					new PrimaryIndex(
+							null, // because we know the feature data
+									// adapter doesn't use the numeric index
+									// strategy and only the common index
+									// model to decode the simple feature,
+									// we pass along a null strategy to
+									// eliminate the necessity to send a
+									// serialization of the strategy in the
+									// options of this iterator
+							indexModel));
+			if (feature == null) {
+				return false;
+			}
+			return filter.evaluate(feature);
+
 		}
 		return true;
 	}

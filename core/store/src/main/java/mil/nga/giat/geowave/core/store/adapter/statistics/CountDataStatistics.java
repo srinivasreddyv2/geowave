@@ -55,7 +55,7 @@ public class CountDataStatistics<T> extends
 
 	@Override
 	public byte[] toBinary() {
-		final ByteBuffer buffer = ByteBuffer.allocate(8);
+		final ByteBuffer buffer = super.binaryBuffer(8);
 		buffer.putLong(count);
 		return buffer.array();
 	}
@@ -63,7 +63,7 @@ public class CountDataStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		count = buffer.getLong();
 	}
 

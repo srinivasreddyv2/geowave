@@ -126,7 +126,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 	@Override
 	public byte[] toBinary() {
 
-		final ByteBuffer buffer = ByteBuffer.allocate(histogram.bufferSize());
+		final ByteBuffer buffer = super.binaryBuffer(histogram.bufferSize());
 		histogram.toBinary(buffer);
 		final byte result[] = new byte[buffer.position()];
 		buffer.rewind();
@@ -137,7 +137,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		histogram.fromBinary(buffer);
 	}
 

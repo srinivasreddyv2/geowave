@@ -131,8 +131,9 @@ public class GeoWaveFeatureSourceTest extends
 				Filter.INCLUDE);
 		assertTrue(source.getCount(query) > 2);
 
-		short internalAdapterId = ((GeoWaveGTDataStore) dataStore).getInternalAdapterStore().addAdapterId(new ByteArrayId(
-								(typeName).getBytes(StringUtils.GEOWAVE_CHAR_SET)));
+		short internalAdapterId = ((GeoWaveGTDataStore) dataStore).getInternalAdapterStore().addAdapterId(
+				new ByteArrayId(
+						(typeName).getBytes(StringUtils.GEOWAVE_CHAR_SET)));
 		try (final CloseableIterator<DataStatistics<?>> stats = ((GeoWaveGTDataStore) dataStore)
 				.getDataStatisticsStore()
 				.getDataStatistics(

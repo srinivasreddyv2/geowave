@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
@@ -30,7 +28,6 @@ import com.google.common.collect.HashBiMap;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
-import mil.nga.giat.geowave.core.store.BaseDataStoreOptions;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AbstractDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
@@ -93,7 +90,7 @@ public class QueryOptionsTest
 
 			@Override
 			public ByteArrayId getAdapterId(
-					short internalAdapterId ) {
+					final short internalAdapterId ) {
 				// TODO Auto-generated method stub
 				return cache.inverse().get(
 						internalAdapterId);
@@ -101,16 +98,16 @@ public class QueryOptionsTest
 
 			@Override
 			public Short getInternalAdapterId(
-					ByteArrayId adapterId ) {
+					final ByteArrayId adapterId ) {
 				// TODO Auto-generated method stub
 				return cache.get(adapterId);
 			}
 
 			@Override
 			public short addAdapterId(
-					ByteArrayId adapterId ) {
+					final ByteArrayId adapterId ) {
 				// TODO Auto-generated method stub
-				Short id = cache.get(adapterId);
+				final Short id = cache.get(adapterId);
 				if (id != null) {
 					return id;
 				}
@@ -134,9 +131,19 @@ public class QueryOptionsTest
 
 			@Override
 			public boolean remove(
-					ByteArrayId adapterId ) {
-				// TODO Auto-generated method stub
+					final ByteArrayId adapterId ) {
 				return false;
+			}
+
+			@Override
+			public boolean remove(
+					final short internalAdapterId ) {
+				return false;
+			}
+
+			@Override
+			public void removeAll() {
+
 			}
 		};
 
@@ -150,7 +157,7 @@ public class QueryOptionsTest
 			public InternalDataAdapter<?> getAdapter(
 					final Short internalAdapterId ) {
 
-				ByteArrayId adapterId = internalAdapterStore.getAdapterId(internalAdapterId);
+				final ByteArrayId adapterId = internalAdapterStore.getAdapterId(internalAdapterId);
 				final MockComponents.MockAbstractDataAdapter adapter = new MockComponents.MockAbstractDataAdapter() {
 					@Override
 					public ByteArrayId getAdapterId() {
@@ -158,7 +165,7 @@ public class QueryOptionsTest
 					}
 				};
 
-				InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper<>(
+				final InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper<>(
 						adapter,
 						internalAdapterId);
 				return internalDataAdapter;
@@ -188,11 +195,11 @@ public class QueryOptionsTest
 
 			@Override
 			public void removeAdapter(
-					ByteArrayId adapterId ) {}
+					final Short adapterId ) {}
 
 		};
 
-		BaseQueryOptions bops = new BaseQueryOptions(
+		final BaseQueryOptions bops = new BaseQueryOptions(
 				ops,
 				internalAdapterStore);
 		final List<Pair<PrimaryIndex, List<InternalDataAdapter<?>>>> result = bops.getAdaptersWithMinimalSetOfIndices(
@@ -233,7 +240,7 @@ public class QueryOptionsTest
 
 					@Override
 					public void remove(
-							final ByteArrayId adapterId ) {}
+							final short adapterId ) {}
 
 					@Override
 					public void removeAll() {}
@@ -319,8 +326,8 @@ public class QueryOptionsTest
 		ops.setAdapter(new MockComponents.MockAbstractDataAdapter());
 		final QueryOptions ops2 = new QueryOptions();
 		ops2.fromBinary(ops.toBinary());
-		assertTrue(ops2.getAdapters().get(
-				0).getAdapterId() != null);
+		assertTrue(ops2.getAdapterIds().get(
+				0) != null);
 	}
 
 	@Test

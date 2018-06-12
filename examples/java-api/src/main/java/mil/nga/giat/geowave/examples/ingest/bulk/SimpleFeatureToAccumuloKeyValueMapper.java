@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -13,17 +13,6 @@ package mil.nga.giat.geowave.examples.ingest.bulk;
 import java.io.IOException;
 import java.util.List;
 
-import mil.nga.giat.geowave.adapter.vector.FeatureDataAdapter;
-import mil.nga.giat.geowave.core.geotime.GeometryUtils;
-import mil.nga.giat.geowave.core.geotime.ingest.SpatialDimensionalityTypeProvider;
-import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
-import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
-import mil.nga.giat.geowave.core.store.data.VisibilityWriter;
-import mil.nga.giat.geowave.core.store.data.visibility.UnconstrainedVisibilityHandler;
-import mil.nga.giat.geowave.core.store.data.visibility.UniformVisibilityWriter;
-import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
-import mil.nga.giat.geowave.datastore.accumulo.util.AccumuloKeyValuePairGenerator;
-
 import org.apache.accumulo.core.data.Key;
 import org.apache.accumulo.core.data.KeyValue;
 import org.apache.accumulo.core.data.Value;
@@ -35,17 +24,36 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import mil.nga.giat.geowave.adapter.vector.FeatureDataAdapter;
+import mil.nga.giat.geowave.core.geotime.GeometryUtils;
+import mil.nga.giat.geowave.core.geotime.ingest.SpatialDimensionalityTypeProvider;
+import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
+import mil.nga.giat.geowave.core.store.adapter.WritableDataAdapter;
+import mil.nga.giat.geowave.core.store.data.VisibilityWriter;
+import mil.nga.giat.geowave.core.store.data.visibility.UnconstrainedVisibilityHandler;
+import mil.nga.giat.geowave.core.store.data.visibility.UniformVisibilityWriter;
+import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
+import mil.nga.giat.geowave.core.store.metadata.InternalAdapterStoreImpl;
+import mil.nga.giat.geowave.datastore.accumulo.util.AccumuloKeyValuePairGenerator;
+
 public class SimpleFeatureToAccumuloKeyValueMapper extends
 		Mapper<LongWritable, Text, Key, Value>
 {
 
 	private final WritableDataAdapter<SimpleFeature> adapter = new FeatureDataAdapter(
 			GeonamesSimpleFeatureType.getInstance());
-	private final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(new SpatialOptions());
+	private final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(
+			new SpatialOptions());
 	private final VisibilityWriter<SimpleFeature> visibilityWriter = new UniformVisibilityWriter<SimpleFeature>(
 			new UnconstrainedVisibilityHandler<SimpleFeature, Object>());
 	private final AccumuloKeyValuePairGenerator<SimpleFeature> generator = new AccumuloKeyValuePairGenerator<SimpleFeature>(
-			adapter,
+			// this is not the most robust way to assign an internal adapter ID
+			// but is simple and will work in a majority of cases
+			new InternalDataAdapterWrapper<>(
+					adapter,
+					InternalAdapterStoreImpl.getInitialInternalAdapterId(
+							adapter.getAdapterId())),
 			index,
 			visibilityWriter);
 	private SimpleFeature simpleFeature;
@@ -66,8 +74,10 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 			throws IOException,
 			InterruptedException {
 
-		simpleFeature = parseGeonamesValue(value);
-		adapter.init(index);
+		simpleFeature = parseGeonamesValue(
+				value);
+		adapter.init(
+				index);
 
 		// build Geowave-formatted Accumulo [Key,Value] pairs
 		keyValuePairs = generator.constructKeyValuePairs(
@@ -91,8 +101,10 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 
 		geonameId = geonamesEntryTokens[0];
 		location = geonamesEntryTokens[1];
-		latitude = Double.parseDouble(geonamesEntryTokens[4]);
-		longitude = Double.parseDouble(geonamesEntryTokens[5]);
+		latitude = Double.parseDouble(
+				geonamesEntryTokens[4]);
+		longitude = Double.parseDouble(
+				geonamesEntryTokens[5]);
 
 		return buildSimpleFeature(
 				geonameId,
@@ -109,9 +121,10 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 
 		builder.set(
 				"geometry",
-				GeometryUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(
-						longitude,
-						latitude)));
+				GeometryUtils.GEOMETRY_FACTORY.createPoint(
+						new Coordinate(
+								longitude,
+								latitude)));
 		builder.set(
 				"Latitude",
 				latitude);
@@ -122,7 +135,8 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 				"Location",
 				location);
 
-		return builder.buildFeature(featureId);
+		return builder.buildFeature(
+				featureId);
 	}
 
 }

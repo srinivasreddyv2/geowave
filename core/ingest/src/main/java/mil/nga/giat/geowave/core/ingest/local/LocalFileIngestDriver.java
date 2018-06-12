@@ -323,7 +323,7 @@ public class LocalFileIngestDriver extends
 			throws Exception {
 
 		try {
-			ByteArrayId adapterId= adapter.getAdapterId();
+			ByteArrayId adapterId = adapter.getAdapterId();
 			// Write the data to the data store.
 			IndexWriter writer = indexWriters.get(adapterId);
 
@@ -346,8 +346,12 @@ public class LocalFileIngestDriver extends
 				runData.addAdapter(adapter);
 
 				// If we have the index checked out already, use that.
-				writer = runData.getIndexWriter(adapterId, indices);
-				indexWriters.put(adapterId,writer);
+				writer = runData.getIndexWriter(
+						adapterId,
+						indices);
+				indexWriters.put(
+						adapterId,
+						writer);
 			}
 
 			// Time the DB write

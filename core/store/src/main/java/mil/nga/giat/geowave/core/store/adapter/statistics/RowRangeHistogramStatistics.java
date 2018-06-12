@@ -219,7 +219,7 @@ public class RowRangeHistogramStatistics<T> extends
 			}
 			bufferSize += e.getValue().bufferSize();
 		}
-		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+		final ByteBuffer buffer = super.binaryBuffer(bufferSize);
 		buffer.putInt(histogramPerPartition.size());
 		for (final Entry<ByteArrayId, NumericHistogram> e : histogramPerPartition.entrySet()) {
 			if (e.getKey() == null) {
@@ -238,7 +238,7 @@ public class RowRangeHistogramStatistics<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		final ByteBuffer buffer = super.binaryBuffer(bytes);
 		final int numPartitions = buffer.getInt();
 		final Map<ByteArrayId, NumericHistogram> internalHistogramPerPartition = new HashMap<ByteArrayId, NumericHistogram>();
 		for (int i = 0; i < numPartitions; i++) {

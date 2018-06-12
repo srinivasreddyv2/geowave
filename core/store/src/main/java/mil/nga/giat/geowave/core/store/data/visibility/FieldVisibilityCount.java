@@ -74,7 +74,7 @@ public class FieldVisibilityCount<T> extends
 			serializedCounts.add(serializedEntry);
 			bufferSize += serializedEntry.length;
 		}
-		ByteBuffer buf = ByteBuffer.allocate(bufferSize);
+		ByteBuffer buf = super.binaryBuffer(bufferSize);
 		buf.putInt(serializedCounts.size());
 		for (byte[] count : serializedCounts) {
 			buf.put(count);
@@ -92,7 +92,7 @@ public class FieldVisibilityCount<T> extends
 	@Override
 	public void fromBinary(
 			final byte[] bytes ) {
-		final ByteBuffer buf = ByteBuffer.wrap(bytes);
+		final ByteBuffer buf = super.binaryBuffer(bytes);
 		final int size = buf.getInt();
 		countsPerVisibility.clear();
 		for (int i = 0; i < size; i++) {

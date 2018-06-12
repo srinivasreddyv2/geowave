@@ -1,6 +1,7 @@
 package mil.nga.giat.geowave.core.store.metadata;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +10,6 @@ import com.google.common.collect.HashBiMap;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayUtils;
-import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveMetadata;
@@ -54,23 +54,10 @@ public class InternalAdapterStoreImpl implements
 	public InternalAdapterStoreImpl(
 			final DataStoreOperations operations ) {
 		this.operations = operations;
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("hail")),(short)10229);
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("tornado_tracks")),(short)22458);
-
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("testMultipleMergeStrategies_NoDataMergeStrategy")),(short)22458);
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("testMultipleMergeStrategies_SummingMergeStrategy")),(short)10229);
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("testMultipleMergeStrategies_SumAndAveragingMergeStrategy")),(short)30129);
-		// cache.put(new ByteArrayId(
-		// StringUtils.stringToBinary("testNoDataMergeStrategy")),(short)40838);
 	}
 
 	private MetadataReader getReader(
-			boolean warnIfNotExists ) {
+			final boolean warnIfNotExists ) {
 		try {
 			if (!operations.metadataExists(MetadataType.INTERNAL_ADAPTER)) {
 				return null;
@@ -89,21 +76,21 @@ public class InternalAdapterStoreImpl implements
 
 	@Override
 	public ByteArrayId getAdapterId(
-			short internalAdapterId ) {
+			final short internalAdapterId ) {
 		return internalGetAdapterId(
 				internalAdapterId,
 				true);
 	}
 
 	private ByteArrayId internalGetAdapterId(
-			short internalAdapterId,
-			boolean warnIfNotExists ) {
-		ByteArrayId id = cache.inverse().get(
+			final short internalAdapterId,
+			final boolean warnIfNotExists ) {
+		final ByteArrayId id = cache.inverse().get(
 				internalAdapterId);
 		if (id != null) {
 			return id;
 		}
-		MetadataReader reader = getReader(true);
+		final MetadataReader reader = getReader(true);
 		if (reader == null) {
 			if (warnIfNotExists) {
 				LOGGER.warn("Internal Adapter ID '" + internalAdapterId + "' not found. '"
@@ -120,14 +107,14 @@ public class InternalAdapterStoreImpl implements
 				}
 				return null;
 			}
-			ByteArrayId adapterId = new ByteArrayId(
+			final ByteArrayId adapterId = new ByteArrayId(
 					it.next().getValue());
 			cache.put(
 					adapterId,
 					internalAdapterId);
 			return adapterId;
 		}
-		catch (IOException e) {
+		catch (final IOException e) {
 			if (warnIfNotExists) {
 				LOGGER.warn(
 						"Unable to find Internal Adapter ID '" + internalAdapterId + "'",
@@ -139,21 +126,21 @@ public class InternalAdapterStoreImpl implements
 
 	@Override
 	public Short getInternalAdapterId(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		return internalGetInternalAdapterId(
 				adapterId,
 				true);
 	}
 
 	public Short internalGetInternalAdapterId(
-			ByteArrayId adapterId,
-			boolean warnIfNotExist ) {
-		Short id = cache.get(adapterId);
+			final ByteArrayId adapterId,
+			final boolean warnIfNotExist ) {
+		final Short id = cache.get(adapterId);
 		if (id != null) {
 			return id;
 		}
 
-		MetadataReader reader = getReader(warnIfNotExist);
+		final MetadataReader reader = getReader(warnIfNotExist);
 		if (reader == null) {
 			if (warnIfNotExist) {
 				LOGGER.warn("Adapter '" + adapterId.getString() + "' not found. '"
@@ -171,13 +158,13 @@ public class InternalAdapterStoreImpl implements
 				}
 				return null;
 			}
-			short internalAdapterId = ByteArrayUtils.byteArrayToShort(it.next().getValue());
+			final short internalAdapterId = ByteArrayUtils.byteArrayToShort(it.next().getValue());
 			cache.put(
 					adapterId,
 					internalAdapterId);
 			return internalAdapterId;
 		}
-		catch (IOException e) {
+		catch (final IOException e) {
 			if (warnIfNotExist) {
 				LOGGER.warn(
 						"Unable to find adapter '" + adapterId.getString() + "'",
@@ -188,23 +175,23 @@ public class InternalAdapterStoreImpl implements
 	}
 
 	public static short getInitialInternalAdapterId(
-			ByteArrayId adapterId ) {
-		int shortRange = Short.MAX_VALUE - Short.MIN_VALUE;
-		short internalAdapterId = (short) ((adapterId.hashCode() % shortRange) - Short.MIN_VALUE);
+			final ByteArrayId adapterId ) {
+		final int shortRange = Short.MAX_VALUE - Short.MIN_VALUE;
+		final short internalAdapterId = (short) ((adapterId.hashCode() % shortRange) - Short.MIN_VALUE);
 		return internalAdapterId;
 	}
 
 	private static boolean isValid(
-			short n ) {
+			final short n ) {
 
-		byte[] b = ByteArrayUtils.shortToByteArray(n);
+		final byte[] b = ByteArrayUtils.shortToByteArray(n);
 
 		if (b[0] == '.') {
 			return false;
 		}
 
 		for (int i = 0; i < b.length; i++) {
-			if (Character.isISOControl(b[i]) || b[i] == ':' || b[i] == '\\' || b[i] == '/') {
+			if (Character.isISOControl(b[i]) || (b[i] == ':') || (b[i] == '\\') || (b[i] == '/')) {
 				return false;
 			}
 		}
@@ -212,7 +199,7 @@ public class InternalAdapterStoreImpl implements
 	}
 
 	private boolean internalAdapterIdExists(
-			short internalAdapterId ) {
+			final short internalAdapterId ) {
 		return internalGetAdapterId(
 				internalAdapterId,
 				false) != null;
@@ -225,9 +212,8 @@ public class InternalAdapterStoreImpl implements
 	// so that internal Adapter Ids are consistent without any race conditions
 	@Override
 	public short addAdapterId(
-			ByteArrayId adapterId ) {
+			final ByteArrayId adapterId ) {
 		synchronized (MUTEX) {
-
 			Short internalAdapterId = internalGetInternalAdapterId(
 					adapterId,
 					false);
@@ -240,7 +226,7 @@ public class InternalAdapterStoreImpl implements
 			}
 			try (final MetadataWriter writer = operations.createMetadataWriter(MetadataType.INTERNAL_ADAPTER)) {
 				if (writer != null) {
-					byte[] internalAdapterIdBytes = ByteArrayUtils.shortToByteArray(internalAdapterId);
+					final byte[] internalAdapterIdBytes = ByteArrayUtils.shortToByteArray(internalAdapterId);
 					writer.write(new GeoWaveMetadata(
 							adapterId.getBytes(),
 							EXTERNAL_TO_INTERNAL_ID,
@@ -265,15 +251,26 @@ public class InternalAdapterStoreImpl implements
 
 	@Override
 	public boolean remove(
-			ByteArrayId adapterId ) {
-		Short internalAdapterId = getInternalAdapterId(adapterId);
-		boolean externalDeleted = AbstractGeoWavePersistence.deleteObjects(
+			final ByteArrayId adapterId ) {
+		final Short internalAdapterId = getInternalAdapterId(adapterId);
+		return delete(
 				adapterId,
-				EXTERNAL_TO_INTERNAL_BYTEARRAYID,
-				operations,
-				MetadataType.INTERNAL_ADAPTER,
-				null);
-		cache.remove(adapterId);
+				internalAdapterId);
+	}
+
+	private boolean delete(
+			final ByteArrayId adapterId,
+			final Short internalAdapterId ) {
+		boolean externalDeleted = false;
+		if (adapterId != null) {
+			externalDeleted = AbstractGeoWavePersistence.deleteObjects(
+					adapterId,
+					EXTERNAL_TO_INTERNAL_BYTEARRAYID,
+					operations,
+					MetadataType.INTERNAL_ADAPTER,
+					null);
+			cache.remove(adapterId);
+		}
 		boolean internalDeleted = false;
 		if (internalAdapterId != null) {
 			internalDeleted = AbstractGeoWavePersistence.deleteObjects(
@@ -285,5 +282,24 @@ public class InternalAdapterStoreImpl implements
 					null);
 		}
 		return internalDeleted && externalDeleted;
+	}
+
+	@Override
+	public void removeAll() {
+		AbstractGeoWavePersistence.deleteObjects(
+				null,
+				null,
+				operations,
+				MetadataType.INTERNAL_ADAPTER,
+				null);
+	}
+
+	@Override
+	public boolean remove(
+			final short internalAdapterId ) {
+		final ByteArrayId adapterId = getAdapterId(internalAdapterId);
+		return delete(
+				adapterId,
+				internalAdapterId);
 	}
 }

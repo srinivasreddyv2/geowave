@@ -99,7 +99,7 @@ public class CQLDelete extends
 
 		DataStore dataStore;
 		PersistentAdapterStore adapterStore;
-		InternalAdapterStore  internalAdapterStore;
+		InternalAdapterStore internalAdapterStore;
 		try {
 			dataStore = storeOptions.createDataStore();
 			adapterStore = storeOptions.createAdapterStore();
@@ -107,7 +107,8 @@ public class CQLDelete extends
 
 			final GeotoolsFeatureDataAdapter adapter;
 			if (adapterId != null) {
-				adapter = (GeotoolsFeatureDataAdapter) adapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
+				adapter = (GeotoolsFeatureDataAdapter) adapterStore.getAdapter(
+						internalAdapterStore.getInternalAdapterId(adapterId)).getAdapter();
 			}
 			else {
 				final CloseableIterator<InternalDataAdapter<?>> it = adapterStore.getAdapters();

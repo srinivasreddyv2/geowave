@@ -22,6 +22,6 @@ public interface StatsConfig<T> extends
 		Serializable
 {
 	DataStatistics<T> create(
-			//final ByteArrayId dataAdapterId,
+			// final ByteArrayId dataAdapterId,
 			final String fieldName );
 }

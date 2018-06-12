@@ -54,6 +54,7 @@ public class BaseMapReduceDataStore extends
 			final DistributableQuery query,
 			final QueryOptions queryOptions,
 			final TransientAdapterStore adapterStore,
+			final InternalAdapterStore internalAdapterStore,
 			final AdapterIndexMappingStore aimStore,
 			final DataStatisticsStore statsStore,
 			final IndexStore indexStore,
@@ -66,6 +67,7 @@ public class BaseMapReduceDataStore extends
 				queryOptions,
 				isOutputWritable,
 				adapterStore,
+				internalAdapterStore,
 				aimStore,
 				indexStore,
 				(MapReduceDataStoreOperations) baseOperations);

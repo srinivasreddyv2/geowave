@@ -186,11 +186,10 @@ public class IngestTask implements
 			GeoWaveData<?> geowaveData,
 			WritableDataAdapter adapter )
 			throws Exception {
-		
-		ByteArrayId adapterId= adapter.getAdapterId();
+
+		ByteArrayId adapterId = adapter.getAdapterId();
 		// Write the data to the data store.
 		IndexWriter writer = indexWriters.get(adapterId);
-
 
 		if (writer == null) {
 			List<PrimaryIndex> indices = new ArrayList<PrimaryIndex>();
@@ -211,9 +210,13 @@ public class IngestTask implements
 			}
 			runData.addAdapter(adapter);
 
-		 // If we have the index checked out already, use that.
-			writer = runData.getIndexWriter(adapterId, indices);
-			indexWriters.put(adapterId,writer);
+			// If we have the index checked out already, use that.
+			writer = runData.getIndexWriter(
+					adapterId,
+					indices);
+			indexWriters.put(
+					adapterId,
+					writer);
 		}
 
 		// Time the DB write
