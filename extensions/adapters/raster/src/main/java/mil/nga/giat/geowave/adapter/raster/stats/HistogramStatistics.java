@@ -66,7 +66,7 @@ public class HistogramStatistics extends
 			final ByteArrayId dataAdapterId,
 			final HistogramConfig histogramConfig ) {
 		super(
-			STATS_TYPE);
+				STATS_TYPE);
 		this.histogramConfig = histogramConfig;
 	}
 

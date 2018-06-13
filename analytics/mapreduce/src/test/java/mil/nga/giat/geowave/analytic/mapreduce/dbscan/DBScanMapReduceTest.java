@@ -75,10 +75,8 @@ public class DBScanMapReduceTest
 	public void setUp()
 			throws IOException {
 
-		mapDriver = MapDriver.newMapDriver(
-				nnMapper);
-		reduceDriver = ReduceDriver.newReduceDriver(
-				nnReducer);
+		mapDriver = MapDriver.newMapDriver(nnMapper);
+		reduceDriver = ReduceDriver.newReduceDriver(nnReducer);
 
 		mapDriver.getConfiguration().set(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -107,12 +105,10 @@ public class DBScanMapReduceTest
 				SimpleFeatureProjection.class,
 				Projection.class);
 
-		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(
-				new SpatialOptions());
+		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(new SpatialOptions());
 		final FeatureDataAdapter adapter = new FeatureDataAdapter(
 				ftype);
-		adapter.init(
-				index);
+		adapter.init(index);
 		JobContextAdapterStore.addDataAdapter(
 				mapDriver.getConfiguration(),
 				adapter);
@@ -141,8 +137,7 @@ public class DBScanMapReduceTest
 				name,
 				"NA",
 				20.30203,
-				factory.createPoint(
-						coord),
+				factory.createPoint(coord),
 				new String[] {
 					"extra1"
 				},
@@ -270,26 +265,22 @@ public class DBScanMapReduceTest
 				feature8);
 
 		final List<Pair<PartitionDataWritable, AdapterWithObjectWritable>> mapperResults = mapDriver.run();
-		assertNotNull(
-				getPartitionDataFor(
-						mapperResults,
-						feature1.getID(),
-						true));
-		assertNotNull(
-				getPartitionDataFor(
-						mapperResults,
-						feature2.getID(),
-						true));
-		assertNotNull(
-				getPartitionDataFor(
-						mapperResults,
-						feature2.getID(),
-						true));
-		assertNotNull(
-				getPartitionDataFor(
-						mapperResults,
-						feature3.getID(),
-						true));
+		assertNotNull(getPartitionDataFor(
+				mapperResults,
+				feature1.getID(),
+				true));
+		assertNotNull(getPartitionDataFor(
+				mapperResults,
+				feature2.getID(),
+				true));
+		assertNotNull(getPartitionDataFor(
+				mapperResults,
+				feature2.getID(),
+				true));
+		assertNotNull(getPartitionDataFor(
+				mapperResults,
+				feature3.getID(),
+				true));
 
 		assertEquals(
 				getPartitionDataFor(
@@ -331,11 +322,9 @@ public class DBScanMapReduceTest
 						feature4.getID(),
 						true).getCompositeKey());
 
-		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(
-				mapperResults);
+		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(mapperResults);
 
-		reduceDriver.addAll(
-				partitions);
+		reduceDriver.addAll(partitions);
 
 		reduceDriver.getConfiguration().setInt(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -352,13 +341,13 @@ public class DBScanMapReduceTest
 		/*
 		 * assertEquals( feature3.getID(), find( reduceResults,
 		 * feature1.getID()).toString());
-		 *
+		 * 
 		 * assertEquals( feature1.getID(), find( reduceResults,
 		 * feature3.getID()).toString());
-		 *
+		 * 
 		 * assertEquals( feature4.getID(), find( reduceResults,
 		 * feature2.getID()).toString());
-		 *
+		 * 
 		 * assertEquals( feature2.getID(), find( reduceResults,
 		 * feature4.getID()).toString());
 		 */
@@ -371,7 +360,7 @@ public class DBScanMapReduceTest
 			getListFor(
 					pair.getFirst(),
 					reducerInputSet).add(
-							pair.getSecond());
+					pair.getSecond());
 
 		}
 		return reducerInputSet;
@@ -387,10 +376,9 @@ public class DBScanMapReduceTest
 			}
 		}
 		final List<AdapterWithObjectWritable> newPairList = new ArrayList<AdapterWithObjectWritable>();
-		reducerInputSet.add(
-				new Pair(
-						pd,
-						newPairList));
+		reducerInputSet.add(new Pair(
+				pd,
+				newPairList));
 		return newPairList;
 	}
 
@@ -409,8 +397,7 @@ public class DBScanMapReduceTest
 
 	private double round(
 			final double value ) {
-		return (double) Math.round(
-				value * 1000000) / 1000000;
+		return (double) Math.round(value * 1000000) / 1000000;
 	}
 
 	@Test
@@ -423,10 +410,8 @@ public class DBScanMapReduceTest
 			final SimpleFeature feature = createTestFeature(
 					"f" + i,
 					new Coordinate(
-							round(
-									30.0 + (r.nextGaussian() * 0.00001)),
-							round(
-									30.0 + (r.nextGaussian() * 0.00001))));
+							round(30.0 + (r.nextGaussian() * 0.00001)),
+							round(30.0 + (r.nextGaussian() * 0.00001))));
 			mapDriver.addInput(
 					new GeoWaveInputKey(
 							internalAdapterId,
@@ -437,11 +422,9 @@ public class DBScanMapReduceTest
 
 		final List<Pair<PartitionDataWritable, AdapterWithObjectWritable>> mapperResults = mapDriver.run();
 
-		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(
-				mapperResults);
+		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(mapperResults);
 
-		reduceDriver.addAll(
-				partitions);
+		reduceDriver.addAll(partitions);
 
 		reduceDriver.getConfiguration().setInt(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -465,10 +448,8 @@ public class DBScanMapReduceTest
 			final SimpleFeature feature = createTestFeature(
 					"f" + i,
 					new Coordinate(
-							round(
-									30.0 + (r.nextGaussian() * 0.0001)),
-							round(
-									30.0 + (r.nextGaussian() * 0.0001))));
+							round(30.0 + (r.nextGaussian() * 0.0001)),
+							round(30.0 + (r.nextGaussian() * 0.0001))));
 			mapDriver.addInput(
 					new GeoWaveInputKey(
 							internalAdapterId,
@@ -479,11 +460,9 @@ public class DBScanMapReduceTest
 
 		final List<Pair<PartitionDataWritable, AdapterWithObjectWritable>> mapperResults = mapDriver.run();
 
-		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(
-				mapperResults);
+		final List<Pair<PartitionDataWritable, List<AdapterWithObjectWritable>>> partitions = getReducerDataFromMapperInput(mapperResults);
 
-		reduceDriver.addAll(
-				partitions);
+		reduceDriver.addAll(partitions);
 
 		reduceDriver.getConfiguration().setInt(
 				GeoWaveConfiguratorBase.enumToConfKey(
@@ -492,7 +471,6 @@ public class DBScanMapReduceTest
 				10);
 
 		final List<Pair<GeoWaveInputKey, ObjectWritable>> reduceResults = reduceDriver.run();
-		assertTrue(
-				reduceResults.size() > 0);
+		assertTrue(reduceResults.size() > 0);
 	}
 }

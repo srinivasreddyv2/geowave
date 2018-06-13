@@ -130,7 +130,7 @@ public abstract class GeoWaveAnalyticJobRunner extends
 				runTimeProperties);
 		return store.getDataStoreOptions().createAdapterStore();
 	}
-	
+
 	public InternalAdapterStore getInternalAdapterStore(
 			final PropertyManagement runTimeProperties )
 			throws Exception {
@@ -138,7 +138,7 @@ public abstract class GeoWaveAnalyticJobRunner extends
 				runTimeProperties);
 		return store.getDataStoreOptions().createInternalAdapterStore();
 	}
-	
+
 	public IndexStore getIndexStore(
 			final PropertyManagement runTimeProperties )
 			throws Exception {
@@ -210,7 +210,10 @@ public abstract class GeoWaveAnalyticJobRunner extends
 		JobContextAdapterStore.addDataAdapter(
 				config,
 				adapter);
-		JobContextInternalAdapterStore.addInternalDataAdapter(config, adapter.getAdapterId(), adapter.getInternalAdapterId());
+		JobContextInternalAdapterStore.addInternalDataAdapter(
+				config,
+				adapter.getAdapterId(),
+				adapter.getInternalAdapterId());
 	}
 
 	public static void addIndex(
@@ -325,7 +328,9 @@ public abstract class GeoWaveAnalyticJobRunner extends
 					namespaceURI,
 					ClusteringUtils.CLUSTERING_CRS);
 			short internalAdapterId = internalAdapterStore.addAdapterId(adapter.getAdapterId());
-			InternalDataAdapter<?> internalAdapter = new InternalDataAdapterWrapper<>(adapter, internalAdapterId);
+			InternalDataAdapter<?> internalAdapter = new InternalDataAdapterWrapper<>(
+					adapter,
+					internalAdapterId);
 			adapterStore.addAdapter(internalAdapter);
 			return internalAdapter;
 		}

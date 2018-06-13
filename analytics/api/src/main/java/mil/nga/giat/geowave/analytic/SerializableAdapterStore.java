@@ -31,7 +31,7 @@ import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
  */
 
 public class SerializableAdapterStore implements
-TransientAdapterStore,
+		TransientAdapterStore,
 		Serializable
 {
 

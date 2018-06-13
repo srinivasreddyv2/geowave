@@ -366,7 +366,6 @@ public class FeatureDataAdapter extends
 				reprojectedFeatureType,
 				transform);
 		secondaryIndexManager = new SecondaryIndexManager(
-				this,
 				persistedFeatureType,
 				statsManager);
 	}

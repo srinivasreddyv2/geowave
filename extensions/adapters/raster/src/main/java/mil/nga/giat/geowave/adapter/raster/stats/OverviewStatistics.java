@@ -34,7 +34,8 @@ public class OverviewStatistics extends
 	private Resolution[] resolutions = new Resolution[] {};
 
 	public OverviewStatistics() {
-		super(STATS_TYPE);
+		super(
+				STATS_TYPE);
 	}
 
 	@Override

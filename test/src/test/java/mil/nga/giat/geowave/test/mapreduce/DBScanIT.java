@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
@@ -27,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -57,6 +57,7 @@ import mil.nga.giat.geowave.analytic.store.PersistableStore;
 import mil.nga.giat.geowave.core.geotime.ingest.SpatialDimensionalityTypeProvider;
 import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
 import mil.nga.giat.geowave.core.geotime.store.query.SpatialQuery;
+import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.DataStore;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.core.store.query.DistributableQuery;
@@ -83,9 +84,11 @@ public class DBScanIT extends
 	})
 	protected DataStorePluginOptions dataStorePluginOptions;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(DBScanIT.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(
+			DBScanIT.class);
 	private static long startMillis;
 
+	@Override
 	protected DataStorePluginOptions getDataStorePluginOptions() {
 		return dataStorePluginOptions;
 	}
@@ -93,33 +96,45 @@ public class DBScanIT extends
 	@BeforeClass
 	public static void startTimer() {
 		startMillis = System.currentTimeMillis();
-		LOGGER.warn("-----------------------------------------");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("*         RUNNING DBScanIT              *");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn(
+				"-----------------------------------------");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"*         RUNNING DBScanIT              *");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"-----------------------------------------");
 	}
 
 	@AfterClass
 	public static void reportTest() {
-		LOGGER.warn("-----------------------------------------");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("*      FINISHED DBScanIT                *");
-		LOGGER
-				.warn("*         " + ((System.currentTimeMillis() - startMillis) / 1000)
-						+ "s elapsed.                 *");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn(
+				"-----------------------------------------");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"*      FINISHED DBScanIT                *");
+		LOGGER.warn(
+				"*         " + ((System.currentTimeMillis() - startMillis) / 1000) + "s elapsed.                 *");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"-----------------------------------------");
 	}
 
 	private SimpleFeatureBuilder getBuilder() {
 		final SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
-		typeBuilder.setName("test");
-		typeBuilder.setSRS(ClusteringUtils.CLUSTERING_CRS);
+		typeBuilder.setName(
+				"test");
+		typeBuilder.setSRS(
+				ClusteringUtils.CLUSTERING_CRS);
 		try {
-			typeBuilder.setCRS(CRS.decode(
-					ClusteringUtils.CLUSTERING_CRS,
-					true));
+			typeBuilder.setCRS(
+					CRS.decode(
+							ClusteringUtils.CLUSTERING_CRS,
+							true));
 		}
 		catch (final FactoryException e) {
 			e.printStackTrace();
@@ -147,27 +162,35 @@ public class DBScanIT extends
 
 	@Test
 	public void testDBScan() {
-		dataGenerator.setIncludePolygons(false);
+		dataGenerator.setIncludePolygons(
+				false);
 		try {
-			ingest(dataStorePluginOptions.createDataStore());
+			ingest(
+					dataStorePluginOptions.createDataStore());
 		}
-		catch (IOException e1) {
+		catch (final IOException e1) {
 			e1.printStackTrace();
-			TestUtils.deleteAll(dataStorePluginOptions);
-			Assert.fail("Unable to ingest data in DBScanIT");
+			TestUtils.deleteAll(
+					dataStorePluginOptions);
+			Assert.fail(
+					"Unable to ingest data in DBScanIT");
 		}
 
 		try {
-			runScan(new SpatialQuery(
-					dataGenerator.getBoundingRegion()));
+			runScan(
+					new SpatialQuery(
+							dataGenerator.getBoundingRegion()));
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			e.printStackTrace();
-			TestUtils.deleteAll(dataStorePluginOptions);
-			Assert.fail("Exception during scan of DBScanIT");
+			TestUtils.deleteAll(
+					dataStorePluginOptions);
+			Assert.fail(
+					"Exception during scan of DBScanIT");
 		}
 
-		TestUtils.deleteAll(dataStorePluginOptions);
+		TestUtils.deleteAll(
+				dataStorePluginOptions);
 	}
 
 	private void runScan(
@@ -198,8 +221,10 @@ public class DBScanIT extends
 						new Object[] {
 							query,
 							new QueryOptions(),
-							Integer.toString(MapReduceTestUtils.MIN_INPUT_SPLITS),
-							Integer.toString(MapReduceTestUtils.MAX_INPUT_SPLITS),
+							Integer.toString(
+									MapReduceTestUtils.MIN_INPUT_SPLITS),
+							Integer.toString(
+									MapReduceTestUtils.MAX_INPUT_SPLITS),
 							10000.0,
 							OrthodromicDistancePartitioner.class,
 							10,
@@ -217,7 +242,8 @@ public class DBScanIT extends
 				0,
 				res);
 
-		Assert.assertTrue(readHulls() > 2);
+		Assert.assertTrue(
+				readHulls() > 2);
 		// for travis-ci to run, we want to limit the memory consumption
 		System.gc();
 	}
@@ -230,6 +256,9 @@ public class DBScanIT extends
 				dataStorePluginOptions.createAdapterStore(),
 				new SimpleFeatureItemWrapperFactory(),
 				"concave_hull",
+				dataStorePluginOptions.createInternalAdapterStore().addAdapterId(
+						new ByteArrayId(
+								"concave_hull")),
 				new SpatialDimensionalityTypeProvider().createPrimaryIndex(
 						new SpatialOptions()).getId().getString(),
 				"bx5",
@@ -237,7 +266,8 @@ public class DBScanIT extends
 
 		int count = 0;
 		for (final String grp : centroidManager.getAllCentroidGroups()) {
-			for (final AnalyticItemWrapper<SimpleFeature> feature : centroidManager.getCentroidsForGroup(grp)) {
+			for (final AnalyticItemWrapper<SimpleFeature> feature : centroidManager.getCentroidsForGroup(
+					grp)) {
 				ShapefileTool.writeShape(
 						feature.getName(),
 						new File(
@@ -269,21 +299,22 @@ public class DBScanIT extends
 					-34
 				});
 
-		features.addAll(dataGenerator.generatePointSet(
-				dataGenerator.getFactory().createLineString(
-						new Coordinate[] {
-							new Coordinate(
-									-87,
-									-32),
-							new Coordinate(
-									-87.5,
-									-32.3),
-							new Coordinate(
-									-87.2,
-									-32.7)
-						}),
-				0.2,
-				500));
+		features.addAll(
+				dataGenerator.generatePointSet(
+						dataGenerator.getFactory().createLineString(
+								new Coordinate[] {
+									new Coordinate(
+											-87,
+											-32),
+									new Coordinate(
+											-87.5,
+											-32.3),
+									new Coordinate(
+											-87.2,
+											-32.7)
+								}),
+						0.2,
+						500));
 
 		ShapefileTool.writeShape(
 				new File(

@@ -49,8 +49,8 @@ import mil.nga.giat.geowave.core.geotime.ingest.SpatialDimensionalityTypeProvide
 import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.GeoWaveStoreFinder;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapterWrapper;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
@@ -132,14 +132,18 @@ public class ConvexHullJobRunnerTest
 											job,
 											ConvexHullMapReduce.class,
 											null);
-							final AdapterStore adapterStore = persistableAdapterStore
+							final PersistentAdapterStore adapterStore = persistableAdapterStore
 									.getDataStoreOptions()
 									.createAdapterStore();
 
 							Assert.assertTrue(
 									adapterStore.adapterExists(
-											new ByteArrayId(
-													"centroidtest")));
+											persistableAdapterStore
+													.getDataStoreOptions()
+													.createInternalAdapterStore()
+													.getInternalAdapterId(
+															new ByteArrayId(
+																	"centroidtest"))));
 
 							final Projection<?> projection = configWrapper.getInstance(
 									HullParameters.Hull.PROJECTION_CLASS,

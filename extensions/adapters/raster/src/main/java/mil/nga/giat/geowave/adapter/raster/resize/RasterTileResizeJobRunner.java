@@ -50,8 +50,7 @@ public class RasterTileResizeJobRunner extends
 		Configured implements
 		Tool
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-			RasterTileResizeJobRunner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RasterTileResizeJobRunner.class);
 
 	public static final String NEW_ADAPTER_ID_KEY = "NEW_ADAPTER_ID";
 	public static final String NEW_INTERNAL_ADAPTER_ID_KEY = "NEW_INTERNAL_ADAPTER_ID";
@@ -81,8 +80,7 @@ public class RasterTileResizeJobRunner extends
 		Configuration conf = super.getConf();
 		if (conf == null) {
 			conf = new Configuration();
-			setConf(
-					conf);
+			setConf(conf);
 		}
 		GeoWaveConfiguratorBase.setRemoteInvocationParams(
 				rasterResizeOptions.getHdfsHostPort(),
@@ -97,33 +95,21 @@ public class RasterTileResizeJobRunner extends
 		final Job job = new Job(
 				conf);
 
-		job.setJarByClass(
-				this.getClass());
+		job.setJarByClass(this.getClass());
 
-		job.setJobName(
-				"Converting " + rasterResizeOptions.getInputCoverageName() + " to tile size="
-						+ rasterResizeOptions.getOutputTileSize());
+		job.setJobName("Converting " + rasterResizeOptions.getInputCoverageName() + " to tile size="
+				+ rasterResizeOptions.getOutputTileSize());
 
-		job.setMapperClass(
-				RasterTileResizeMapper.class);
-		job.setCombinerClass(
-				RasterTileResizeCombiner.class);
-		job.setReducerClass(
-				RasterTileResizeReducer.class);
-		job.setInputFormatClass(
-				GeoWaveInputFormat.class);
-		job.setOutputFormatClass(
-				GeoWaveOutputFormat.class);
-		job.setMapOutputKeyClass(
-				GeoWaveInputKey.class);
-		job.setMapOutputValueClass(
-				ObjectWritable.class);
-		job.setOutputKeyClass(
-				GeoWaveOutputKey.class);
-		job.setOutputValueClass(
-				GridCoverage.class);
-		job.setNumReduceTasks(
-				8);
+		job.setMapperClass(RasterTileResizeMapper.class);
+		job.setCombinerClass(RasterTileResizeCombiner.class);
+		job.setReducerClass(RasterTileResizeReducer.class);
+		job.setInputFormatClass(GeoWaveInputFormat.class);
+		job.setOutputFormatClass(GeoWaveOutputFormat.class);
+		job.setMapOutputKeyClass(GeoWaveInputKey.class);
+		job.setMapOutputValueClass(ObjectWritable.class);
+		job.setOutputKeyClass(GeoWaveOutputKey.class);
+		job.setOutputValueClass(GridCoverage.class);
+		job.setNumReduceTasks(8);
 
 		GeoWaveInputFormat.setMinimumSplitCount(
 				job.getConfiguration(),
@@ -137,9 +123,8 @@ public class RasterTileResizeJobRunner extends
 				inputStoreOptions);
 
 		final InternalAdapterStore internalAdapterStore = inputStoreOptions.createInternalAdapterStore();
-		final short internalAdapterId = internalAdapterStore.getInternalAdapterId(
-				new ByteArrayId(
-						rasterResizeOptions.getInputCoverageName()));
+		final short internalAdapterId = internalAdapterStore.getInternalAdapterId(new ByteArrayId(
+				rasterResizeOptions.getInputCoverageName()));
 		final DataAdapter adapter = inputStoreOptions.createAdapterStore().getAdapter(
 				internalAdapterId).getAdapter();
 
@@ -163,9 +148,8 @@ public class RasterTileResizeJobRunner extends
 		PrimaryIndex index = null;
 		final IndexStore indexStore = inputStoreOptions.createIndexStore();
 		if (rasterResizeOptions.getIndexId() != null) {
-			index = (PrimaryIndex) indexStore.getIndex(
-					new ByteArrayId(
-							rasterResizeOptions.getIndexId()));
+			index = (PrimaryIndex) indexStore.getIndex(new ByteArrayId(
+					rasterResizeOptions.getIndexId()));
 		}
 		if (index == null) {
 			try (CloseableIterator<Index<?, ?>> indices = indexStore.getIndices()) {
@@ -201,11 +185,11 @@ public class RasterTileResizeJobRunner extends
 
 		conf.setInt(
 				OLD_INTERNAL_ADAPTER_ID_KEY,
-						internalAdapterId);
+				internalAdapterId);
 
 		conf.setInt(
 				NEW_INTERNAL_ADAPTER_ID_KEY,
-						newInternalAdapterId);
+				newInternalAdapterId);
 		if (outputStoreOptions.getFactoryOptions().getStoreOptions().isPersistDataStatistics()) {
 			try {
 				// this is done primarily to ensure stats merging is enabled
@@ -222,8 +206,7 @@ public class RasterTileResizeJobRunner extends
 		}
 		boolean retVal = false;
 		try {
-			retVal = job.waitForCompletion(
-					true);
+			retVal = job.waitForCompletion(true);
 		}
 		catch (final IOException ex) {
 			LOGGER.error(
@@ -238,21 +221,17 @@ public class RasterTileResizeJobRunner extends
 			throws Exception {
 		final ConfigOptions opts = new ConfigOptions();
 		final OperationParser parser = new OperationParser();
-		parser.addAdditionalObject(
-				opts);
+		parser.addAdditionalObject(opts);
 		final ResizeCommand command = new ResizeCommand();
 		final CommandLineOperationParams params = parser.parse(
 				command,
 				args);
-		opts.prepare(
-				params);
+		opts.prepare(params);
 		final int res = ToolRunner.run(
 				new Configuration(),
-				command.createRunner(
-						params),
+				command.createRunner(params),
 				args);
-		System.exit(
-				res);
+		System.exit(res);
 	}
 
 	@Override

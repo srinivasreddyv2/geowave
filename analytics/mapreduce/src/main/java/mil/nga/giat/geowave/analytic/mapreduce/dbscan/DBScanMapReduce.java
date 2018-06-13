@@ -327,7 +327,12 @@ public class DBScanMapReduce
 					// });
 					context.write(
 							new GeoWaveInputKey(
-									//TODO this is a bit of a hack, but the adapter is seemingly completely transient and never actually persisted - it seems unlikely that the value for internal adapter ID even matters, but if it does this is the best effort
+									// TODO this is a bit of a hack, but the
+									// adapter is seemingly completely transient
+									// and never actually persisted - it seems
+									// unlikely that the value for internal
+									// adapter ID even matters, but if it does
+									// this is the best effort
 									InternalAdapterStoreImpl.getInitialInternalAdapterId(outputAdapter.getAdapterId()),
 									new ByteArrayId(
 											newPolygonFeature.getID())),

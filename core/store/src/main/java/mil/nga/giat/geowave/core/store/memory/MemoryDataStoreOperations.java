@@ -34,7 +34,6 @@ import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
@@ -70,7 +69,7 @@ public class MemoryDataStoreOperations implements
 			.synchronizedMap(new HashMap<ByteArrayId, SortedSet<MemoryStoreEntry>>());
 	private final Map<MetadataType, SortedSet<MemoryMetadataEntry>> metadataStore = Collections
 			.synchronizedMap(new HashMap<MetadataType, SortedSet<MemoryMetadataEntry>>());
-	private boolean serversideEnabled;
+	private final boolean serversideEnabled;
 
 	public MemoryDataStoreOperations() {
 		this(
@@ -78,7 +77,7 @@ public class MemoryDataStoreOperations implements
 	}
 
 	public MemoryDataStoreOperations(
-			boolean serversideEnabled ) {
+			final boolean serversideEnabled ) {
 		this.serversideEnabled = serversideEnabled;
 	}
 
@@ -228,7 +227,7 @@ public class MemoryDataStoreOperations implements
 							@Override
 							public boolean apply(
 									final MemoryStoreEntry input ) {
-								if (readerParams.getFilter() != null && serversideEnabled) {
+								if ((readerParams.getFilter() != null) && serversideEnabled) {
 									final PersistentDataset<CommonIndexValue> commonData = new PersistentDataset<>();
 									final List<FlattenedUnreadData> unreadData = new ArrayList<>();
 									final List<ByteArrayId> commonIndexFieldIds = DataStoreUtils
@@ -406,7 +405,7 @@ public class MemoryDataStoreOperations implements
 							new byte[] {
 								0
 							},
-							(short) 0,// new byte[] {},
+							(short) 0, // new byte[] {},
 							comparisonPartitionKey.getBytes(),
 							comparisonSortKey.getBytes(),
 							0),
@@ -634,8 +633,14 @@ public class MemoryDataStoreOperations implements
 							}
 						});
 			}
+			// convert to and from array just to avoid concurrent modification
+			// issues on the iterator that is linked back to the metadataStore
+			// sortedSet (basically clone the iterator, so for example deletes
+			// can occur while iterating through this query result)
 			return new CloseableIterator.Wrapper(
-					itTransformed);
+					Iterators.forArray(Iterators.toArray(
+							itTransformed,
+							GeoWaveMetadata.class)));
 		}
 
 	}
@@ -851,9 +856,9 @@ public class MemoryDataStoreOperations implements
 
 	@Override
 	public boolean mergeData(
-			PrimaryIndex index,
-			PersistentAdapterStore adapterStore,
-			AdapterIndexMappingStore adapterIndexMappingStore ) {
+			final PrimaryIndex index,
+			final PersistentAdapterStore adapterStore,
+			final AdapterIndexMappingStore adapterIndexMappingStore ) {
 		// considering memory data store is for test purposes, this
 		// implementation is unnecessary
 		return true;
@@ -861,7 +866,7 @@ public class MemoryDataStoreOperations implements
 
 	@Override
 	public boolean metadataExists(
-			MetadataType type )
+			final MetadataType type )
 			throws IOException {
 		return true;
 	}

@@ -89,7 +89,13 @@ public class SimpleFeatureOutputReducer extends
 			InterruptedException {
 		final Iterator<Object> valIt = values.iterator();
 		if (valIt.hasNext()) {
-			key.setInternalAdapterId(//TODO this is a bit of a hack, but the adapter is seemingly completely transient and never actually persisted - it seems unlikely that the value for internal adapter ID even matters, but if it does this is the best effort
+			key.setInternalAdapterId(// TODO this is a bit of a hack, but the
+										// adapter is seemingly completely
+										// transient and never actually
+										// persisted - it seems unlikely that
+										// the value for internal adapter ID
+										// even matters, but if it does this is
+										// the best effort
 					InternalAdapterStoreImpl.getInitialInternalAdapterId(outputAdapter.getAdapterId()));
 			final SimpleFeature feature = getSimpleFeature(
 					key,

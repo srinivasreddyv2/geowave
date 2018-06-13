@@ -34,43 +34,29 @@ import mil.nga.giat.geowave.mapreduce.output.GeoWaveOutputKey;
 
 public class RasterTileResizeHelper
 {
-	private RasterDataAdapter oldAdapter;
 	private RasterDataAdapter newAdapter;
-	private short oldInternalAdapterId;
-	private short newInternalAdapterId;
+	private final short oldInternalAdapterId;
+	private final short newInternalAdapterId;
 	private final PrimaryIndex index;
 	private final List<ByteArrayId> indexIds;
 
 	public RasterTileResizeHelper(
 			final JobContext context ) {
-		index = JobContextIndexStore.getIndices(
-				context)[0];
+		index = JobContextIndexStore.getIndices(context)[0];
 		indexIds = new ArrayList<ByteArrayId>();
-		indexIds.add(
-				index.getId());
-		final DataAdapter[] adapters = JobContextAdapterStore.getDataAdapters(
-				context);
+		indexIds.add(index.getId());
+		final DataAdapter[] adapters = JobContextAdapterStore.getDataAdapters(context);
 		final Configuration conf = context.getConfiguration();
-		final String oldAdapterId = conf.get(
-				RasterTileResizeJobRunner.OLD_ADAPTER_ID_KEY);
-		final String newAdapterId = conf.get(
-				RasterTileResizeJobRunner.NEW_ADAPTER_ID_KEY);
-		conf.getInt(
+		final String newAdapterId = conf.get(RasterTileResizeJobRunner.NEW_ADAPTER_ID_KEY);
+		oldInternalAdapterId = (short) conf.getInt(
 				RasterTileResizeJobRunner.OLD_INTERNAL_ADAPTER_ID_KEY,
-				InternalAdapterStoreImpl.getInitialInternalAdapterId(
-						new ByteArrayId(
-								oldAdapterId)));
-		conf.getInt(
+				-1);
+		newInternalAdapterId = (short) conf.getInt(
 				RasterTileResizeJobRunner.NEW_INTERNAL_ADAPTER_ID_KEY,
-				InternalAdapterStoreImpl.getInitialInternalAdapterId(
-						new ByteArrayId(
-								newAdapterId)));
+				InternalAdapterStoreImpl.getInitialInternalAdapterId(new ByteArrayId(
+						newAdapterId)));
 		for (final DataAdapter adapter : adapters) {
 			if (adapter.getAdapterId().getString().equals(
-					oldAdapterId)) {
-				oldAdapter = (RasterDataAdapter) adapter;
-			}
-			else if (adapter.getAdapterId().getString().equals(
 					newAdapterId)) {
 				if (((RasterDataAdapter) adapter).getTransform() == null) {
 					// the new adapter doesn't have a merge strategy - resizing
@@ -117,22 +103,19 @@ public class RasterTileResizeHelper
 				}
 				else {
 					if (!needsMerge) {
-						mergedTile = newAdapter.getRasterTileFromCoverage(
-								mergedCoverage);
+						mergedTile = newAdapter.getRasterTileFromCoverage(mergedCoverage);
 						needsMerge = true;
 					}
-					final ClientMergeableRasterTile thisTile = newAdapter.getRasterTileFromCoverage(
-							(GridCoverage) value);
+					final ClientMergeableRasterTile thisTile = newAdapter
+							.getRasterTileFromCoverage((GridCoverage) value);
 					if (mergedTile != null) {
-						mergedTile.merge(
-								thisTile);
+						mergedTile.merge(thisTile);
 					}
 				}
 			}
 		}
 		if (needsMerge) {
-			final Pair<byte[], byte[]> pair = key.getPartitionAndSortKey(
-					index);
+			final Pair<byte[], byte[]> pair = key.getPartitionAndSortKey(index);
 			mergedCoverage = newAdapter.getCoverageFromRasterTile(
 					mergedTile,
 					pair == null ? null : new ByteArrayId(
@@ -150,8 +133,7 @@ public class RasterTileResizeHelper
 
 	public ByteArrayId getNewDataId(
 			final GridCoverage coverage ) {
-		return newAdapter.getDataId(
-				coverage);
+		return newAdapter.getDataId(coverage);
 	}
 
 	public ByteArrayId getIndexId() {

@@ -63,7 +63,8 @@ import mil.nga.giat.geowave.core.store.index.CommonIndexModel;
  *
  * This class depends on an AdapterStore. Since an AdapterStore is not
  * Serializable, the dependency is transient requiring initialization after
- * serialization {@link AdapterBasedPartitioner#initialize(ConfigurationWrapper)
+ * serialization
+ * {@link AdapterBasedPartitioner#initialize(ConfigurationWrapper)
  *
  *
  */
@@ -73,8 +74,7 @@ public class AdapterBasedPartitioner extends
 		Serializable
 {
 
-	final static Logger LOGGER = LoggerFactory.getLogger(
-			AdapterBasedPartitioner.class);
+	final static Logger LOGGER = LoggerFactory.getLogger(AdapterBasedPartitioner.class);
 
 	private static final long serialVersionUID = 5951564193108204266L;
 
@@ -118,8 +118,7 @@ public class AdapterBasedPartitioner extends
 		final NumericDataHolder numericDataHolder = new NumericDataHolder();
 
 		@SuppressWarnings("unchecked")
-		final DataAdapter<Object> adapter = (DataAdapter<Object>) adapterStore.getAdapter(
-				entry.adapterId);
+		final DataAdapter<Object> adapter = (DataAdapter<Object>) adapterStore.getAdapter(entry.adapterId);
 		if (adapter == null) {
 			LOGGER.error(
 					"Unable to find an adapter for id {}",
@@ -130,8 +129,9 @@ public class AdapterBasedPartitioner extends
 				entry.data,
 				getIndex().getIndexModel());
 		final double[] thetas = getDistancePerDimension();
-		final MultiDimensionalNumericData primaryData = encoding.getNumericData(
-				getIndex().getIndexModel().getDimensions());
+		final MultiDimensionalNumericData primaryData = encoding.getNumericData(getIndex()
+				.getIndexModel()
+				.getDimensions());
 		numericDataHolder.primary = primaryData;
 		numericDataHolder.expansion = querySet(
 				primaryData,
@@ -145,8 +145,7 @@ public class AdapterBasedPartitioner extends
 		wrapsAroundBoundary = new boolean[definitions.length];
 		for (int i = 0; i < definitions.length; i++) {
 			fullRangesPerDimension[i] = definitions[i].getFullRange();
-			wrapsAroundBoundary[i] = getIndex().getIndexModel().getDimensions()[i]
-					.getBaseDefinition() instanceof LongitudeDefinition;
+			wrapsAroundBoundary[i] = getIndex().getIndexModel().getDimensions()[i].getBaseDefinition() instanceof LongitudeDefinition;
 		}
 
 	}
@@ -215,10 +214,9 @@ public class AdapterBasedPartitioner extends
 			final MultiDimensionalNumericData dimensionsData,
 			final int d ) {
 		if (d == currentData.length) {
-			resultList.add(
-					Arrays.copyOf(
-							currentData,
-							currentData.length));
+			resultList.add(Arrays.copyOf(
+					currentData,
+					currentData.length));
 			return;
 		}
 
@@ -305,27 +303,21 @@ public class AdapterBasedPartitioner extends
 		@Override
 		public void addAdapter(
 				final DataAdapter<?> adapter ) {
-			adapterStore.addAdapter(
-					new InternalDataAdapterWrapper(
-							(WritableDataAdapter) adapter,
-							internalAdapterStore.addAdapterId(
-									adapter.getAdapterId())));
+			adapterStore.addAdapter(new InternalDataAdapterWrapper(
+					(WritableDataAdapter) adapter,
+					internalAdapterStore.addAdapterId(adapter.getAdapterId())));
 		}
 
 		@Override
 		public DataAdapter<?> getAdapter(
 				final ByteArrayId adapterId ) {
-			return adapterStore.getAdapter(
-					internalAdapterStore.getInternalAdapterId(
-							adapterId));
+			return adapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId));
 		}
 
 		@Override
 		public boolean adapterExists(
 				final ByteArrayId adapterId ) {
-			return adapterStore.adapterExists(
-					internalAdapterStore.getInternalAdapterId(
-							adapterId));
+			return adapterStore.adapterExists(internalAdapterStore.getInternalAdapterId(adapterId));
 		}
 
 		@Override
@@ -354,11 +346,8 @@ public class AdapterBasedPartitioner extends
 		@Override
 		public void removeAdapter(
 				final ByteArrayId adapterId ) {
-			adapterStore.removeAdapter(
-					internalAdapterStore.getInternalAdapterId(
-							adapterId));
-			internalAdapterStore.remove(
-					adapterId);
+			adapterStore.removeAdapter(internalAdapterStore.getInternalAdapterId(adapterId));
+			internalAdapterStore.remove(adapterId);
 		}
 	}
 }

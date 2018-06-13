@@ -39,17 +39,14 @@ public class RasterTileResizeMapper extends
 			final MapContext<GeoWaveInputKey, GridCoverage, GeoWaveInputKey, Object> context )
 			throws IOException,
 			InterruptedException {
-		if (helper.isOriginalCoverage(
-				key.getInternalAdapterId())) {
-			final InternalDataAdapter<?> adapter = super.serializationTool.getInternalAdapter(
-					key.getInternalAdapterId());
+		if (helper.isOriginalCoverage(key.getInternalAdapterId())) {
+			final InternalDataAdapter<?> adapter = super.serializationTool.getInternalAdapter(key
+					.getInternalAdapterId());
 			if ((adapter != null) && (adapter.getAdapter() != null)
 					&& (adapter.getAdapter() instanceof RasterDataAdapter)) {
-				final Iterator<GridCoverage> coverages = helper.getCoveragesForIndex(
-						value);
+				final Iterator<GridCoverage> coverages = helper.getCoveragesForIndex(value);
 				if (coverages == null) {
-					LOGGER.error(
-							"Couldn't get coverages instance, getCoveragesForIndex returned null");
+					LOGGER.error("Couldn't get coverages instance, getCoveragesForIndex returned null");
 					throw new IOException(
 							"Couldn't get coverages instance, getCoveragesForIndex returned null");
 				}
@@ -85,8 +82,7 @@ public class RasterTileResizeMapper extends
 			final Mapper<GeoWaveInputKey, GridCoverage, GeoWaveInputKey, ObjectWritable>.Context context )
 			throws IOException,
 			InterruptedException {
-		super.setup(
-				context);
+		super.setup(context);
 		helper = new RasterTileResizeHelper(
 				context);
 	}

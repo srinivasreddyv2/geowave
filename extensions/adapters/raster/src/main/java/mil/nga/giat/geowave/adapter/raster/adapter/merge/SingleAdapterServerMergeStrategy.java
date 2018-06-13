@@ -30,43 +30,48 @@ import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.persist.Persistable;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 
-public class SingleAdapterServerMergeStrategy < T extends Persistable> implements
-ServerMergeStrategy,Persistable
+public class SingleAdapterServerMergeStrategy<T extends Persistable> implements
+		ServerMergeStrategy,
+		Persistable
 {
-private final static Logger LOGGER = LoggerFactory.getLogger(SingleAdapterServerMergeStrategy.class);
-// the purpose for these maps instead of a list of samplemodel and adapter
-// ID pairs is to allow for multiple adapters to share the same sample model
-protected short internalAdapterId;
-protected SampleModel sampleModel;
-protected  RasterTileMergeStrategy<T> mergeStrategy;
-public SingleAdapterServerMergeStrategy() {}
+	private final static Logger LOGGER = LoggerFactory.getLogger(SingleAdapterServerMergeStrategy.class);
+	// the purpose for these maps instead of a list of samplemodel and adapter
+	// ID pairs is to allow for multiple adapters to share the same sample model
+	protected short internalAdapterId;
+	protected SampleModel sampleModel;
+	protected RasterTileMergeStrategy<T> mergeStrategy;
 
-public SingleAdapterServerMergeStrategy(
-		final short internalAdapterId,
-		final SampleModel sampleModel,
-		final RasterTileMergeStrategy<T> mergeStrategy) {
-	this.internalAdapterId = internalAdapterId;
-	this.sampleModel = sampleModel;
-	this.mergeStrategy = mergeStrategy;
-}
+	public SingleAdapterServerMergeStrategy() {}
 
+	public SingleAdapterServerMergeStrategy(
+			final short internalAdapterId,
+			final SampleModel sampleModel,
+			final RasterTileMergeStrategy<T> mergeStrategy ) {
+		this.internalAdapterId = internalAdapterId;
+		this.sampleModel = sampleModel;
+		this.mergeStrategy = mergeStrategy;
+	}
 
-@SuppressFBWarnings(value = {
-"DLS_DEAD_LOCAL_STORE"
-}, justification = "Incorrect warning, sampleModelBinary used")
-@Override
+	@SuppressFBWarnings(value = {
+		"DLS_DEAD_LOCAL_STORE"
+	}, justification = "Incorrect warning, sampleModelBinary used")
+	@Override
 	public byte[] toBinary() {
 
 		final SerializableState serializableSampleModel = SerializerFactory.getState(sampleModel);
 		byte[] sampleModelBinary = new byte[0];
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final ObjectOutputStream oos = new ObjectOutputStream(baos);
+			final ObjectOutputStream oos = new ObjectOutputStream(
+					baos);
 			oos.writeObject(serializableSampleModel);
 			oos.close();
 			sampleModelBinary = baos.toByteArray();
-		} catch (final IOException e) {
-			LOGGER.warn("Unable to serialize sample model", e);
+		}
+		catch (final IOException e) {
+			LOGGER.warn(
+					"Unable to serialize sample model",
+					e);
 		}
 
 		final byte[] mergeStrategyBinary = PersistenceUtils.toBinary(mergeStrategy);
@@ -81,26 +86,33 @@ public SingleAdapterServerMergeStrategy(
 		return buf.array();
 	}
 
-@Override
-	public void fromBinary(final byte[] bytes) {
+	@Override
+	public void fromBinary(
+			final byte[] bytes ) {
 		final ByteBuffer buf = ByteBuffer.wrap(bytes);
-	
+
 		final byte[] sampleModelBinary = new byte[buf.getInt()];
 		if (sampleModelBinary.length > 0) {
 			try {
 				buf.get(sampleModelBinary);
-				final ByteArrayInputStream bais = new ByteArrayInputStream(sampleModelBinary);
-				final ObjectInputStream ois = new ObjectInputStream(bais);
+				final ByteArrayInputStream bais = new ByteArrayInputStream(
+						sampleModelBinary);
+				final ObjectInputStream ois = new ObjectInputStream(
+						bais);
 				final Object o = ois.readObject();
 				ois.close();
 				if ((o instanceof SerializableState) && (((SerializableState) o).getObject() instanceof SampleModel)) {
 					sampleModel = (SampleModel) ((SerializableState) o).getObject();
 
 				}
-			} catch (final Exception e) {
-				LOGGER.warn("Unable to deserialize sample model", e);
 			}
-		} else {
+			catch (final Exception e) {
+				LOGGER.warn(
+						"Unable to deserialize sample model",
+						e);
+			}
+		}
+		else {
 			LOGGER.warn("Sample model binary is empty, unable to deserialize");
 		}
 
@@ -110,40 +122,44 @@ public SingleAdapterServerMergeStrategy(
 		if (mergeStrategyBinary.length > 0) {
 			try {
 				buf.get(mergeStrategyBinary);
-				 mergeStrategy = (RasterTileMergeStrategy) PersistenceUtils
-						.fromBinary(mergeStrategyBinary);
-				
-			} catch (final Exception e) {
-				LOGGER.warn("Unable to deserialize merge strategy", e);
+				mergeStrategy = (RasterTileMergeStrategy) PersistenceUtils.fromBinary(mergeStrategyBinary);
+
 			}
-		} else {
+			catch (final Exception e) {
+				LOGGER.warn(
+						"Unable to deserialize merge strategy",
+						e);
+			}
+		}
+		else {
 			LOGGER.warn("Merge strategy binary is empty, unable to deserialize");
 		}
 
 	}
 
-
-@Override
-public void merge(RasterTile thisTile, RasterTile nextTile, short internalAdapterId) {
-	if (mergeStrategy != null) {
-		mergeStrategy.merge(
-				thisTile,
-				nextTile,
-				sampleModel);
-	}
-}
-
-public T getMetadata(
-		final GridCoverage tileGridCoverage,
-		final Map originalCoverageProperties,
-		final RasterDataAdapter dataAdapter ) {
+	@Override
+	public void merge(
+			RasterTile thisTile,
+			RasterTile nextTile,
+			short internalAdapterId ) {
 		if (mergeStrategy != null) {
-		return mergeStrategy.getMetadata(
-				tileGridCoverage,
-				dataAdapter);
+			mergeStrategy.merge(
+					thisTile,
+					nextTile,
+					sampleModel);
+		}
 	}
-	return null;
-}
 
+	public T getMetadata(
+			final GridCoverage tileGridCoverage,
+			final Map originalCoverageProperties,
+			final RasterDataAdapter dataAdapter ) {
+		if (mergeStrategy != null) {
+			return mergeStrategy.getMetadata(
+					tileGridCoverage,
+					dataAdapter);
+		}
+		return null;
+	}
 
 }

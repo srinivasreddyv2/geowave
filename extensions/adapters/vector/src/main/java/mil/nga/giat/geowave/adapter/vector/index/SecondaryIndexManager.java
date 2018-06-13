@@ -43,7 +43,6 @@ public class SecondaryIndexManager implements
 		Persistable
 {
 	private final List<SecondaryIndex<SimpleFeature>> supportedSecondaryIndices = new ArrayList<>();
-	private transient DataAdapter<SimpleFeature> dataAdapter;
 	private transient SimpleFeatureType sft;
 	private transient StatsManager statsManager;
 
@@ -58,10 +57,8 @@ public class SecondaryIndexManager implements
 	 * @param statsManager
 	 */
 	public SecondaryIndexManager(
-			final DataAdapter<SimpleFeature> dataAdapter,
 			final SimpleFeatureType sft,
 			final StatsManager statsManager ) {
-		this.dataAdapter = dataAdapter;
 		this.statsManager = statsManager;
 		this.sft = sft;
 		initializeIndices();

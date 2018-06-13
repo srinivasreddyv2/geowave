@@ -259,10 +259,12 @@ public class RasterDataAdapter implements
 		final RenderedImage img = originalGridCoverage.getRenderedImage();
 		SampleModel imgSampleModel = img.getSampleModel();
 		if (imgSampleModel.getWidth() != tileSize || imgSampleModel.getHeight() != tileSize) {
-			this.sampleModel = imgSampleModel.createCompatibleSampleModel(tileSize, tileSize);
+			this.sampleModel = imgSampleModel.createCompatibleSampleModel(
+					tileSize,
+					tileSize);
 		}
 		else {
-		this.sampleModel = imgSampleModel;
+			this.sampleModel = imgSampleModel;
 		}
 		colorModel = img.getColorModel();
 		this.metadata = metadata;
@@ -430,10 +432,12 @@ public class RasterDataAdapter implements
 		this.coverageName = coverageName;
 		this.tileSize = tileSize;
 		if (sampleModel.getWidth() != tileSize || sampleModel.getHeight() != tileSize) {
-			this.sampleModel = sampleModel.createCompatibleSampleModel(tileSize, tileSize);
+			this.sampleModel = sampleModel.createCompatibleSampleModel(
+					tileSize,
+					tileSize);
 		}
 		else {
-		this.sampleModel = sampleModel;
+			this.sampleModel = sampleModel;
 		}
 		this.colorModel = colorModel;
 		this.metadata = metadata;
@@ -1696,30 +1700,30 @@ public class RasterDataAdapter implements
 			final ByteArrayId statisticsType ) {
 		DataStatistics<GridCoverage> retVal = null;
 		if (OverviewStatistics.STATS_TYPE.equals(statisticsType)) {
-			retVal= new OverviewStatistics();
+			retVal = new OverviewStatistics();
 		}
 		else if (BoundingBoxDataStatistics.STATS_TYPE.equals(statisticsType)) {
-			retVal= new RasterBoundingBoxStatistics(
+			retVal = new RasterBoundingBoxStatistics(
 					new ByteArrayId(
 							coverageName));
 		}
 		else if (RasterFootprintStatistics.STATS_TYPE.equals(statisticsType)) {
-			retVal= new RasterFootprintStatistics(
+			retVal = new RasterFootprintStatistics(
 					new ByteArrayId(
 							coverageName));
 		}
 		else if (HistogramStatistics.STATS_TYPE.equals(statisticsType) && (histogramConfig != null)) {
-			retVal= new HistogramStatistics(
+			retVal = new HistogramStatistics(
 					new ByteArrayId(
 							coverageName),
 					histogramConfig);
 		}
 		else {
-		// HP Fortify "Log Forging" false positive
-		// What Fortify considers "user input" comes only
-		// from users with OS-level access anyway
-		LOGGER.warn("Unrecognized statistics type " + statisticsType.getString() + " using count statistic");
-		retVal = new CountDataStatistics<GridCoverage>();
+			// HP Fortify "Log Forging" false positive
+			// What Fortify considers "user input" comes only
+			// from users with OS-level access anyway
+			LOGGER.warn("Unrecognized statistics type " + statisticsType.getString() + " using count statistic");
+			retVal = new CountDataStatistics<GridCoverage>();
 		}
 		return retVal;
 	}
@@ -1907,10 +1911,15 @@ public class RasterDataAdapter implements
 
 	}
 
-	public Map<String, String> getConfiguredOptions(short internalAdapterId) {
+	public Map<String, String> getConfiguredOptions(
+			short internalAdapterId ) {
 		final Map<String, String> configuredOptions = new HashMap<String, String>();
 		if (mergeStrategy != null) {
-			final String mergeStrategyStr = ByteArrayUtils.byteArrayToString(PersistenceUtils.toBinary(new SingleAdapterServerMergeStrategy(internalAdapterId, sampleModel, mergeStrategy)));
+			final String mergeStrategyStr = ByteArrayUtils.byteArrayToString(PersistenceUtils
+					.toBinary(new SingleAdapterServerMergeStrategy(
+							internalAdapterId,
+							sampleModel,
+							mergeStrategy)));
 
 			configuredOptions.put(
 					RasterTileRowTransform.MERGE_STRATEGY_KEY,
@@ -1985,7 +1994,8 @@ public class RasterDataAdapter implements
 	}
 
 	@Override
-	public Map<String, String> getOptions(short internalAdapterId,
+	public Map<String, String> getOptions(
+			short internalAdapterId,
 			final Map<String, String> existingOptions ) {
 		final Map<String, String> configuredOptions = getConfiguredOptions(internalAdapterId);
 		if (existingOptions == null) {
@@ -2059,31 +2069,34 @@ public class RasterDataAdapter implements
 		if (RasterTileRowTransform.MERGE_STRATEGY_KEY.equals(optionKey)) {
 			final byte[] currentStrategyBytes = ByteArrayUtils.byteArrayFromString(currentValue);
 			final byte[] nextStrategyBytes = ByteArrayUtils.byteArrayFromString(nextValue);
-			final Object currentObj =  PersistenceUtils
-					.fromBinary(currentStrategyBytes);
+			final Object currentObj = PersistenceUtils.fromBinary(currentStrategyBytes);
 			MultiAdapterServerMergeStrategy currentStrategy;
 			if (currentObj instanceof SingleAdapterServerMergeStrategy) {
-				currentStrategy = new MultiAdapterServerMergeStrategy<>((SingleAdapterServerMergeStrategy)currentObj);
-				
+				currentStrategy = new MultiAdapterServerMergeStrategy<>(
+						(SingleAdapterServerMergeStrategy) currentObj);
+
 			}
 			else if (currentObj instanceof MultiAdapterServerMergeStrategy) {
 				currentStrategy = (MultiAdapterServerMergeStrategy) currentObj;
 			}
 			else {
-				//this is unexpected behavior and should never happen, consider logging a message
+				// this is unexpected behavior and should never happen, consider
+				// logging a message
 				return nextValue;
 			}
 			final Object nextObj = PersistenceUtils.fromBinary(nextStrategyBytes);
 			MultiAdapterServerMergeStrategy nextStrategy;
 			if (nextObj instanceof SingleAdapterServerMergeStrategy) {
-				nextStrategy = new MultiAdapterServerMergeStrategy<>((SingleAdapterServerMergeStrategy)nextObj);
-				
+				nextStrategy = new MultiAdapterServerMergeStrategy<>(
+						(SingleAdapterServerMergeStrategy) nextObj);
+
 			}
 			else if (nextObj instanceof MultiAdapterServerMergeStrategy) {
 				nextStrategy = (MultiAdapterServerMergeStrategy) nextObj;
 			}
 			else {
-				//this is unexpected behavior and should never happen, consider logging a message
+				// this is unexpected behavior and should never happen, consider
+				// logging a message
 				return currentValue;
 			}
 			currentStrategy.merge(nextStrategy);
@@ -2140,7 +2153,6 @@ public class RasterDataAdapter implements
 		}
 		return null;
 	}
-
 
 	@Override
 	public void init(

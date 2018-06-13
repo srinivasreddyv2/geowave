@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -17,8 +17,6 @@ import java.util.List;
 
 import org.apache.accumulo.core.client.AccumuloException;
 import org.apache.accumulo.core.client.AccumuloSecurityException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -28,6 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opengis.feature.simple.SimpleFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -50,9 +50,11 @@ import mil.nga.giat.geowave.analytic.param.SampleParameters;
 import mil.nga.giat.geowave.analytic.param.StoreParameters.StoreParam;
 import mil.nga.giat.geowave.analytic.store.PersistableStore;
 import mil.nga.giat.geowave.core.geotime.store.query.SpatialQuery;
+import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.sfc.data.NumericRange;
 import mil.nga.giat.geowave.core.store.DataStore;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
 import mil.nga.giat.geowave.core.store.query.DistributableQuery;
@@ -75,36 +77,48 @@ public class GeoWaveKMeansIT
 	})
 	protected DataStorePluginOptions dataStorePluginOptions;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(GeoWaveKMeansIT.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(
+			GeoWaveKMeansIT.class);
 	private static long startMillis;
 
 	@BeforeClass
 	public static void startTimer() {
 		startMillis = System.currentTimeMillis();
-		LOGGER.warn("-----------------------------------------");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("*         RUNNING GeoWaveKMeansIT       *");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn(
+				"-----------------------------------------");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"*         RUNNING GeoWaveKMeansIT       *");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"-----------------------------------------");
 	}
 
 	@AfterClass
 	public static void reportTest() {
-		LOGGER.warn("-----------------------------------------");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("*      FINISHED GeoWaveKMeansIT         *");
-		LOGGER
-				.warn("*         " + ((System.currentTimeMillis() - startMillis) / 1000)
-						+ "s elapsed.                 *");
-		LOGGER.warn("*                                       *");
-		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn(
+				"-----------------------------------------");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"*      FINISHED GeoWaveKMeansIT         *");
+		LOGGER.warn(
+				"*         " + ((System.currentTimeMillis() - startMillis) / 1000) + "s elapsed.                 *");
+		LOGGER.warn(
+				"*                                       *");
+		LOGGER.warn(
+				"-----------------------------------------");
 	}
 
 	private SimpleFeatureBuilder getBuilder() {
 		final SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
-		typeBuilder.setName("test");
-		typeBuilder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate
-														// reference
+		typeBuilder.setName(
+				"test");
+		typeBuilder.setCRS(
+				DefaultGeographicCRS.WGS84); // <- Coordinate
+												// reference
 		// add attributes in order
 		typeBuilder.add(
 				"geom",
@@ -180,11 +194,14 @@ public class GeoWaveKMeansIT
 	@Test
 	public void testIngestAndQueryGeneralGpx()
 			throws Exception {
-		TestUtils.deleteAll(dataStorePluginOptions);
-		testIngest(dataStorePluginOptions.createDataStore());
+		TestUtils.deleteAll(
+				dataStorePluginOptions);
+		testIngest(
+				dataStorePluginOptions.createDataStore());
 
-		runKPlusPlus(new SpatialQuery(
-				dataGenerator.getBoundingRegion()));
+		runKPlusPlus(
+				new SpatialQuery(
+						dataGenerator.getBoundingRegion()));
 	}
 
 	private void runKPlusPlus(
@@ -231,11 +248,13 @@ public class GeoWaveKMeansIT
 
 		final DataStore dataStore = dataStorePluginOptions.createDataStore();
 		final IndexStore indexStore = dataStorePluginOptions.createIndexStore();
-		final AdapterStore adapterStore = dataStorePluginOptions.createAdapterStore();
+		final PersistentAdapterStore adapterStore = dataStorePluginOptions.createAdapterStore();
+		final InternalAdapterStore internalAdapterStore = dataStorePluginOptions.createInternalAdapterStore();
 		final int resultCounLevel1 = countResults(
 				dataStore,
 				indexStore,
 				adapterStore,
+				internalAdapterStore,
 				"bx1",
 				1, // level
 				1);
@@ -243,10 +262,12 @@ public class GeoWaveKMeansIT
 				dataStore,
 				indexStore,
 				adapterStore,
+				internalAdapterStore,
 				"bx1",
 				2, // level
 				resultCounLevel1);
-		Assert.assertTrue(resultCounLevel2 >= 2);
+		Assert.assertTrue(
+				resultCounLevel2 >= 2);
 		// for travis-ci to run, we want to limit the memory consumption
 		System.gc();
 	}
@@ -295,11 +316,13 @@ public class GeoWaveKMeansIT
 
 		final DataStore dataStore = dataStorePluginOptions.createDataStore();
 		final IndexStore indexStore = dataStorePluginOptions.createIndexStore();
-		final AdapterStore adapterStore = dataStorePluginOptions.createAdapterStore();
+		final PersistentAdapterStore adapterStore = dataStorePluginOptions.createAdapterStore();
+		final InternalAdapterStore internalAdapterStore = dataStorePluginOptions.createInternalAdapterStore();
 		final int jumpRresultCounLevel1 = countResults(
 				dataStore,
 				indexStore,
 				adapterStore,
+				internalAdapterStore,
 				"bx2",
 				1,
 				1);
@@ -307,11 +330,14 @@ public class GeoWaveKMeansIT
 				dataStore,
 				indexStore,
 				adapterStore,
+				internalAdapterStore,
 				"bx2",
 				2,
 				jumpRresultCounLevel1);
-		Assert.assertTrue(jumpRresultCounLevel1 >= 2);
-		Assert.assertTrue(jumpRresultCounLevel2 >= 2);
+		Assert.assertTrue(
+				jumpRresultCounLevel1 >= 2);
+		Assert.assertTrue(
+				jumpRresultCounLevel2 >= 2);
 		// for travis-ci to run, we want to limit the memory consumption
 		System.gc();
 	}
@@ -319,7 +345,8 @@ public class GeoWaveKMeansIT
 	private int countResults(
 			final DataStore dataStore,
 			final IndexStore indexStore,
-			final AdapterStore adapterStore,
+			final PersistentAdapterStore adapterStore,
+			final InternalAdapterStore internalAdapterStore,
 			final String batchID,
 			final int level,
 			final int expectedParentCount )
@@ -333,6 +360,9 @@ public class GeoWaveKMeansIT
 				adapterStore,
 				new SimpleFeatureItemWrapperFactory(),
 				"centroid",
+				internalAdapterStore.addAdapterId(
+						new ByteArrayId(
+								"centroid")),
 				TestUtils.DEFAULT_SPATIAL_INDEX.getId().getString(),
 				batchID,
 				level);
@@ -343,6 +373,9 @@ public class GeoWaveKMeansIT
 				adapterStore,
 				new SimpleFeatureItemWrapperFactory(),
 				"convex_hull",
+				internalAdapterStore.addAdapterId(
+						new ByteArrayId(
+								"convex_hull")),
 				TestUtils.DEFAULT_SPATIAL_INDEX.getId().getString(),
 				batchID,
 				level);
@@ -350,24 +383,33 @@ public class GeoWaveKMeansIT
 		int childCount = 0;
 		int parentCount = 0;
 		for (final String grp : centroidManager.getAllCentroidGroups()) {
-			final List<AnalyticItemWrapper<SimpleFeature>> centroids = centroidManager.getCentroidsForGroup(grp);
-			final List<AnalyticItemWrapper<SimpleFeature>> hulls = hullManager.getCentroidsForGroup(grp);
+			final List<AnalyticItemWrapper<SimpleFeature>> centroids = centroidManager.getCentroidsForGroup(
+					grp);
+			final List<AnalyticItemWrapper<SimpleFeature>> hulls = hullManager.getCentroidsForGroup(
+					grp);
 
 			for (final AnalyticItemWrapper<SimpleFeature> centroid : centroids) {
 				if (centroid.getAssociationCount() == 0) {
 					continue;
 				}
-				Assert.assertTrue(centroid.getGeometry() != null);
-				Assert.assertTrue(centroid.getBatchID() != null);
+				Assert.assertTrue(
+						centroid.getGeometry() != null);
+				Assert.assertTrue(
+						centroid.getBatchID() != null);
 				boolean found = false;
 				final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
 				for (final AnalyticItemWrapper<SimpleFeature> hull : hulls) {
-					found |= (hull.getName().equals(centroid.getName()));
-					Assert.assertTrue(hull.getGeometry() != null);
-					Assert.assertTrue(hull.getBatchID() != null);
-					features.add(hull.getWrappedItem());
+					found |= (hull.getName().equals(
+							centroid.getName()));
+					Assert.assertTrue(
+							hull.getGeometry() != null);
+					Assert.assertTrue(
+							hull.getBatchID() != null);
+					features.add(
+							hull.getWrappedItem());
 				}
-				System.out.println(features);
+				System.out.println(
+						features);
 				Assert.assertTrue(
 						grp,
 						found);

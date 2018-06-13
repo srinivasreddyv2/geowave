@@ -276,11 +276,13 @@ public class KDEJobRunner extends
 		job.setSpeculativeExecution(false);
 		final PersistentAdapterStore adapterStore = inputDataStoreOptions.createAdapterStore();
 		final IndexStore indexStore = inputDataStoreOptions.createIndexStore();
-		
-		short internalAdapterId = inputDataStoreOptions.createInternalAdapterStore().getInternalAdapterId(new ByteArrayId(
-				kdeCommandLineOptions.getFeatureType()));
-		final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdapterId).getAdapter();
-		
+
+		short internalAdapterId = inputDataStoreOptions.createInternalAdapterStore().getInternalAdapterId(
+				new ByteArrayId(
+						kdeCommandLineOptions.getFeatureType()));
+		final DataAdapter<?> adapter = adapterStore.getAdapter(
+				internalAdapterId).getAdapter();
+
 		final QueryOptions queryOptions = new QueryOptions(
 				adapter);
 

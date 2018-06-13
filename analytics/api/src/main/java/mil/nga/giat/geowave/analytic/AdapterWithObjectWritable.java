@@ -67,8 +67,7 @@ public class AdapterWithObjectWritable implements
 		final int dataIdLength = input.readUnsignedShort();
 		if (dataIdLength > 0) {
 			final byte[] dataIdBinary = new byte[dataIdLength];
-			input.readFully(
-					dataIdBinary);
+			input.readFully(dataIdBinary);
 			dataId = new ByteArrayId(
 					dataIdBinary);
 		}
@@ -76,30 +75,24 @@ public class AdapterWithObjectWritable implements
 		if (objectWritable == null) {
 			objectWritable = new ObjectWritable();
 		}
-		objectWritable.readFields(
-				input);
+		objectWritable.readFields(input);
 	}
 
 	@Override
 	public void write(
 			final DataOutput output )
 			throws IOException {
-		output.writeShort(
-				internalAdapterId);
+		output.writeShort(internalAdapterId);
 		if (dataId != null) {
 			final byte[] dataIdBinary = dataId.getBytes();
-			output.writeShort(
-					(short) dataIdBinary.length);
-			output.write(
-					dataIdBinary);
+			output.writeShort((short) dataIdBinary.length);
+			output.write(dataIdBinary);
 		}
 		else {
-			output.writeShort(
-					0);
+			output.writeShort(0);
 		}
 
-		objectWritable.write(
-				output);
+		objectWritable.write(output);
 
 	}
 
@@ -109,14 +102,11 @@ public class AdapterWithObjectWritable implements
 			final short internalAdapterId,
 			final ByteArrayId dataId,
 			final Object entry ) {
-		writableToFill.setInternalAdapterId(
-				internalAdapterId);
-		writableToFill.setDataId(
-				dataId);
-		writableToFill.setObject(
-				serializationTool.toWritable(
-						internalAdapterId,
-						entry));
+		writableToFill.setInternalAdapterId(internalAdapterId);
+		writableToFill.setDataId(dataId);
+		writableToFill.setObject(serializationTool.toWritable(
+				internalAdapterId,
+				entry));
 	}
 
 	public static Object fromWritableWithAdapter(
@@ -126,8 +116,7 @@ public class AdapterWithObjectWritable implements
 		final Object innerObj = writableToExtract.objectWritable.get();
 		return (innerObj instanceof Writable) ? serializationTool.getHadoopWritableSerializerForAdapter(
 				internalAdapterId).fromWritable(
-						(Writable) innerObj)
-				: innerObj;
+				(Writable) innerObj) : innerObj;
 	}
 
 	@Override

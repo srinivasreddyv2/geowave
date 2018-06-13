@@ -192,7 +192,8 @@ public class NNMapReduce
 					context.getConfiguration(),
 					NNMapReduce.class,
 					LOGGER);
-			serializationTool = new HadoopWritableSerializationTool(context);
+			serializationTool = new HadoopWritableSerializationTool(
+					context);
 			try {
 				partitioner = config.getInstance(
 						PartitionParameters.Partition.PARTITIONER_CLASS,
@@ -370,7 +371,8 @@ public class NNMapReduce
 					NNMapReduce.class,
 					NNMapReduce.LOGGER);
 
-			serializationTool = new HadoopWritableSerializationTool(context);
+			serializationTool = new HadoopWritableSerializationTool(
+					context);
 
 			try {
 				distanceFn = config.getInstance(

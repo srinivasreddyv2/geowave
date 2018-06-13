@@ -325,7 +325,7 @@ public class GeoWaveRasterConfig
 		}
 		return adapterStore;
 	}
-	
+
 	public synchronized InternalAdapterStore getInternalAdapterStore() {
 		if (internalAdapterStore == null) {
 			internalAdapterStore = factoryFamily.getInternalAdapterStoreFactory().createStore(

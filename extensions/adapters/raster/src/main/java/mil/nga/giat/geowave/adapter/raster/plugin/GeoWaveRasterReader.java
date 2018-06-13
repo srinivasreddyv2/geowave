@@ -111,7 +111,7 @@ public class GeoWaveRasterReader extends
 	private GeoWaveRasterConfig config;
 
 	private PersistentAdapterStore geowaveAdapterStore;
-	
+
 	private InternalAdapterStore geowaveInternalAdapterStore;
 
 	private DataStatisticsStore geowaveStatisticsStore;
@@ -271,9 +271,10 @@ public class GeoWaveRasterReader extends
 		if (crs != null) {
 			return crs;
 		}
-		
-		AdapterToIndexMapping adapterMapping = geowaveAdapterIndexMappingStore.getIndicesForAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName)));
+
+		AdapterToIndexMapping adapterMapping = geowaveAdapterIndexMappingStore
+				.getIndicesForAdapter(getInternalAdapterId(new ByteArrayId(
+						coverageName)));
 		PrimaryIndex[] indices = adapterMapping.getIndices(geowaveIndexStore);
 
 		if (indices != null && indices.length > 0) {
@@ -343,9 +344,10 @@ public class GeoWaveRasterReader extends
 			LOGGER.warn("Unable to find data adapter for '" + coverageName + "'");
 			return null;
 		}
-		
-		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName))).getAdapter();
+
+		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(
+				getInternalAdapterId(new ByteArrayId(
+						coverageName))).getAdapter();
 		final Set<String> var = ((RasterDataAdapter) adapter).getMetadata().keySet();
 		return var.toArray(new String[var.size()]);
 	}
@@ -366,9 +368,10 @@ public class GeoWaveRasterReader extends
 			return null;
 		}
 
-		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName))).getAdapter();
-	
+		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(
+				getInternalAdapterId(new ByteArrayId(
+						coverageName))).getAdapter();
+
 		return ((RasterDataAdapter) adapter).getMetadata().get(
 				name);
 	}
@@ -379,9 +382,10 @@ public class GeoWaveRasterReader extends
 		Utilities.ensureNonNull(
 				"coverageName",
 				coverageName);
-		
-		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName))).getAdapter();
+
+		final DataAdapter<?> adapter = geowaveAdapterStore.getAdapter(
+				getInternalAdapterId(new ByteArrayId(
+						coverageName))).getAdapter();
 		return (adapter != null) && (adapter instanceof RasterDataAdapter);
 	}
 
@@ -645,8 +649,9 @@ public class GeoWaveRasterReader extends
 		final ImageReadParam readP = new ImageReadParam();
 		final Integer imageChoice;
 
-		final RasterDataAdapter adapter = (RasterDataAdapter) geowaveAdapterStore.getAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName))).getAdapter();
+		final RasterDataAdapter adapter = (RasterDataAdapter) geowaveAdapterStore.getAdapter(
+				getInternalAdapterId(new ByteArrayId(
+						coverageName))).getAdapter();
 		if (pixelDimension != null) {
 			try {
 				synchronized (this) {
@@ -817,8 +822,8 @@ public class GeoWaveRasterReader extends
 			final RasterDataAdapter adapter,
 			final Query query,
 			final double[] targetResolutionPerDimension ) {
-		final AdapterToIndexMapping adapterIndexMapping = geowaveAdapterIndexMappingStore.getIndicesForAdapter(getInternalAdapterId(adapter
-				.getAdapterId()));
+		final AdapterToIndexMapping adapterIndexMapping = geowaveAdapterIndexMappingStore
+				.getIndicesForAdapter(getInternalAdapterId(adapter.getAdapterId()));
 		final PrimaryIndex[] indices = adapterIndexMapping.getIndices(geowaveIndexStore);
 		// just work on the first spatial only index that contains this adapter
 		// ID
@@ -1085,8 +1090,9 @@ public class GeoWaveRasterReader extends
 			return null;
 		}
 
-		final RasterDataAdapter adapter = (RasterDataAdapter) geowaveAdapterStore.getAdapter(getInternalAdapterId(new ByteArrayId(
-				coverageName)));
+		final RasterDataAdapter adapter = (RasterDataAdapter) geowaveAdapterStore
+				.getAdapter(getInternalAdapterId(new ByteArrayId(
+						coverageName)));
 		final GridEnvelope gridEnvelope = getOriginalGridRange();
 		return new ImageLayout().setMinX(
 				gridEnvelope.getLow(0)).setMinY(
@@ -1187,11 +1193,11 @@ public class GeoWaveRasterReader extends
 		return -1;
 	}
 
-	private short getInternalAdapterId(ByteArrayId adapterId) {
-		
+	private short getInternalAdapterId(
+			ByteArrayId adapterId ) {
+
 		return geowaveInternalAdapterStore.getInternalAdapterId(adapterId);
-		
+
 	}
-	
-	
+
 }

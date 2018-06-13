@@ -49,7 +49,10 @@ import mil.nga.giat.geowave.analytic.partitioner.Partitioner.PartitionData;
 import mil.nga.giat.geowave.core.geotime.ingest.SpatialDimensionalityTypeProvider;
 import mil.nga.giat.geowave.core.geotime.ingest.SpatialOptions;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.GeoWaveStoreFinder;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
+import mil.nga.giat.geowave.core.store.memory.MemoryStoreFactoryFamily;
+import mil.nga.giat.geowave.core.store.metadata.InternalAdapterStoreImpl;
 import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 import mil.nga.giat.geowave.mapreduce.JobContextAdapterStore;
 import mil.nga.giat.geowave.mapreduce.JobContextInternalAdapterStore;
@@ -61,12 +64,15 @@ public class NNMapReduceTest
 	MapDriver<GeoWaveInputKey, Object, PartitionDataWritable, AdapterWithObjectWritable> mapDriver;
 	ReduceDriver<PartitionDataWritable, AdapterWithObjectWritable, Text, Text> reduceDriver;
 	SimpleFeatureType ftype;
-	short internalAdapterId = 1234;
+	short internalAdapterId;
 	final GeometryFactory factory = new GeometryFactory();
 
 	@Before
 	public void setUp()
 			throws IOException {
+		GeoWaveStoreFinder.getRegisteredStoreFactoryFamilies().put(
+				"memory",
+				new MemoryStoreFactoryFamily());
 		final NNMapReduce.NNMapper<SimpleFeature> nnMapper = new NNMapReduce.NNMapper<SimpleFeature>();
 		final NNMapReduce.NNReducer<SimpleFeature, Text, Text, Boolean> nnReducer = new NNMapReduce.NNSimpleFeatureIDOutputReducer();
 
@@ -111,7 +117,8 @@ public class NNMapReduceTest
 		JobContextAdapterStore.addDataAdapter(
 				mapDriver.getConfiguration(),
 				adapter);
-
+		internalAdapterId = InternalAdapterStoreImpl.getInitialInternalAdapterId(
+				adapter.getAdapterId());
 		JobContextAdapterStore.addDataAdapter(
 				reduceDriver.getConfiguration(),
 				adapter);
@@ -231,7 +238,6 @@ public class NNMapReduceTest
 		mapDriver.addInput(
 				inputKey4,
 				feature4);
-
 		final List<Pair<PartitionDataWritable, AdapterWithObjectWritable>> mapperResults = mapDriver.run();
 		assertEquals(
 				10, // includes overlap

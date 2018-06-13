@@ -8,15 +8,16 @@ import mil.nga.giat.geowave.adapter.raster.adapter.merge.ServerMergeStrategy;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.persist.Persistable;
 
-public class ClientMergeableRasterTile <T extends Persistable> extends
-RasterTile<T>
+public class ClientMergeableRasterTile<T extends Persistable> extends
+		RasterTile<T>
 {
-	 private RasterTileMergeStrategy<T> mergeStrategy;
-	 private SampleModel sampleModel;
+	private RasterTileMergeStrategy<T> mergeStrategy;
+	private SampleModel sampleModel;
 
-	 public ClientMergeableRasterTile() {}
-	 
-	public ClientMergeableRasterTile(RasterTileMergeStrategy<T> mergeStrategy,
+	public ClientMergeableRasterTile() {}
+
+	public ClientMergeableRasterTile(
+			RasterTileMergeStrategy<T> mergeStrategy,
 			SampleModel sampleModel,
 			final DataBuffer dataBuffer,
 			final T metadata ) {
@@ -24,7 +25,7 @@ RasterTile<T>
 				dataBuffer,
 				metadata);
 		this.mergeStrategy = mergeStrategy;
-		
+
 		this.sampleModel = sampleModel;
 	}
 

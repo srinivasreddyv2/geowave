@@ -132,7 +132,9 @@ public class AdapterBasedPartitionerTest
 				ftype);
 		dataAdapter.init();
 		InternalAdapterStore internalDataStore = pluginOptions.createInternalAdapterStore();
-		InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper(dataAdapter, internalDataStore.addAdapterId(dataAdapter.getAdapterId()));
+		InternalDataAdapter<?> internalDataAdapter = new InternalDataAdapterWrapper(
+				dataAdapter,
+				internalDataStore.addAdapterId(dataAdapter.getAdapterId()));
 		store.getDataStoreOptions().createAdapterStore().addAdapter(
 				internalDataAdapter);
 		((ParameterEnum<PersistableStore>) StoreParam.INPUT_STORE).getHelper().setValue(
