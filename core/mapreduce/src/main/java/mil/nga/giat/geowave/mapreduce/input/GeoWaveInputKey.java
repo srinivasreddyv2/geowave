@@ -177,36 +177,26 @@ public class GeoWaveInputKey implements
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((dataId == null) ? 0 : dataId.hashCode());
 		result = prime * result + ((internalAdapterId == null) ? 0 : internalAdapterId.hashCode());
-		result = (prime * result) + ((dataId == null) ? 0 : dataId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(
-			final Object obj ) {
-		if (this == obj) {
-			return true;
+			Object obj ) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		GeoWaveInputKey other = (GeoWaveInputKey) obj;
+		if (dataId == null) {
+			if (other.dataId != null) return false;
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final GeoWaveInputKey other = (GeoWaveInputKey) obj;
+		else if (!dataId.equals(other.dataId)) return false;
 		if (internalAdapterId == null) {
 			if (other.internalAdapterId != null) return false;
 		}
 		else if (!internalAdapterId.equals(other.internalAdapterId)) return false;
-		if (dataId == null) {
-			if (other.dataId != null) {
-				return false;
-			}
-		}
-		else if (!dataId.equals(other.dataId)) {
-			return false;
-		}
 		return true;
 	}
 

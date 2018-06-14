@@ -426,10 +426,10 @@ public class CassandraOperations implements
 							ByteBuffer.wrap(row.getSortKey()))).and(
 					QueryBuilder.eq(
 							CassandraField.GW_ADAPTER_ID_KEY.getFieldName(),
-						row.getInternalAdapterId())).and(
+							row.getInternalAdapterId())).and(
 					QueryBuilder.eq(
 							CassandraField.GW_DATA_ID_KEY.getFieldName(),
-						ByteBuffer.wrap(row.getDataId()))).and(
+							ByteBuffer.wrap(row.getDataId()))).and(
 					QueryBuilder.eq(
 							CassandraField.GW_FIELD_VISIBILITY_KEY.getFieldName(),
 							ByteBuffer.wrap(row.getFieldValues()[i].getVisibility()))));
@@ -581,7 +581,8 @@ public class CassandraOperations implements
 						create.addPartitionKey(
 								PRIMARY_ID_KEY,
 								DataType.blob());
-						if (MetadataType.STATS.equals(metadataType) || MetadataType.INTERNAL_ADAPTER.equals(metadataType)) {
+						if (MetadataType.STATS.equals(metadataType)
+								|| MetadataType.INTERNAL_ADAPTER.equals(metadataType)) {
 							create.addClusteringColumn(
 									SECONDARY_ID_KEY,
 									DataType.blob());

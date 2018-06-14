@@ -99,7 +99,7 @@ public class AccumuloDataStoreStatsTest
 	IndexStore indexStore;
 
 	PersistentAdapterStore adapterStore;
-	
+
 	InternalAdapterStore internalAdapterStore;
 
 	DataStatisticsStore statsStore;
@@ -145,7 +145,7 @@ public class AccumuloDataStoreStatsTest
 		secondaryIndexDataStore = new AccumuloSecondaryIndexDataStore(
 				accumuloOperations,
 				options);
-		
+
 		internalAdapterStore = new InternalAdapterStoreImpl(
 				accumuloOperations);
 
@@ -293,7 +293,7 @@ public class AccumuloDataStoreStatsTest
 					3,
 					count);
 		}
-		
+
 		short internalAdapterId = internalAdapterStore.getInternalAdapterId(adapter.getAdapterId());
 		CountDataStatistics<?> countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
 				internalAdapterId,
@@ -540,7 +540,7 @@ public class AccumuloDataStoreStatsTest
 				"aaa",
 				"bbb");
 		assertNull(countStats);
-		
+
 		try (IndexWriter<TestGeometry> indexWriter = mockDataStore.createWriter(
 				adapter,
 				index)) {
@@ -840,7 +840,7 @@ public class AccumuloDataStoreStatsTest
 		protected GeoBoundingBoxStatistics() {
 			super();
 		}
-		
+
 		public GeoBoundingBoxStatistics(
 				final ByteArrayId dataAdapterId ) {
 			super(

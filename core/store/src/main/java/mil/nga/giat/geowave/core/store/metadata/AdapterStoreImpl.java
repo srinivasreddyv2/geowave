@@ -1,5 +1,8 @@
 package mil.nga.giat.geowave.core.store.metadata;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
@@ -26,6 +29,8 @@ public class AdapterStoreImpl extends
 		PersistentAdapterStore
 {
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(AdapterStoreImpl.class);
+
 	public AdapterStoreImpl(
 			final DataStoreOperations operations,
 			final DataStoreOptions options ) {
@@ -44,6 +49,10 @@ public class AdapterStoreImpl extends
 	@Override
 	public InternalDataAdapter<?> getAdapter(
 			final Short internalAdapterId ) {
+		if (internalAdapterId == null) {
+			LOGGER.warn("Cannot get adapter for null internal ID");
+			return null;
+		}
 		return getObject(
 				new ByteArrayId(
 						ByteArrayUtils.shortToByteArray(internalAdapterId)),
@@ -68,6 +77,10 @@ public class AdapterStoreImpl extends
 	@Override
 	public boolean adapterExists(
 			final Short internalAdapterId ) {
+		if (internalAdapterId == null) {
+			LOGGER.warn("Cannot check existence of adapter for null internal ID");
+			return false;
+		}
 		return objectExists(
 				new ByteArrayId(
 						ByteArrayUtils.shortToByteArray(internalAdapterId)),
@@ -89,6 +102,10 @@ public class AdapterStoreImpl extends
 	@Override
 	public void removeAdapter(
 			final Short internalAdapterId ) {
+		if (internalAdapterId == null) {
+			LOGGER.warn("Cannot remove adapter for null internal ID");
+			return;
+		}
 		remove(new ByteArrayId(
 				ByteArrayUtils.shortToByteArray(internalAdapterId)));
 	}

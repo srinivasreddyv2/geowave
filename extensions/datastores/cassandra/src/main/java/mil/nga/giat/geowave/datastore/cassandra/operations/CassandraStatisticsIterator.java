@@ -40,7 +40,8 @@ public class CassandraStatisticsIterator implements
 			}
 			else {
 				if (statEntry.getStatisticsId().equals(
-						currentStatistics.getStatisticsId()) && Short.valueOf(statEntry.getInternalDataAdapterId()).equals(
+						currentStatistics.getStatisticsId()) && Short.valueOf(
+						statEntry.getInternalDataAdapterId()).equals(
 						currentStatistics.getInternalDataAdapterId())) {
 					currentStatistics.merge(statEntry);
 				}
@@ -59,9 +60,9 @@ public class CassandraStatisticsIterator implements
 		final DataStatistics<?> stats = (DataStatistics<?>) PersistenceUtils.fromBinary(entry.getValue());
 
 		if (stats != null) {
-			stats.setInternalDataAdapterId(ByteArrayUtils.byteArrayToShort(entry.getSecondaryId())
-					);
-			stats.setStatisticsId(new ByteArrayId(entry.getPrimaryId()));
+			stats.setInternalDataAdapterId(ByteArrayUtils.byteArrayToShort(entry.getSecondaryId()));
+			stats.setStatisticsId(new ByteArrayId(
+					entry.getPrimaryId()));
 		}
 
 		return stats;

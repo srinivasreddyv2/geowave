@@ -74,126 +74,118 @@ public class ConvexHullJobRunnerTest
 				BasicFeatureTypes.DEFAULT_NAMESPACE,
 				ClusteringUtils.CLUSTERING_CRS).getFeatureType();
 
-		hullRunner.setMapReduceIntegrater(
-				new MapReduceIntegration() {
-					@Override
-					public int submit(
-							final Configuration configuration,
-							final PropertyManagement runTimeProperties,
-							final GeoWaveAnalyticJobRunner tool )
-							throws Exception {
-						tool.setConf(
-								configuration);
-						((ParameterHelper<Object>) StoreParam.INPUT_STORE.getHelper()).setValue(
-								configuration,
+		hullRunner.setMapReduceIntegrater(new MapReduceIntegration() {
+			@Override
+			public int submit(
+					final Configuration configuration,
+					final PropertyManagement runTimeProperties,
+					final GeoWaveAnalyticJobRunner tool )
+					throws Exception {
+				tool.setConf(configuration);
+				((ParameterHelper<Object>) StoreParam.INPUT_STORE.getHelper()).setValue(
+						configuration,
+						ConvexHullMapReduce.class,
+						StoreParam.INPUT_STORE.getHelper().getValue(
+								runTimeProperties));
+				return tool.run(new String[] {});
+			}
+
+			@Override
+			public Counters waitForCompletion(
+					final Job job )
+					throws ClassNotFoundException,
+					IOException,
+					InterruptedException {
+
+				Assert.assertEquals(
+						SequenceFileInputFormat.class,
+						job.getInputFormatClass());
+				Assert.assertEquals(
+						10,
+						job.getNumReduceTasks());
+				final ScopedJobConfiguration configWrapper = new ScopedJobConfiguration(
+						job.getConfiguration(),
+						ConvexHullMapReduce.class);
+				Assert.assertEquals(
+						"file://foo/bin",
+						job.getConfiguration().get(
+								"mapred.input.dir"));
+				final PersistableStore persistableStore = (PersistableStore) StoreParam.INPUT_STORE
+						.getHelper()
+						.getValue(
+								job,
 								ConvexHullMapReduce.class,
-								StoreParam.INPUT_STORE.getHelper().getValue(
-										runTimeProperties));
-						return tool.run(
-								new String[] {});
-					}
+								null);
+				final IndexStore indexStore = persistableStore.getDataStoreOptions().createIndexStore();
+				try {
+					Assert.assertTrue(indexStore.indexExists(new ByteArrayId(
+							"spatial")));
 
-					@Override
-					public Counters waitForCompletion(
-							final Job job )
-							throws ClassNotFoundException,
-							IOException,
-							InterruptedException {
+					final PersistableStore persistableAdapterStore = (PersistableStore) StoreParam.INPUT_STORE
+							.getHelper()
+							.getValue(
+									job,
+									ConvexHullMapReduce.class,
+									null);
+					final PersistentAdapterStore adapterStore = persistableAdapterStore
+							.getDataStoreOptions()
+							.createAdapterStore();
 
-						Assert.assertEquals(
-								SequenceFileInputFormat.class,
-								job.getInputFormatClass());
-						Assert.assertEquals(
-								10,
-								job.getNumReduceTasks());
-						final ScopedJobConfiguration configWrapper = new ScopedJobConfiguration(
-								job.getConfiguration(),
-								ConvexHullMapReduce.class);
-						Assert.assertEquals(
-								"file://foo/bin",
-								job.getConfiguration().get(
-										"mapred.input.dir"));
-						final PersistableStore persistableStore = (PersistableStore) StoreParam.INPUT_STORE
-								.getHelper()
-								.getValue(
-										job,
-										ConvexHullMapReduce.class,
-										null);
-						final IndexStore indexStore = persistableStore.getDataStoreOptions().createIndexStore();
-						try {
-							Assert.assertTrue(
-									indexStore.indexExists(
-											new ByteArrayId(
-													"spatial")));
+					Assert.assertTrue(adapterStore.adapterExists(persistableAdapterStore
+							.getDataStoreOptions()
+							.createInternalAdapterStore()
+							.getInternalAdapterId(
+									new ByteArrayId(
+											"centroidtest"))));
 
-							final PersistableStore persistableAdapterStore = (PersistableStore) StoreParam.INPUT_STORE
-									.getHelper()
-									.getValue(
-											job,
-											ConvexHullMapReduce.class,
-											null);
-							final PersistentAdapterStore adapterStore = persistableAdapterStore
-									.getDataStoreOptions()
-									.createAdapterStore();
+					final Projection<?> projection = configWrapper.getInstance(
+							HullParameters.Hull.PROJECTION_CLASS,
+							Projection.class,
+							SimpleFeatureProjection.class);
 
-							Assert.assertTrue(
-									adapterStore.adapterExists(
-											persistableAdapterStore
-													.getDataStoreOptions()
-													.createInternalAdapterStore()
-													.getInternalAdapterId(
-															new ByteArrayId(
-																	"centroidtest"))));
+					Assert.assertEquals(
+							SimpleFeatureProjection.class,
+							projection.getClass());
 
-							final Projection<?> projection = configWrapper.getInstance(
-									HullParameters.Hull.PROJECTION_CLASS,
-									Projection.class,
-									SimpleFeatureProjection.class);
+				}
+				catch (final InstantiationException e) {
+					throw new IOException(
+							"Unable to configure system",
+							e);
+				}
+				catch (final IllegalAccessException e) {
+					throw new IOException(
+							"Unable to configure system",
+							e);
+				}
 
-							Assert.assertEquals(
-									SimpleFeatureProjection.class,
-									projection.getClass());
+				Assert.assertEquals(
+						10,
+						job.getNumReduceTasks());
+				Assert.assertEquals(
+						2,
+						configWrapper.getInt(
+								CentroidParameters.Centroid.ZOOM_LEVEL,
+								-1));
+				return new Counters();
+			}
 
-						}
-						catch (final InstantiationException e) {
-							throw new IOException(
-									"Unable to configure system",
-									e);
-						}
-						catch (final IllegalAccessException e) {
-							throw new IOException(
-									"Unable to configure system",
-									e);
-						}
+			@Override
+			public Job getJob(
+					final Tool tool )
+					throws IOException {
+				return new Job(
+						tool.getConf());
+			}
 
-						Assert.assertEquals(
-								10,
-								job.getNumReduceTasks());
-						Assert.assertEquals(
-								2,
-								configWrapper.getInt(
-										CentroidParameters.Centroid.ZOOM_LEVEL,
-										-1));
-						return new Counters();
-					}
-
-					@Override
-					public Job getJob(
-							final Tool tool )
-							throws IOException {
-						return new Job(
-								tool.getConf());
-					}
-
-					@Override
-					public Configuration getConfiguration(
-							final PropertyManagement runTimeProperties )
-							throws IOException {
-						return new Configuration();
-					}
-				});
-		hullRunner.setInputFormatConfiguration(
-				new SequenceFileInputFormatConfiguration());
+			@Override
+			public Configuration getConfiguration(
+					final PropertyManagement runTimeProperties )
+					throws IOException {
+				return new Configuration();
+			}
+		});
+		hullRunner.setInputFormatConfiguration(new SequenceFileInputFormatConfiguration());
 
 		runTimeProperties.store(
 				MRConfig.HDFS_BASE_DIR,
@@ -219,12 +211,10 @@ public class ConvexHullJobRunnerTest
 		GeoWaveStoreFinder.getRegisteredStoreFactoryFamilies().put(
 				"memory",
 				new MemoryStoreFactoryFamily());
-		pluginOptions.selectPlugin(
-				"memory");
+		pluginOptions.selectPlugin("memory");
 		final MemoryRequiredOptions opts = (MemoryRequiredOptions) pluginOptions.getFactoryOptions();
 		final String namespace = "test_" + getClass().getName() + "_" + name.getMethodName();
-		opts.setGeowaveNamespace(
-				namespace);
+		opts.setGeowaveNamespace(namespace);
 		final PersistableStore store = new PersistableStore(
 				pluginOptions);
 
@@ -233,10 +223,8 @@ public class ConvexHullJobRunnerTest
 				store);
 		final FeatureDataAdapter adapter = new FeatureDataAdapter(
 				ftype);
-		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(
-				new SpatialOptions());
-		adapter.init(
-				index);
+		final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(new SpatialOptions());
+		adapter.init(index);
 		pluginOptions.createAdapterStore().addAdapter(
 				new InternalDataAdapterWrapper<>(
 						adapter,
@@ -248,7 +236,6 @@ public class ConvexHullJobRunnerTest
 	public void test()
 			throws Exception {
 
-		hullRunner.run(
-				runTimeProperties);
+		hullRunner.run(runTimeProperties);
 	}
 }

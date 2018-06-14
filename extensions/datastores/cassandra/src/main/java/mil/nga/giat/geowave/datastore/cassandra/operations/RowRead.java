@@ -25,17 +25,6 @@ public class RowRead
 
 	protected RowRead(
 			final PreparedStatement preparedRead,
-			final CassandraOperations operations ) {
-		this(
-				preparedRead,
-				operations,
-				null,
-				null,
-				null);
-	}
-
-	protected RowRead(
-			final PreparedStatement preparedRead,
 			final CassandraOperations operations,
 			final byte[] partitionKey,
 			final byte[] sortKey,

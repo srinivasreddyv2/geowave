@@ -132,7 +132,9 @@ public class DynamoDBOperations implements
 					public boolean apply(
 							final DynamoDBRow input ) {
 						return dataIdsSet.contains(new ByteArrayId(
-								input.getDataId())) && Short.valueOf(input.getInternalAdapterId()).equals(adapterIdObj);
+								input.getDataId())) && Short.valueOf(
+								input.getInternalAdapterId()).equals(
+								adapterIdObj);
 					}
 				});
 	}

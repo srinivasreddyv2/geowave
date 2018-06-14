@@ -40,8 +40,8 @@ public class DynamoDBDataStore extends
 				new SecondaryIndexStoreImpl(),
 				operations,
 				operations.getOptions().getBaseOptions(),
-				new InternalAdapterStoreImpl(operations)
-				);
+				new InternalAdapterStoreImpl(
+						operations));
 	}
 
 	public DynamoDBDataStore(
@@ -52,7 +52,7 @@ public class DynamoDBDataStore extends
 			final SecondaryIndexDataStore secondaryIndexDataStore,
 			final DynamoDBOperations operations,
 			final DataStoreOptions options,
-			final InternalAdapterStore internalAdapterStore) {
+			final InternalAdapterStore internalAdapterStore ) {
 		super(
 				indexStore,
 				adapterStore,

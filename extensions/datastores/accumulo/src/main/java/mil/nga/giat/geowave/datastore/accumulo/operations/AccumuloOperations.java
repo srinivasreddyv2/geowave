@@ -1077,9 +1077,11 @@ public class AccumuloOperations implements
 					&& (params.getAggregation().getLeft() != null)) {
 				iteratorSettings.addOption(
 						AggregationIterator.ADAPTER_OPTION_NAME,
-						ByteArrayUtils.byteArrayToString(PersistenceUtils.toBinary((DataAdapter<?>)params.getAggregation().getLeft())));
+						ByteArrayUtils.byteArrayToString(PersistenceUtils.toBinary((DataAdapter<?>) params
+								.getAggregation()
+								.getLeft())));
 			}
-			final Aggregation aggr = (Aggregation)params.getAggregation().getRight();
+			final Aggregation aggr = (Aggregation) params.getAggregation().getRight();
 			iteratorSettings.addOption(
 					AggregationIterator.AGGREGATION_OPTION_NAME,
 					ByteArrayUtils.byteArrayToString(PersistenceUtils.toClassId(aggr)));
@@ -1187,7 +1189,7 @@ public class AccumuloOperations implements
 			final BaseReaderParams params,
 			final ScannerBase scanner ) {
 		if ((params.getFieldSubsets() != null) && !params.isAggregation()) {
-			final List<String> fieldIds = (List<String>)params.getFieldSubsets().getLeft();
+			final List<String> fieldIds = (List<String>) params.getFieldSubsets().getLeft();
 			final DataAdapter<?> associatedAdapter = (DataAdapter<?>) params.getFieldSubsets().getRight();
 			if ((fieldIds != null) && (!fieldIds.isEmpty()) && (associatedAdapter != null)) {
 				final IteratorSetting iteratorSetting = AttributeSubsettingIterator.getIteratorSetting();

@@ -88,8 +88,12 @@ public class KMeansRunner
 						"Unable to set jar location in spark configuration",
 						e);
 			}
-			
-			session = GeoWaveSparkConf.createSessionFromParams(appName, master, host, jar);
+
+			session = GeoWaveSparkConf.createSessionFromParams(
+					appName,
+					master,
+					host,
+					jar);
 
 			jsc = JavaSparkContext.fromSparkContext(session.sparkContext());
 		}
@@ -156,9 +160,10 @@ public class KMeansRunner
 		// This is required due to some funkiness in GeoWaveInputFormat
 		final PersistentAdapterStore adapterStore = inputDataStore.createAdapterStore();
 		final InternalAdapterStore internalAdapterStore = inputDataStore.createInternalAdapterStore();
-		
-		//TODO remove this, but in case there is trouble this is here for reference temporarily
-		//queryOptions.getAdaptersArray(adapterStore);
+
+		// TODO remove this, but in case there is trouble this is here for
+		// reference temporarily
+		// queryOptions.getAdaptersArray(adapterStore);
 
 		// Add a spatial filter if requested
 		DistributableQuery query = null;
@@ -175,8 +180,9 @@ public class KMeansRunner
 				}
 
 				short internalAdpaterId = internalAdapterStore.getInternalAdapterId(cqlAdapterId);
-				
-				final DataAdapter<?> adapter = adapterStore.getAdapter(internalAdpaterId).getAdapter();
+
+				final DataAdapter<?> adapter = adapterStore.getAdapter(
+						internalAdpaterId).getAdapter();
 
 				if (adapter instanceof FeatureDataAdapter) {
 					final String geometryAttribute = ((FeatureDataAdapter) adapter)

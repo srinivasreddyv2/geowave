@@ -149,8 +149,7 @@ public class DynamoDBRow extends
 	public static byte[] getRangeKey(
 			final GeoWaveKey key ) {
 		final byte[] sortKey = DynamoDBUtils.encodeSortableBase64(key.getSortKey());
-		final ByteBuffer buffer = ByteBuffer.allocate(sortKey.length + 
-				key.getDataId().length + 18);
+		final ByteBuffer buffer = ByteBuffer.allocate(sortKey.length + key.getDataId().length + 18);
 		buffer.put(ByteArrayUtils.shortToByteArray(key.getInternalAdapterId()));
 		buffer.put(sortKey);
 		buffer.put(key.getDataId());

@@ -88,7 +88,7 @@ public class AccumuloDataStore extends
 			final AccumuloSecondaryIndexDataStore secondaryIndexDataStore,
 			final AdapterIndexMappingStore indexMappingStore,
 			final AccumuloOperations accumuloOperations,
-			final InternalAdapterStore adapterMappingStore) {
+			final InternalAdapterStore adapterMappingStore ) {
 		this(
 				indexStore,
 				adapterStore,
@@ -108,7 +108,7 @@ public class AccumuloDataStore extends
 			final AdapterIndexMappingStore indexMappingStore,
 			final AccumuloOperations accumuloOperations,
 			final AccumuloOptions accumuloOptions,
-			final InternalAdapterStore adapterMappingStore) {
+			final InternalAdapterStore adapterMappingStore ) {
 		super(
 				indexStore,
 				adapterStore,

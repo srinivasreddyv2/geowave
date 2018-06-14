@@ -43,8 +43,9 @@ public class DynamoDBStatisticsIterator implements
 			}
 			else {
 				if (statEntry.getStatisticsId().equals(
-						currentStatistics.getStatisticsId()) && Short.valueOf(statEntry.getInternalDataAdapterId()).equals(
-								Short.valueOf(currentStatistics.getInternalDataAdapterId()))) {
+						currentStatistics.getStatisticsId()) && Short.valueOf(
+						statEntry.getInternalDataAdapterId()).equals(
+						Short.valueOf(currentStatistics.getInternalDataAdapterId()))) {
 					currentStatistics.merge(statEntry);
 				}
 				else {
@@ -68,7 +69,8 @@ public class DynamoDBStatisticsIterator implements
 
 		if (stats != null) {
 			stats.setInternalDataAdapterId(ByteArrayUtils.byteArrayToShort(DynamoDBUtils.getSecondaryId(entry)));
-			stats.setStatisticsId(new ByteArrayId(DynamoDBUtils.getPrimaryId(entry)));
+			stats.setStatisticsId(new ByteArrayId(
+					DynamoDBUtils.getPrimaryId(entry)));
 		}
 
 		return stats;

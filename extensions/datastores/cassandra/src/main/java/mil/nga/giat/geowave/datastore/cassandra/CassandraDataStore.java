@@ -51,7 +51,7 @@ public class CassandraDataStore extends
 			final SecondaryIndexDataStore secondaryIndexDataStore,
 			final CassandraOperations operations,
 			final CassandraOptions options,
-			final InternalAdapterStore internalAdapterStore) {
+			final InternalAdapterStore internalAdapterStore ) {
 		super(
 				indexStore,
 				adapterStore,

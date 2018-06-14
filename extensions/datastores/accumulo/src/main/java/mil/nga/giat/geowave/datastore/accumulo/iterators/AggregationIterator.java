@@ -171,8 +171,8 @@ public class AggregationIterator extends
 				startRowOfAggregation = currentRow;
 			}
 		}
-		else if (((Short)(persistenceEncoding.getInternalAdapterId())).equals(
-				(Short)(adapter.getInternalAdapterId()))) {
+		else if (((Short) (persistenceEncoding.getInternalAdapterId()))
+				.equals((Short) (adapter.getInternalAdapterId()))) {
 			final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
 			if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
 				((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(

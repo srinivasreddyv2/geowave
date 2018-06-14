@@ -69,10 +69,10 @@ public class BatchedRangeRead
 				boundRead.set(
 						CassandraField.GW_ADAPTER_ID_KEY.getBindMarkerName(),
 						internalAdapterIds,
-//						Lists.transform(
-//								adapterIds,
-//								new ByteArrayIdToByteBuffer()),
-//						TypeCodec.list(TypeCodec.blob()));
+						// Lists.transform(
+						// adapterIds,
+						// new ByteArrayIdToByteBuffer()),
+						// TypeCodec.list(TypeCodec.blob()));
 						TypeCodec.list(TypeCodec.smallInt()));
 				statements.add(boundRead);
 			}

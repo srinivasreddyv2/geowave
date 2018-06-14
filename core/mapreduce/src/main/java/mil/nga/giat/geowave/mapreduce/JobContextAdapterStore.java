@@ -65,18 +65,15 @@ public class JobContextAdapterStore implements
 	@Override
 	public void removeAdapter(
 			final ByteArrayId adapterId ) {
-		adapterCache.remove(
-				adapterId);
+		adapterCache.remove(adapterId);
 	}
 
 	@Override
 	public DataAdapter<?> getAdapter(
 			final ByteArrayId adapterId ) {
-		DataAdapter<?> adapter = adapterCache.get(
-				adapterId);
+		DataAdapter<?> adapter = adapterCache.get(adapterId);
 		if (adapter == null) {
-			adapter = getAdapterInternal(
-					adapterId);
+			adapter = getAdapterInternal(adapterId);
 		}
 		return adapter;
 	}
@@ -84,12 +81,10 @@ public class JobContextAdapterStore implements
 	@Override
 	public boolean adapterExists(
 			final ByteArrayId adapterId ) {
-		if (adapterCache.containsKey(
-				adapterId)) {
+		if (adapterCache.containsKey(adapterId)) {
 			return true;
 		}
-		final DataAdapter<?> adapter = getAdapterInternal(
-				adapterId);
+		final DataAdapter<?> adapter = getAdapterInternal(adapterId);
 		return adapter != null;
 	}
 
@@ -102,9 +97,7 @@ public class JobContextAdapterStore implements
 		if (adapter == null) {
 
 			// then try to get it from the persistent store
-			adapter = persistentAdapterStore.getAdapter(
-					internalAdapterStore.getInternalAdapterId(
-							adapterId));
+			adapter = persistentAdapterStore.getAdapter(internalAdapterStore.getInternalAdapterId(adapterId));
 		}
 
 		if (adapter != null) {
@@ -148,27 +141,25 @@ public class JobContextAdapterStore implements
 				CLASS,
 				context);
 		if ((userAdapters == null) || (userAdapters.length <= 0)) {
-			return IteratorUtils.toList(
-					IteratorUtils.transformedIterator(
-							getAdapters(),
-							new Transformer() {
+			return IteratorUtils.toList(IteratorUtils.transformedIterator(
+					getAdapters(),
+					new Transformer() {
 
-								@Override
-								public Object transform(
-										final Object input ) {
-									if (input instanceof DataAdapter) {
-										return ((DataAdapter) input).getAdapterId();
-									}
-									return input;
-								}
-							}));
+						@Override
+						public Object transform(
+								final Object input ) {
+							if (input instanceof DataAdapter) {
+								return ((DataAdapter) input).getAdapterId();
+							}
+							return input;
+						}
+					}));
 		}
 		else {
 			final List<ByteArrayId> retVal = new ArrayList<ByteArrayId>(
 					userAdapters.length);
 			for (final DataAdapter<?> adapter : userAdapters) {
-				retVal.add(
-						adapter.getAdapterId());
+				retVal.add(adapter.getAdapterId());
 			}
 			return retVal;
 		}

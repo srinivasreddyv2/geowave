@@ -123,8 +123,7 @@ import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 public class CentroidManagerGeoWave<T> implements
 		CentroidManager<T>
 {
-	final static Logger LOGGER = LoggerFactory.getLogger(
-			CentroidManagerGeoWave.class);
+	final static Logger LOGGER = LoggerFactory.getLogger(CentroidManagerGeoWave.class);
 	private static final ParameterEnum<?>[] MY_PARAMS = new ParameterEnum[] {
 		StoreParameters.StoreParam.INPUT_STORE,
 		GlobalParameters.Global.BATCH_ID,
@@ -161,9 +160,8 @@ public class CentroidManagerGeoWave<T> implements
 		this.dataStore = dataStore;
 		this.indexStore = indexStore;
 		this.centroidDataTypeId = centroidDataTypeId;
-		index = (PrimaryIndex) indexStore.getIndex(
-				new ByteArrayId(
-						indexId));
+		index = (PrimaryIndex) indexStore.getIndex(new ByteArrayId(
+				indexId));
 		adapter = (GeotoolsFeatureDataAdapter) adapterStore.getAdapter(
 				centroidInternalAdapterId).getAdapter();
 	}
@@ -177,8 +175,7 @@ public class CentroidManagerGeoWave<T> implements
 				configuration,
 				scope);
 		init(
-				Job.getInstance(
-						configuration),
+				Job.getInstance(configuration),
 				scope,
 				LOGGER);
 	}
@@ -227,10 +224,9 @@ public class CentroidManagerGeoWave<T> implements
 
 		}
 		catch (final Exception e1) {
-			LOGGER.error(
-					"Cannot instantiate " + GeoWaveConfiguratorBase.enumToConfKey(
-							this.getClass(),
-							CentroidParameters.Centroid.WRAPPER_FACTORY_CLASS));
+			LOGGER.error("Cannot instantiate " + GeoWaveConfiguratorBase.enumToConfKey(
+					this.getClass(),
+					CentroidParameters.Centroid.WRAPPER_FACTORY_CLASS));
 			throw new IOException(
 					e1);
 		}
@@ -245,8 +241,7 @@ public class CentroidManagerGeoWave<T> implements
 
 		batchId = scopedJob.getString(
 				GlobalParameters.Global.BATCH_ID,
-				Long.toString(
-						Calendar.getInstance().getTime().getTime()));
+				Long.toString(Calendar.getInstance().getTime().getTime()));
 
 		final String indexId = scopedJob.getString(
 				CentroidParameters.Centroid.INDEX_ID,
@@ -259,16 +254,13 @@ public class CentroidManagerGeoWave<T> implements
 
 		dataStore = store.getDataStoreOptions().createDataStore();
 		indexStore = store.getDataStoreOptions().createIndexStore();
-		index = (PrimaryIndex) indexStore.getIndex(
-				new ByteArrayId(
-						indexId));
+		index = (PrimaryIndex) indexStore.getIndex(new ByteArrayId(
+				indexId));
 		final PersistentAdapterStore adapterStore = store.getDataStoreOptions().createAdapterStore();
-		adapter = (GeotoolsFeatureDataAdapter) adapterStore
-				.getAdapter(
-						store.getDataStoreOptions().createInternalAdapterStore().getInternalAdapterId(
-								new ByteArrayId(
-										centroidDataTypeId)))
-				.getAdapter();
+		adapter = (GeotoolsFeatureDataAdapter) adapterStore.getAdapter(
+				store.getDataStoreOptions().createInternalAdapterStore().getInternalAdapterId(
+						new ByteArrayId(
+								centroidDataTypeId))).getAdapter();
 	}
 
 	/**
@@ -333,20 +325,16 @@ public class CentroidManagerGeoWave<T> implements
 				this.batchId,
 				null);
 		while (it.hasNext()) {
-			final AnalyticItemWrapper<T> item = centroidFactory.create(
-					it.next());
+			final AnalyticItemWrapper<T> item = centroidFactory.create(it.next());
 			final String groupID = item.getGroupID();
-			int pos = groups.indexOf(
-					groupID);
+			int pos = groups.indexOf(groupID);
 			if (pos < 0) {
 				pos = groups.size();
-				groups.add(
-						groupID);
+				groups.add(groupID);
 			}
 			// cache the first set
 			if (pos < capacity) {
-				getCentroidsForGroup(
-						groupID);
+				getCentroidsForGroup(groupID);
 			}
 		}
 		it.close();
@@ -373,15 +361,13 @@ public class CentroidManagerGeoWave<T> implements
 				batchID,
 				lookupGroup);
 		@SuppressWarnings("unchecked")
-		List<AnalyticItemWrapper<T>> centroids = (List<AnalyticItemWrapper<T>>) groupToCentroid.get(
-				gid);
+		List<AnalyticItemWrapper<T>> centroids = (List<AnalyticItemWrapper<T>>) groupToCentroid.get(gid);
 		if (centroids == null) {
 			centroids = groupID == null ? loadCentroids(
 					batchID,
-					null)
-					: loadCentroids(
-							batchID,
-							groupID);
+					null) : loadCentroids(
+					batchID,
+					groupID);
 			groupToCentroid.put(
 					gid,
 					centroids);
@@ -395,8 +381,7 @@ public class CentroidManagerGeoWave<T> implements
 			final String groupID )
 			throws IOException,
 			MatchingCentroidNotFoundException {
-		for (final AnalyticItemWrapper<T> centroid : this.getCentroidsForGroup(
-				groupID)) {
+		for (final AnalyticItemWrapper<T> centroid : this.getCentroidsForGroup(groupID)) {
 			if (centroid.getID().equals(
 					id)) {
 				return centroid;
@@ -420,9 +405,7 @@ public class CentroidManagerGeoWave<T> implements
 						batchID,
 						groupID);
 				while (it.hasNext()) {
-					centroids.add(
-							centroidFactory.create(
-									it.next()));
+					centroids.add(centroidFactory.create(it.next()));
 				}
 				return centroids;
 			}
@@ -441,8 +424,7 @@ public class CentroidManagerGeoWave<T> implements
 
 		}
 		catch (final IOException e) {
-			LOGGER.error(
-					"Cannot load centroids");
+			LOGGER.error("Cannot load centroids");
 			throw new IOException(
 					e);
 		}
@@ -463,8 +445,7 @@ public class CentroidManagerGeoWave<T> implements
 						new ByteArrayId(
 								dataId)))) {
 			if (it.hasNext()) {
-				return centroidFactory.create(
-						it.next());
+				return centroidFactory.create(it.next());
 			}
 		}
 		catch (final IOException e) {
@@ -482,10 +463,8 @@ public class CentroidManagerGeoWave<T> implements
 			throws IOException {
 
 		final FilterFactoryImpl factory = new FilterFactoryImpl();
-		final Expression expB1 = factory.property(
-				ClusterFeatureAttribute.BATCH_ID.attrName());
-		final Expression expB2 = factory.literal(
-				batchId);
+		final Expression expB1 = factory.property(ClusterFeatureAttribute.BATCH_ID.attrName());
+		final Expression expB2 = factory.literal(batchId);
 
 		final Filter batchIdFilter = factory.equal(
 				expB1,
@@ -494,10 +473,8 @@ public class CentroidManagerGeoWave<T> implements
 
 		Filter finalFilter = batchIdFilter;
 		if (groupID != null) {
-			final Expression exp1 = factory.property(
-					ClusterFeatureAttribute.GROUP_ID.attrName());
-			final Expression exp2 = factory.literal(
-					groupID);
+			final Expression exp1 = factory.property(ClusterFeatureAttribute.GROUP_ID.attrName());
+			final Expression exp2 = factory.literal(groupID);
 			// ignore levels for group IDS
 			finalFilter = factory.and(
 					factory.equal(
@@ -507,10 +484,8 @@ public class CentroidManagerGeoWave<T> implements
 					batchIdFilter);
 		}
 		else if (level > 0) {
-			final Expression exp1 = factory.property(
-					ClusterFeatureAttribute.ZOOM_LEVEL.attrName());
-			final Expression exp2 = factory.literal(
-					level);
+			final Expression exp1 = factory.property(ClusterFeatureAttribute.ZOOM_LEVEL.attrName());
+			final Expression exp2 = factory.literal(level);
 			finalFilter = factory.and(
 					factory.equal(
 							exp1,
@@ -541,20 +516,16 @@ public class CentroidManagerGeoWave<T> implements
 					adapter,
 					index)) {
 				while (it.hasNext()) {
-					final AnalyticItemWrapper<T> item = centroidFactory.create(
-							it.next());
-					item.setBatchID(
-							this.batchId);
+					final AnalyticItemWrapper<T> item = centroidFactory.create(it.next());
+					item.setBatchID(this.batchId);
 					count++;
 
-					indexWriter.write(
-							item.getWrappedItem());
+					indexWriter.write(item.getWrappedItem());
 				}
 				// indexWriter.close();
 			}
 		}
-		LOGGER.info(
-				"Transfer " + count + " centroids");
+		LOGGER.info("Transfer " + count + " centroids");
 	}
 
 	@Override
@@ -574,8 +545,7 @@ public class CentroidManagerGeoWave<T> implements
 		for (final String groupID : centroidGroups) {
 			status = fn.processGroup(
 					groupID,
-					getCentroidsForGroup(
-							groupID));
+					getCentroidsForGroup(groupID));
 			if (status != 0) {
 				break;
 			}
@@ -584,8 +554,7 @@ public class CentroidManagerGeoWave<T> implements
 	}
 
 	public static Collection<ParameterEnum<?>> getParameters() {
-		return Arrays.asList(
-				MY_PARAMS);
+		return Arrays.asList(MY_PARAMS);
 	}
 
 	public static void setParameters(
@@ -612,11 +581,10 @@ public class CentroidManagerGeoWave<T> implements
 			final Class<? extends Geometry> shapeClass ) {
 		return (adapter instanceof FeatureDataAdapter) ? new SimpleFeatureConverter(
 				(FeatureDataAdapter) adapter,
-				shapeClass)
-				: new NonSimpleFeatureConverter(
-						items.isEmpty() ? new String[0] : items.get(
-								0).getExtraDimensions(),
-						shapeClass);
+				shapeClass) : new NonSimpleFeatureConverter(
+				items.isEmpty() ? new String[0] : items.get(
+						0).getExtraDimensions(),
+				shapeClass);
 
 	}
 
@@ -633,12 +601,9 @@ public class CentroidManagerGeoWave<T> implements
 			final Class<? extends Geometry> shapeClass ) {
 		try {
 			final SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-			builder.setName(
-					featureType.getName().getLocalPart());
-			builder.setNamespaceURI(
-					featureType.getName().getNamespaceURI());
-			builder.setCRS(
-					featureType.getCoordinateReferenceSystem());
+			builder.setName(featureType.getName().getLocalPart());
+			builder.setNamespaceURI(featureType.getName().getNamespaceURI());
+			builder.setCRS(featureType.getCoordinateReferenceSystem());
 			for (final AttributeDescriptor attr : featureType.getAttributeDescriptors()) {
 				if (attr.getType() instanceof GeometryType) {
 					builder.add(
@@ -665,17 +630,14 @@ public class CentroidManagerGeoWave<T> implements
 	private static Geometry convert(
 			final Geometry value,
 			final Class<? extends Geometry> shapeClass ) {
-		if (shapeClass.isInstance(
-				value)) {
+		if (shapeClass.isInstance(value)) {
 			return value;
 		}
-		if (shapeClass.isAssignableFrom(
-				Point.class)) {
+		if (shapeClass.isAssignableFrom(Point.class)) {
 			return value.getCentroid();
 		}
 		final Geometry hull = value.convexHull();
-		if (shapeClass.isInstance(
-				hull)) {
+		if (shapeClass.isInstance(hull)) {
 			return hull;
 		}
 		return null;
@@ -829,10 +791,8 @@ public class CentroidManagerGeoWave<T> implements
 				centroids,
 				shapeClass);
 
-		final ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(
-				params);
-		newDataStore.createSchema(
-				converter.getFeatureType());
+		final ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+		newDataStore.createSchema(converter.getFeatureType());
 
 		final Transaction transaction = new DefaultTransaction(
 				"create");
@@ -844,22 +804,19 @@ public class CentroidManagerGeoWave<T> implements
 				transaction)) {
 			for (final AnalyticItemWrapper<T> item : centroids) {
 				final SimpleFeature copy = writer.next();
-				final SimpleFeature newFeature = converter.toSimpleFeature(
-						item);
+				final SimpleFeature newFeature = converter.toSimpleFeature(item);
 				for (final AttributeDescriptor attrD : newFeature.getFeatureType().getAttributeDescriptors()) {
 					// the null case should only happen for geometry
 					if (copy.getFeatureType().getDescriptor(
 							attrD.getName()) != null) {
 						copy.setAttribute(
 								attrD.getName(),
-								newFeature.getAttribute(
-										attrD.getName()));
+								newFeature.getAttribute(attrD.getName()));
 					}
 				}
 				// shape files force geometry name to be 'the_geom'. So isolate
 				// this change
-				copy.setDefaultGeometry(
-						newFeature.getDefaultGeometry());
+				copy.setDefaultGeometry(newFeature.getDefaultGeometry());
 				writer.write();
 			}
 		}

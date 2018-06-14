@@ -43,8 +43,7 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 
 	private final WritableDataAdapter<SimpleFeature> adapter = new FeatureDataAdapter(
 			GeonamesSimpleFeatureType.getInstance());
-	private final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(
-			new SpatialOptions());
+	private final PrimaryIndex index = new SpatialDimensionalityTypeProvider().createPrimaryIndex(new SpatialOptions());
 	private final VisibilityWriter<SimpleFeature> visibilityWriter = new UniformVisibilityWriter<SimpleFeature>(
 			new UnconstrainedVisibilityHandler<SimpleFeature, Object>());
 	private final AccumuloKeyValuePairGenerator<SimpleFeature> generator = new AccumuloKeyValuePairGenerator<SimpleFeature>(
@@ -52,8 +51,7 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 			// but is simple and will work in a majority of cases
 			new InternalDataAdapterWrapper<>(
 					adapter,
-					InternalAdapterStoreImpl.getInitialInternalAdapterId(
-							adapter.getAdapterId())),
+					InternalAdapterStoreImpl.getInitialInternalAdapterId(adapter.getAdapterId())),
 			index,
 			visibilityWriter);
 	private SimpleFeature simpleFeature;
@@ -74,10 +72,8 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 			throws IOException,
 			InterruptedException {
 
-		simpleFeature = parseGeonamesValue(
-				value);
-		adapter.init(
-				index);
+		simpleFeature = parseGeonamesValue(value);
+		adapter.init(index);
 
 		// build Geowave-formatted Accumulo [Key,Value] pairs
 		keyValuePairs = generator.constructKeyValuePairs(
@@ -101,10 +97,8 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 
 		geonameId = geonamesEntryTokens[0];
 		location = geonamesEntryTokens[1];
-		latitude = Double.parseDouble(
-				geonamesEntryTokens[4]);
-		longitude = Double.parseDouble(
-				geonamesEntryTokens[5]);
+		latitude = Double.parseDouble(geonamesEntryTokens[4]);
+		longitude = Double.parseDouble(geonamesEntryTokens[5]);
 
 		return buildSimpleFeature(
 				geonameId,
@@ -121,10 +115,9 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 
 		builder.set(
 				"geometry",
-				GeometryUtils.GEOMETRY_FACTORY.createPoint(
-						new Coordinate(
-								longitude,
-								latitude)));
+				GeometryUtils.GEOMETRY_FACTORY.createPoint(new Coordinate(
+						longitude,
+						latitude)));
 		builder.set(
 				"Latitude",
 				latitude);
@@ -135,8 +128,7 @@ public class SimpleFeatureToAccumuloKeyValueMapper extends
 				"Location",
 				location);
 
-		return builder.buildFeature(
-				featureId);
+		return builder.buildFeature(featureId);
 	}
 
 }

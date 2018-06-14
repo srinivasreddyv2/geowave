@@ -30,8 +30,7 @@ public class JobContextInternalAdapterStore implements
 		ByteArrayId adapterId = cache.inverse().get(
 				internalAdapterId);
 		if (adapterId == null) {
-			adapterId = getAdapterIdInternal(
-					internalAdapterId);
+			adapterId = getAdapterIdInternal(internalAdapterId);
 		}
 		return adapterId;
 	}
@@ -39,13 +38,10 @@ public class JobContextInternalAdapterStore implements
 	private ByteArrayId getAdapterIdInternal(
 			final short internalAdapterId ) {
 		// first try to get it from the job context
-		ByteArrayId adapterId = getAdapterIdFromJobContext(
-				internalAdapterId);
+		ByteArrayId adapterId = getAdapterIdFromJobContext(internalAdapterId);
 		if (adapterId == null) {
-
 			// then try to get it from the persistent store
-			adapterId = persistentInternalAdapterStore.getAdapterId(
-					internalAdapterId);
+			adapterId = persistentInternalAdapterStore.getAdapterId(internalAdapterId);
 		}
 
 		if (adapterId != null) {
@@ -59,12 +55,10 @@ public class JobContextInternalAdapterStore implements
 	private Short getInternalAdapterIdInternal(
 			final ByteArrayId adapterId ) {
 		// first try to get it from the job context
-		Short internalAdapterId = getInternalAdapterIdFromJobContext(
-				adapterId);
-		if (adapterId == null) {
+		Short internalAdapterId = getInternalAdapterIdFromJobContext(adapterId);
+		if (internalAdapterId == null) {
 			// then try to get it from the persistent store
-			internalAdapterId = persistentInternalAdapterStore.getInternalAdapterId(
-					adapterId);
+			internalAdapterId = persistentInternalAdapterStore.getInternalAdapterId(adapterId);
 		}
 
 		if (internalAdapterId != null) {
@@ -78,11 +72,9 @@ public class JobContextInternalAdapterStore implements
 	@Override
 	public Short getInternalAdapterId(
 			final ByteArrayId adapterId ) {
-		Short internalAdapterId = cache.get(
-				adapterId);
+		Short internalAdapterId = cache.get(adapterId);
 		if (internalAdapterId == null) {
-			internalAdapterId = getInternalAdapterIdInternal(
-					adapterId);
+			internalAdapterId = getInternalAdapterIdInternal(adapterId);
 		}
 		return internalAdapterId;
 	}
@@ -106,15 +98,13 @@ public class JobContextInternalAdapterStore implements
 	@Override
 	public short addAdapterId(
 			final ByteArrayId adapterId ) {
-		return persistentInternalAdapterStore.addAdapterId(
-				adapterId);
+		return persistentInternalAdapterStore.addAdapterId(adapterId);
 	}
 
 	@Override
 	public boolean remove(
 			final ByteArrayId adapterId ) {
-		return persistentInternalAdapterStore.remove(
-				adapterId);
+		return persistentInternalAdapterStore.remove(adapterId);
 	}
 
 	public static void addInternalDataAdapter(
@@ -131,8 +121,7 @@ public class JobContextInternalAdapterStore implements
 	@Override
 	public boolean remove(
 			final short internalAdapterId ) {
-		return persistentInternalAdapterStore.remove(
-				internalAdapterId);
+		return persistentInternalAdapterStore.remove(internalAdapterId);
 	}
 
 	@Override

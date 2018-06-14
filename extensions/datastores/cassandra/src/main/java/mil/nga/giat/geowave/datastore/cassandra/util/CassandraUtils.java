@@ -58,12 +58,12 @@ public class CassandraUtils
 					ByteBuffer.class);
 			retVal[i].set(
 					CassandraField.GW_NUM_DUPLICATES_KEY.getBindMarkerName(),
-					(byte)row.getNumberOfDuplicates(),
+					(byte) row.getNumberOfDuplicates(),
 					byte.class);
-//					ByteBuffer.wrap(new byte[] {
-//						(byte) row.getNumberOfDuplicates()
+			// ByteBuffer.wrap(new byte[] {
+			// (byte) row.getNumberOfDuplicates()
 			i++;
-//					ByteBuffer.class);
+			// ByteBuffer.class);
 		}
 		return retVal;
 	}

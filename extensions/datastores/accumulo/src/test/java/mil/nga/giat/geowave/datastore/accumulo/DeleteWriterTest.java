@@ -167,8 +167,9 @@ public class DeleteWriterTest
 		mockDataStore = new AccumuloDataStore(
 				operations,
 				options);
-		
-		internalAdapterStore = new InternalAdapterStoreImpl(operations);
+
+		internalAdapterStore = new InternalAdapterStoreImpl(
+				operations);
 
 		statsStore = new DataStatisticsStoreImpl(
 				operations,

@@ -86,7 +86,7 @@ public class AccumuloOptionsTest
 
 	IndexStore indexStore;
 
-	PersistentAdapterStore adapterStore;	
+	PersistentAdapterStore adapterStore;
 	InternalAdapterStore internalAdapterStore;
 
 	DataStatisticsStore statsStore;
@@ -130,7 +130,7 @@ public class AccumuloOptionsTest
 		secondaryIndexDataStore = new AccumuloSecondaryIndexDataStore(
 				accumuloOperations,
 				accumuloOptions);
-		
+
 		internalAdapterStore = new InternalAdapterStoreImpl(
 				accumuloOperations);
 
