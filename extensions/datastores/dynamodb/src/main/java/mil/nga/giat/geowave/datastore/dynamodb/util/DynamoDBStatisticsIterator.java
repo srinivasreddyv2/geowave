@@ -43,9 +43,8 @@ public class DynamoDBStatisticsIterator implements
 			}
 			else {
 				if (statEntry.getStatisticsId().equals(
-						currentStatistics.getStatisticsId()) && Short.valueOf(
-						statEntry.getInternalDataAdapterId()).equals(
-						Short.valueOf(currentStatistics.getInternalDataAdapterId()))) {
+						currentStatistics.getStatisticsId()) && statEntry.getInternalDataAdapterId().equals(
+						currentStatistics.getInternalDataAdapterId())) {
 					currentStatistics.merge(statEntry);
 				}
 				else {
