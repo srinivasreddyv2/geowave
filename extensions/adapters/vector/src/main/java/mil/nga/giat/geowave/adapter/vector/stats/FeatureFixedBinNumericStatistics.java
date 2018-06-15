@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -50,16 +50,27 @@ public class FeatureFixedBinNumericStatistics extends
 
 	public FeatureFixedBinNumericStatistics(
 			final String fieldName ) {
+		this(
+				null,
+				fieldName);
+	}
+
+	public FeatureFixedBinNumericStatistics(
+			final Short internalDataAdapterId,
+			final String fieldName ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName));
 	}
 
 	public FeatureFixedBinNumericStatistics(
+			final Short internalDataAdapterId,
 			final String fieldName,
 			final int bins ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName),
@@ -67,11 +78,13 @@ public class FeatureFixedBinNumericStatistics extends
 	}
 
 	public FeatureFixedBinNumericStatistics(
+			final Short internalDataAdapterId,
 			final String fieldName,
 			final int bins,
 			final double minValue,
 			final double maxValue ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName),
@@ -95,6 +108,7 @@ public class FeatureFixedBinNumericStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureFixedBinNumericStatistics(
+				internalDataAdapterId,
 				getFieldName());
 	}
 
@@ -177,8 +191,10 @@ public class FeatureFixedBinNumericStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
+				final Short internalDataAdapterId,
 				final String fieldName ) {
 			return new FeatureFixedBinNumericStatistics(
+					internalDataAdapterId,
 					fieldName,
 					bins,
 					minValue,

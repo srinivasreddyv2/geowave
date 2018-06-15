@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -13,17 +13,15 @@ package mil.nga.giat.geowave.core.store.adapter.statistics;
 import java.nio.ByteBuffer;
 import java.text.MessageFormat;
 
+import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.FixedBinNumericHistogram.FixedBinNumericHistogramFactory;
+import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogram;
+import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogramFactory;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-
-import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.index.Mergeable;
-import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.FixedBinNumericHistogram.FixedBinNumericHistogramFactory;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogram;
-import mil.nga.giat.geowave.core.store.adapter.statistics.histogram.NumericHistogramFactory;
-import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 
 /**
  *
@@ -57,25 +55,31 @@ public abstract class FixedBinNumericStatistics<T> extends
 	}
 
 	public FixedBinNumericStatistics(
+			final Short internalDataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
+				internalDataAdapterId,
 				statisticsId);
 	}
 
 	public FixedBinNumericStatistics(
+			final Short internalDataAdapterId,
 			final ByteArrayId statisticsId,
 			final int bins ) {
 		super(
+				internalDataAdapterId,
 				statisticsId);
 		histogram = HistFactory.create(bins);
 	}
 
 	public FixedBinNumericStatistics(
+			final Short internalDataAdapterId,
 			final ByteArrayId statisticsId,
 			final int bins,
 			final double minValue,
 			final double maxValue ) {
 		super(
+				internalDataAdapterId,
 				statisticsId);
 		histogram = HistFactory.create(
 				bins,
@@ -197,10 +201,11 @@ public abstract class FixedBinNumericStatistics<T> extends
 	 * Convert Fixed Bin Numeric statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
@@ -218,7 +223,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 		jo.put(
 				"range_max",
 				histogram.getMaxValue());
-		JSONArray binsArray = new JSONArray();
+		final JSONArray binsArray = new JSONArray();
 		for (final double v : this.quantile(10)) {
 			binsArray.add(v);
 		}
@@ -226,7 +231,7 @@ public abstract class FixedBinNumericStatistics<T> extends
 				"bins",
 				binsArray);
 
-		JSONArray countsArray = new JSONArray();
+		final JSONArray countsArray = new JSONArray();
 		for (final long v : count(10)) {
 			countsArray.add(v);
 		}

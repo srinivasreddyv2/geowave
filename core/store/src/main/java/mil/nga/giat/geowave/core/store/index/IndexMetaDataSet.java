@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -17,8 +17,8 @@ import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.IndexMetaData;
 import mil.nga.giat.geowave.core.index.InsertionIds;
 import mil.nga.giat.geowave.core.index.Mergeable;
-import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.index.SortedIndexStrategy;
+import mil.nga.giat.geowave.core.index.persist.PersistenceUtils;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.statistics.AbstractDataStatistics;
 import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
@@ -41,17 +41,21 @@ public class IndexMetaDataSet<T> extends
 	public IndexMetaDataSet() {}
 
 	private IndexMetaDataSet(
+			final short internalDataAdapterId,
 			final ByteArrayId statisticsId,
 			final List<IndexMetaData> metaData ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 		this.metaData = metaData;
 	}
 
 	public IndexMetaDataSet(
+			final short internalDataAdapterId,
 			final ByteArrayId statisticsId,
 			final SortedIndexStrategy<?, ?> indexStrategy ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 		this.metaData = indexStrategy.createMetaData();
 	}
@@ -66,6 +70,7 @@ public class IndexMetaDataSet<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new IndexMetaDataSet<T>(
+				internalDataAdapterId,
 				statisticsId,
 				this.metaData);
 	}
@@ -102,8 +107,8 @@ public class IndexMetaDataSet<T> extends
 			final Mergeable merge ) {
 		if ((merge != null) && (merge instanceof IndexMetaDataSet)) {
 			for (int i = 0; i < metaData.size(); i++) {
-				IndexMetaData imd = metaData.get(i);
-				IndexMetaData imd2 = ((IndexMetaDataSet<T>) merge).metaData.get(i);
+				final IndexMetaData imd = metaData.get(i);
+				final IndexMetaData imd2 = ((IndexMetaDataSet<T>) merge).metaData.get(i);
 				imd.merge(imd2);
 			}
 		}
@@ -158,10 +163,11 @@ public class IndexMetaDataSet<T> extends
 	 * Convert Index Metadata statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
@@ -172,7 +178,7 @@ public class IndexMetaDataSet<T> extends
 				"statisticsID",
 				statisticsId.getString());
 
-		JSONArray mdArray = new JSONArray();
+		final JSONArray mdArray = new JSONArray();
 		for (final IndexMetaData imd : this.metaData) {
 			mdArray.add(imd.toJSONObject());
 		}

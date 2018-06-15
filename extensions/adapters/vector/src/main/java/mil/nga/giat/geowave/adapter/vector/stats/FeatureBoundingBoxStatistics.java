@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -10,15 +10,6 @@
  ******************************************************************************/
 package mil.nga.giat.geowave.adapter.vector.stats;
 
-import mil.nga.giat.geowave.adapter.vector.util.FeatureDataUtils;
-import mil.nga.giat.geowave.core.geotime.store.statistics.BoundingBoxDataStatistics;
-import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
-
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -27,6 +18,14 @@ import org.opengis.referencing.operation.MathTransform;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+
+import mil.nga.giat.geowave.adapter.vector.util.FeatureDataUtils;
+import mil.nga.giat.geowave.core.geotime.store.statistics.BoundingBoxDataStatistics;
+import mil.nga.giat.geowave.core.index.ByteArrayId;
+import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 public class FeatureBoundingBoxStatistics extends
 		BoundingBoxDataStatistics<SimpleFeature> implements
@@ -44,21 +43,43 @@ public class FeatureBoundingBoxStatistics extends
 	}
 
 	public FeatureBoundingBoxStatistics(
-			final String statisticsId ) {
+			final String fieldName ) {
 		this(
-				statisticsId,
+				null,
+				fieldName);
+	}
+
+	public FeatureBoundingBoxStatistics(
+			final Short internalDataAdapterId,
+			final String fieldName ) {
+		this(
+				internalDataAdapterId,
+				fieldName,
 				null,
 				null);
 	}
 
 	public FeatureBoundingBoxStatistics(
-			final String statisticsId,
+			final String fieldName,
+			final SimpleFeatureType reprojectedType,
+			final MathTransform transform ) {
+		this(
+				null,
+				fieldName,
+				reprojectedType,
+				transform);
+	}
+
+	public FeatureBoundingBoxStatistics(
+			final Short internalDataAdapterId,
+			final String fieldName,
 			final SimpleFeatureType reprojectedType,
 			final MathTransform transform ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
-						statisticsId));
+						fieldName));
 		this.reprojectedType = reprojectedType;
 		this.transform = transform;
 	}
@@ -114,13 +135,15 @@ public class FeatureBoundingBoxStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureBoundingBoxStatistics(
+				internalDataAdapterId,
 				getFieldName(),
 				reprojectedType,
 				transform);
 	}
 
+	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
 				"bbox[internalAdapter=").append(
 				super.getInternalDataAdapterId());
@@ -152,10 +175,11 @@ public class FeatureBoundingBoxStatistics extends
 	 * Convert Feature Bounding Box statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());

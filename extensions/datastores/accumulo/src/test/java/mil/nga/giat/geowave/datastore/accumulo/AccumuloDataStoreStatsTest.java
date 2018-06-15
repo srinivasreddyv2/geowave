@@ -11,9 +11,9 @@
 package mil.nga.giat.geowave.datastore.accumulo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,12 +42,10 @@ import mil.nga.giat.geowave.core.geotime.store.query.SpatialQuery;
 import mil.nga.giat.geowave.core.geotime.store.statistics.BoundingBoxDataStatistics;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.StringUtils;
-import mil.nga.giat.geowave.core.index.persist.Persistable;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.EntryVisibilityHandler;
 import mil.nga.giat.geowave.core.store.IndexWriter;
 import mil.nga.giat.geowave.core.store.adapter.AbstractDataAdapter;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.NativeFieldHandler;
@@ -294,7 +292,7 @@ public class AccumuloDataStoreStatsTest
 					count);
 		}
 
-		short internalAdapterId = internalAdapterStore.getInternalAdapterId(adapter.getAdapterId());
+		final short internalAdapterId = internalAdapterStore.getInternalAdapterId(adapter.getAdapterId());
 		CountDataStatistics<?> countStats = (CountDataStatistics<?>) statsStore.getDataStatistics(
 				internalAdapterId,
 				CountDataStatistics.STATS_TYPE,
@@ -722,16 +720,13 @@ public class AccumuloDataStoreStatsTest
 		public DataStatistics<TestGeometry> createDataStatistics(
 				final ByteArrayId statisticsId ) {
 			if (BoundingBoxDataStatistics.STATS_TYPE.equals(statisticsId)) {
-				return new GeoBoundingBoxStatistics(
-						statisticsId);
+				return new GeoBoundingBoxStatistics();
 			}
 			else if (CountDataStatistics.STATS_TYPE.equals(statisticsId)) {
-				return new CountDataStatistics<>(
-						statisticsId);
+				return new CountDataStatistics<>();
 			}
 			LOGGER.warn("Unrecognized statistics ID " + statisticsId.getString() + " using count statistic");
-			return new CountDataStatistics<>(
-					statisticsId);
+			return null;
 		}
 
 		@Override
@@ -815,7 +810,7 @@ public class AccumuloDataStoreStatsTest
 
 		@Override
 		public void init(
-				PrimaryIndex... indices ) {
+				final PrimaryIndex... indices ) {
 			// TODO Auto-generated method stub
 
 		}
@@ -838,13 +833,8 @@ public class AccumuloDataStoreStatsTest
 			BoundingBoxDataStatistics<TestGeometry>
 	{
 		protected GeoBoundingBoxStatistics() {
-			super();
-		}
-
-		public GeoBoundingBoxStatistics(
-				final ByteArrayId dataAdapterId ) {
 			super(
-					dataAdapterId);
+					null);
 		}
 
 		@Override

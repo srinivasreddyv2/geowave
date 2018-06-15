@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -13,9 +13,6 @@ package mil.nga.giat.geowave.core.store.data.visibility;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
@@ -25,6 +22,8 @@ import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatisticsStore;
 import mil.nga.giat.geowave.core.store.callback.DeleteCallback;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 public class DifferingFieldVisibilityEntryCount<T> extends
 		AbstractDataStatistics<T> implements
@@ -48,16 +47,20 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	}
 
 	private DifferingFieldVisibilityEntryCount(
+			final short internalDataAdapterId,
 			final ByteArrayId statisticsId,
 			final long entriesWithDifferingFieldVisibilities ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 		this.entriesWithDifferingFieldVisibilities = entriesWithDifferingFieldVisibilities;
 	}
 
 	public DifferingFieldVisibilityEntryCount(
+			final short internalDataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -71,6 +74,7 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new DifferingFieldVisibilityEntryCount<>(
+				internalDataAdapterId,
 				statisticsId,
 				entriesWithDifferingFieldVisibilities);
 	}
@@ -155,10 +159,11 @@ public class DifferingFieldVisibilityEntryCount<T> extends
 	 * Convert Differing Visibility statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());

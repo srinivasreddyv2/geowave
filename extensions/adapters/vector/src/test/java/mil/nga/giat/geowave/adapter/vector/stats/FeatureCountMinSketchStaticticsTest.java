@@ -105,6 +105,7 @@ public class FeatureCountMinSketchStaticticsTest
 	public void test() {
 
 		final FeatureCountMinSketchStatistics stat = new FeatureCountMinSketchStatistics(
+				(short) -1,
 				"pid");
 
 		for (int i = 0; i < 10000; i++) {
@@ -113,6 +114,7 @@ public class FeatureCountMinSketchStaticticsTest
 		stat.entryIngested(create("barney"));
 
 		final FeatureCountMinSketchStatistics stat2 = new FeatureCountMinSketchStatistics(
+				null,
 				"pid");
 
 		for (int i = 0; i < 10000; i++) {

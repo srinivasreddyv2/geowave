@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -34,16 +34,20 @@ public class MaxDuplicatesStatistics<T> extends
 	}
 
 	private MaxDuplicatesStatistics(
+			final short internalDataAdapterId,
 			final ByteArrayId statsId,
 			final int maxDuplicates ) {
 		super(
+				internalDataAdapterId,
 				statsId);
 		this.maxDuplicates = maxDuplicates;
 	}
 
 	public MaxDuplicatesStatistics(
+			final short internalDataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -60,6 +64,7 @@ public class MaxDuplicatesStatistics<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new MaxDuplicatesStatistics<>(
+				internalDataAdapterId,
 				statisticsId,
 				maxDuplicates);
 	}

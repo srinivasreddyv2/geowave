@@ -69,9 +69,11 @@ public class ChooseBestMatchIndexQueryStrategyTest
 		final PrimaryIndex spatialIndex = new SpatialIndexBuilder().createIndex();
 
 		final RowRangeHistogramStatistics<SimpleFeature> rangeTempStats = new RowRangeHistogramStatistics<>(
+				null,
 				temporalindex.getId());
 
 		final RowRangeHistogramStatistics<SimpleFeature> rangeStats = new RowRangeHistogramStatistics<>(
+				null,
 				spatialIndex.getId());
 
 		final Map<ByteArrayId, DataStatistics<SimpleFeature>> statsMap = new HashMap<>();

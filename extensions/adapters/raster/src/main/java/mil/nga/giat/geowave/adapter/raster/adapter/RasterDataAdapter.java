@@ -1703,19 +1703,13 @@ public class RasterDataAdapter implements
 			retVal = new OverviewStatistics();
 		}
 		else if (BoundingBoxDataStatistics.STATS_TYPE.equals(statisticsType)) {
-			retVal = new RasterBoundingBoxStatistics(
-					new ByteArrayId(
-							coverageName));
+			retVal = new RasterBoundingBoxStatistics();
 		}
 		else if (RasterFootprintStatistics.STATS_TYPE.equals(statisticsType)) {
-			retVal = new RasterFootprintStatistics(
-					new ByteArrayId(
-							coverageName));
+			retVal = new RasterFootprintStatistics();
 		}
 		else if (HistogramStatistics.STATS_TYPE.equals(statisticsType) && (histogramConfig != null)) {
 			retVal = new HistogramStatistics(
-					new ByteArrayId(
-							coverageName),
 					histogramConfig);
 		}
 		else {

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -70,27 +70,27 @@ public class DataStoreStatisticsProvider<T> implements
 		DataStatistics<T> stats = null;
 		if (statisticsType.equals(RowRangeHistogramStatistics.STATS_TYPE)) {
 			stats = new RowRangeHistogramStatistics(
+					adapter.getInternalAdapterId(),
 					index.getId());
-			stats.setInternalDataAdapterId(adapter.getInternalAdapterId());
 			return stats;
 		}
 		if (statisticsType.equals(IndexMetaDataSet.STATS_TYPE)) {
 			stats = new IndexMetaDataSet(
+					adapter.getInternalAdapterId(),
 					index.getId(),
 					index.getIndexStrategy());
-			stats.setInternalDataAdapterId(adapter.getInternalAdapterId());
 			return stats;
 		}
 		if (statisticsType.equals(DifferingFieldVisibilityEntryCount.STATS_TYPE)) {
 			stats = new DifferingFieldVisibilityEntryCount<>(
+					adapter.getInternalAdapterId(),
 					index.getId());
-			stats.setInternalDataAdapterId(adapter.getInternalAdapterId());
 			return stats;
 		}
 		if (statisticsType.equals(DuplicateEntryCount.STATS_TYPE)) {
 			stats = new DuplicateEntryCount<>(
+					adapter.getInternalAdapterId(),
 					index.getId());
-			stats.setInternalDataAdapterId(adapter.getInternalAdapterId());
 			return stats;
 		}
 		if (adapter.getAdapter() instanceof StatisticsProvider) {

@@ -27,7 +27,7 @@ abstract public class AbstractDataStatistics<T> implements
 	/**
 	 * ID of source data adapter
 	 */
-	protected short internalDataAdapterId;
+	protected Short internalDataAdapterId;
 	protected byte[] visibility;
 	/**
 	 * ID of statistic to be tracked
@@ -43,7 +43,9 @@ abstract public class AbstractDataStatistics<T> implements
 	protected AbstractDataStatistics() {}
 
 	public AbstractDataStatistics(
+			final Short internalDataAdapterId,
 			final ByteArrayId statisticsId ) {
+		this.internalDataAdapterId = internalDataAdapterId;
 		this.statisticsId = statisticsId;
 	}
 
@@ -53,7 +55,7 @@ abstract public class AbstractDataStatistics<T> implements
 	}
 
 	@Override
-	public short getInternalDataAdapterId() {
+	public Short getInternalDataAdapterId() {
 		return internalDataAdapterId;
 	}
 

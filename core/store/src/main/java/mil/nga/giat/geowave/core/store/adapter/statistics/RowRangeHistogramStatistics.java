@@ -49,7 +49,16 @@ public class RowRangeHistogramStatistics<T> extends
 
 	public RowRangeHistogramStatistics(
 			final ByteArrayId statisticsId ) {
+		this(
+				null,
+				statisticsId);
+	}
+
+	public RowRangeHistogramStatistics(
+			final Short internalDataAdapterId,
+			final ByteArrayId statisticsId ) {
 		super(
+				internalDataAdapterId,
 				composeId(statisticsId));
 	}
 
@@ -68,6 +77,7 @@ public class RowRangeHistogramStatistics<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new RowRangeHistogramStatistics<T>(
+				internalDataAdapterId,
 				decomposeFromId(statisticsId));// indexId
 	}
 
@@ -331,7 +341,7 @@ public class RowRangeHistogramStatistics<T> extends
 
 	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
 		final JSONObject jo = new JSONObject();
 		jo.put(

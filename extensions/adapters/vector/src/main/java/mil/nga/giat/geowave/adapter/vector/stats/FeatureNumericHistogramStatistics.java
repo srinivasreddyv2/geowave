@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -56,7 +56,16 @@ public class FeatureNumericHistogramStatistics extends
 
 	public FeatureNumericHistogramStatistics(
 			final String fieldName ) {
+		this(
+				null,
+				fieldName);
+	}
+
+	public FeatureNumericHistogramStatistics(
+			final Short internalDataAdapterId,
+			final String fieldName ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldName));
@@ -77,6 +86,7 @@ public class FeatureNumericHistogramStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureNumericHistogramStatistics(
+				internalDataAdapterId,
 				getFieldName());
 	}
 
@@ -369,8 +379,10 @@ public class FeatureNumericHistogramStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
+				final Short internalDataAdapterId,
 				final String fieldName ) {
 			return new FeatureNumericHistogramStatistics(
+					internalDataAdapterId,
 					fieldName);
 		}
 	}

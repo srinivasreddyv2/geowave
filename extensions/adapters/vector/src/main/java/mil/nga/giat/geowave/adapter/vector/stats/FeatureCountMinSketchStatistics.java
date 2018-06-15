@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -12,6 +12,11 @@ package mil.nga.giat.geowave.adapter.vector.stats;
 
 import java.nio.ByteBuffer;
 
+import org.opengis.feature.simple.SimpleFeature;
+
+import com.clearspring.analytics.stream.frequency.CountMinSketch;
+import com.clearspring.analytics.stream.frequency.FrequencyMergeException;
+
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
@@ -20,21 +25,17 @@ import mil.nga.giat.geowave.core.store.adapter.statistics.DataStatistics;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
-
-import com.clearspring.analytics.stream.frequency.CountMinSketch;
-import com.clearspring.analytics.stream.frequency.FrequencyMergeException;
 
 /**
- * 
+ *
  * Maintains an estimate of how may of each attribute value occurs in a set of
  * data.
- * 
+ *
  * Default values:
- * 
+ *
  * Error factor of 0.001 with probability 0.98 of retrieving a correct estimate.
  * The Algorithm does not under-state the estimate.
- * 
+ *
  */
 public class FeatureCountMinSketchStatistics extends
 		AbstractDataStatistics<SimpleFeature> implements
@@ -53,8 +54,10 @@ public class FeatureCountMinSketchStatistics extends
 	}
 
 	public FeatureCountMinSketchStatistics(
+			final Short internalDataAdapterId,
 			final String statisticsId ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						statisticsId));
@@ -65,10 +68,12 @@ public class FeatureCountMinSketchStatistics extends
 	}
 
 	public FeatureCountMinSketchStatistics(
+			final Short internalDataAdapterId,
 			final String statisticsId,
 			final double errorFactor,
 			final double probabilityOfCorrectness ) {
 		super(
+				internalDataAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						statisticsId));
@@ -93,6 +98,7 @@ public class FeatureCountMinSketchStatistics extends
 	@Override
 	public DataStatistics<SimpleFeature> duplicate() {
 		return new FeatureCountMinSketchStatistics(
+				internalDataAdapterId,
 				getFieldName());
 	}
 
@@ -101,7 +107,7 @@ public class FeatureCountMinSketchStatistics extends
 	}
 
 	public long count(
-			String item ) {
+			final String item ) {
 		return sketch.estimateCount(item);
 	}
 
@@ -114,7 +120,7 @@ public class FeatureCountMinSketchStatistics extends
 						sketch,
 						((FeatureCountMinSketchStatistics) mergeable).sketch);
 			}
-			catch (FrequencyMergeException e) {
+			catch (final FrequencyMergeException e) {
 				throw new RuntimeException(
 						"Unable to merge sketches",
 						e);
@@ -125,7 +131,7 @@ public class FeatureCountMinSketchStatistics extends
 
 	@Override
 	public byte[] toBinary() {
-		byte[] data = CountMinSketch.serialize(sketch);
+		final byte[] data = CountMinSketch.serialize(sketch);
 		final ByteBuffer buffer = super.binaryBuffer(4 + data.length);
 		buffer.putInt(data.length);
 		buffer.put(data);
@@ -154,8 +160,9 @@ public class FeatureCountMinSketchStatistics extends
 				1);
 	}
 
+	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
 				"sketch[internalDataAdapterId=").append(
 				super.getInternalDataAdapterId());
@@ -173,10 +180,11 @@ public class FeatureCountMinSketchStatistics extends
 	 * Convert FeatureCountMinSketch statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				STATS_TYPE.getString());
@@ -203,7 +211,7 @@ public class FeatureCountMinSketchStatistics extends
 			StatsConfig<SimpleFeature>
 	{
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 6309383518148391565L;
 		private double errorFactor;
@@ -214,20 +222,20 @@ public class FeatureCountMinSketchStatistics extends
 		}
 
 		public FeatureCountMinSketchConfig(
-				double errorFactor,
-				double probabilityOfCorrectness ) {
+				final double errorFactor,
+				final double probabilityOfCorrectness ) {
 			super();
 			this.errorFactor = errorFactor;
 			this.probabilityOfCorrectness = probabilityOfCorrectness;
 		}
 
 		public void setErrorFactor(
-				double errorFactor ) {
+				final double errorFactor ) {
 			this.errorFactor = errorFactor;
 		}
 
 		public void setProbabilityOfCorrectness(
-				double probabilityOfCorrectness ) {
+				final double probabilityOfCorrectness ) {
 			this.probabilityOfCorrectness = probabilityOfCorrectness;
 		}
 
@@ -241,8 +249,10 @@ public class FeatureCountMinSketchStatistics extends
 
 		@Override
 		public DataStatistics<SimpleFeature> create(
+				final Short internalDataAdapterId,
 				final String fieldName ) {
 			return new FeatureCountMinSketchStatistics(
+					internalDataAdapterId,
 					fieldName,
 					errorFactor,
 					probabilityOfCorrectness);

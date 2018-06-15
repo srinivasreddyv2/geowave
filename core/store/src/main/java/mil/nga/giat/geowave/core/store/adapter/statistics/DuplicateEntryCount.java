@@ -45,16 +45,27 @@ public class DuplicateEntryCount<T> extends
 	}
 
 	private DuplicateEntryCount(
+			final Short internalDataAdapterId,
 			final ByteArrayId statsId,
 			final long entriesWithDuplicates ) {
 		super(
+				internalDataAdapterId,
 				statsId);
 		this.entriesWithDuplicates = entriesWithDuplicates;
 	}
 
 	public DuplicateEntryCount(
 			final ByteArrayId indexId ) {
+		this(
+				null,
+				indexId);
+	}
+
+	public DuplicateEntryCount(
+			final Short internalDataAdapterId,
+			final ByteArrayId indexId ) {
 		super(
+				internalDataAdapterId,
 				composeId(indexId));
 	}
 
@@ -71,6 +82,7 @@ public class DuplicateEntryCount<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new DuplicateEntryCount<>(
+				internalDataAdapterId,
 				statisticsId,
 				entriesWithDuplicates);
 	}
@@ -149,8 +161,9 @@ public class DuplicateEntryCount<T> extends
 	 * Convert Duplicate Count statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
 		final JSONObject jo = new JSONObject();
 		jo.put(

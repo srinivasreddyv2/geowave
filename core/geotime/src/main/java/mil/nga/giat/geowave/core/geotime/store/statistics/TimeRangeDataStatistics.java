@@ -31,8 +31,10 @@ abstract public class TimeRangeDataStatistics<T> extends
 	}
 
 	public TimeRangeDataStatistics(
+			final Short internalAdapterId,
 			final String fieldId ) {
 		super(
+				internalAdapterId,
 				composeId(
 						STATS_TYPE.getString(),
 						fieldId));

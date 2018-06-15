@@ -42,13 +42,23 @@ abstract public class BoundingBoxDataStatistics<T> extends
 	protected double maxY = -Double.MAX_VALUE;
 
 	public BoundingBoxDataStatistics() {
-		super();
+		this(
+				null);
 	}
 
 	public BoundingBoxDataStatistics(
-			final ByteArrayId staticticsId ) {
+			final Short internalAdapterId ) {
 		super(
-				staticticsId);
+				internalAdapterId,
+				STATS_TYPE);
+	}
+
+	public BoundingBoxDataStatistics(
+			final Short internalAdapterId,
+			final ByteArrayId statisticsId ) {
+		super(
+				internalAdapterId,
+				statisticsId);
 	}
 
 	public boolean isSet() {

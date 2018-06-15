@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
- * 
+ *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  * All rights reserved. This program and the accompanying materials
@@ -12,14 +12,13 @@ package mil.nga.giat.geowave.core.store.adapter.statistics;
 
 import java.nio.ByteBuffer;
 
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.sfc.data.NumericRange;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 abstract public class NumericRangeDataStatistics<T> extends
 		AbstractDataStatistics<T>
@@ -33,8 +32,10 @@ abstract public class NumericRangeDataStatistics<T> extends
 	}
 
 	public NumericRangeDataStatistics(
+			final Short internalDataAdapterId,
 			final ByteArrayId statisticsId ) {
 		super(
+				internalDataAdapterId,
 				statisticsId);
 	}
 
@@ -107,8 +108,9 @@ abstract public class NumericRangeDataStatistics<T> extends
 		}
 	}
 
+	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(
 				"range[internalDataAdapterId=").append(
 				super.getInternalDataAdapterId());
@@ -131,10 +133,11 @@ abstract public class NumericRangeDataStatistics<T> extends
 	 * Convert Feature Numeric Range statistics to a JSON object
 	 */
 
+	@Override
 	public JSONObject toJSONObject(
-			InternalAdapterStore store )
+			final InternalAdapterStore store )
 			throws JSONException {
-		JSONObject jo = new JSONObject();
+		final JSONObject jo = new JSONObject();
 		jo.put(
 				"type",
 				"GENERIC_RANGE");

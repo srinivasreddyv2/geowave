@@ -44,6 +44,7 @@ public class RowHistogramDataStaticticsTest
 	@Test
 	public void testIngest() {
 		final RowRangeHistogramStatistics<Integer> stats = new RowRangeHistogramStatistics<Integer>(
+				(short) -1,
 				new ByteArrayId(
 						"20030"));
 

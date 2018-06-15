@@ -40,8 +40,8 @@ public class CassandraStatisticsIterator implements
 			}
 			else {
 				if (statEntry.getStatisticsId().equals(
-						currentStatistics.getStatisticsId()) && Short.valueOf(
-						statEntry.getInternalDataAdapterId()).equals(
+						currentStatistics.getStatisticsId()) && 
+						statEntry.getInternalDataAdapterId().equals(
 						currentStatistics.getInternalDataAdapterId())) {
 					currentStatistics.merge(statEntry);
 				}
