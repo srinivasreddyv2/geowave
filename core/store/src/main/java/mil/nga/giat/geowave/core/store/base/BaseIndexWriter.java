@@ -176,11 +176,9 @@ class BaseIndexWriter<T> implements
 	protected synchronized void ensureOpen() {
 		if (writer == null) {
 			try {
-				InternalAdapterStore internalAdapterStore = new InternalAdapterStoreImpl(
-						operations);
 				writer = operations.createWriter(
 						index.getId(),
-						internalAdapterStore.addAdapterId(adapter.getAdapterId()));
+						adapter.getInternalAdapterId());
 			}
 			catch (final Exception e) {
 				LOGGER.error(

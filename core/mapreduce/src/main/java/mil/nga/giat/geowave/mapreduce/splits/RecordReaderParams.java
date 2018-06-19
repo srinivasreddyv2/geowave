@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.operations.BaseReaderParams;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
@@ -18,7 +18,7 @@ public class RecordReaderParams extends
 
 	public RecordReaderParams(
 			final PrimaryIndex index,
-			final AdapterStore adapterStore,
+			final PersistentAdapterStore adapterStore,
 			final List<ByteArrayId> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
 			final Pair<DataAdapter<?>, Aggregation<?, ?, ?>> aggregation,

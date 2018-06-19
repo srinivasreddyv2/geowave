@@ -228,8 +228,7 @@ public class BaseDataStore implements
 				sanitizedQueryOptions.setInternalAdapterId(internalAdapterStore.getInternalAdapterId(CQlAdapterId));
 			}
 			else if (sanitizedQueryOptions.getAdapterIds().size() == 1) {
-				if (!sanitizedQueryOptions.getAdapterIds().get(
-						0).equals(
+				if (!sanitizedQueryOptions.getAdapterIds().iterator().next().equals(
 						internalAdapterStore.getInternalAdapterId(CQlAdapterId))) {
 					LOGGER.error("CQL Query AdapterID does not match Query Options AdapterId");
 					throw new RuntimeException(
@@ -378,8 +377,7 @@ public class BaseDataStore implements
 				sanitizedQueryOptions.setInternalAdapterId(internalAdapterStore.getInternalAdapterId(CQlAdapterId));
 			}
 			else if (sanitizedQueryOptions.getAdapterIds().size() == 1) {
-				if (!sanitizedQueryOptions.getAdapterIds().get(
-						0).equals(
+				if (!sanitizedQueryOptions.getAdapterIds().iterator().next().equals(
 						internalAdapterStore.getInternalAdapterId(CQlAdapterId))) {
 					LOGGER.error("CQL Query AdapterID does not match Query Options AdapterId");
 					throw new RuntimeException(

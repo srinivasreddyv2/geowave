@@ -219,12 +219,14 @@ public class GeoWaveSparkSpatialJoinIT extends
 	private void loadRDDs(
 			ByteArrayId hail_adapter,
 			ByteArrayId tornado_adapter ) {
-		
-		short hailInternalAdapterId = dataStore.createInternalAdapterStore().getInternalAdapterId(hail_adapter);
+
+		short hailInternalAdapterId = dataStore.createInternalAdapterStore().getInternalAdapterId(
+				hail_adapter);
 		// Write out the hull features
 		InternalDataAdapter<?> hailAdapter = dataStore.createAdapterStore().getAdapter(
 				hailInternalAdapterId);
-		short tornadoInternalAdapterId = dataStore.createInternalAdapterStore().getInternalAdapterId(hail_adapter);
+		short tornadoInternalAdapterId = dataStore.createInternalAdapterStore().getInternalAdapterId(
+				hail_adapter);
 		InternalDataAdapter<?> tornadoAdapter = dataStore.createAdapterStore().getAdapter(
 				tornadoInternalAdapterId);
 		try {

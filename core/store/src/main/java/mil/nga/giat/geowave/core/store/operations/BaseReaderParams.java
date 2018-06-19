@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
 import mil.nga.giat.geowave.core.index.sfc.data.MultiDimensionalNumericData;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.filter.DistributableQueryFilter;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
@@ -17,7 +16,7 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 {
 
 	private final PrimaryIndex index;
-	private final AdapterStore adapterStore;
+	private final PersistentAdapterStore adapterStore;
 	private final List<IdType> adapterIds;
 	private final double[] maxResolutionSubsamplingPerDimension;
 	private final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation;
@@ -28,7 +27,7 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 
 	public BaseReaderParams(
 			final PrimaryIndex index,
-			final AdapterStore adapterStore,
+			final PersistentAdapterStore adapterStore,
 			final List<IdType> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
 			final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation,
@@ -51,7 +50,7 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 		return index;
 	}
 
-	public AdapterStore getAdapterStore() {
+	public PersistentAdapterStore getAdapterStore() {
 		return adapterStore;
 	}
 

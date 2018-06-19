@@ -77,48 +77,36 @@ public class GeoWaveKMeansIT
 	})
 	protected DataStorePluginOptions dataStorePluginOptions;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(
-			GeoWaveKMeansIT.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(GeoWaveKMeansIT.class);
 	private static long startMillis;
 
 	@BeforeClass
 	public static void startTimer() {
 		startMillis = System.currentTimeMillis();
-		LOGGER.warn(
-				"-----------------------------------------");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"*         RUNNING GeoWaveKMeansIT       *");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"-----------------------------------------");
+		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("*         RUNNING GeoWaveKMeansIT       *");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("-----------------------------------------");
 	}
 
 	@AfterClass
 	public static void reportTest() {
-		LOGGER.warn(
-				"-----------------------------------------");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"*      FINISHED GeoWaveKMeansIT         *");
-		LOGGER.warn(
-				"*         " + ((System.currentTimeMillis() - startMillis) / 1000) + "s elapsed.                 *");
-		LOGGER.warn(
-				"*                                       *");
-		LOGGER.warn(
-				"-----------------------------------------");
+		LOGGER.warn("-----------------------------------------");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("*      FINISHED GeoWaveKMeansIT         *");
+		LOGGER
+				.warn("*         " + ((System.currentTimeMillis() - startMillis) / 1000)
+						+ "s elapsed.                 *");
+		LOGGER.warn("*                                       *");
+		LOGGER.warn("-----------------------------------------");
 	}
 
 	private SimpleFeatureBuilder getBuilder() {
 		final SimpleFeatureTypeBuilder typeBuilder = new SimpleFeatureTypeBuilder();
-		typeBuilder.setName(
-				"test");
-		typeBuilder.setCRS(
-				DefaultGeographicCRS.WGS84); // <- Coordinate
-												// reference
+		typeBuilder.setName("test");
+		typeBuilder.setCRS(DefaultGeographicCRS.WGS84); // <- Coordinate
+														// reference
 		// add attributes in order
 		typeBuilder.add(
 				"geom",
@@ -194,14 +182,11 @@ public class GeoWaveKMeansIT
 	@Test
 	public void testIngestAndQueryGeneralGpx()
 			throws Exception {
-		TestUtils.deleteAll(
-				dataStorePluginOptions);
-		testIngest(
-				dataStorePluginOptions.createDataStore());
+		TestUtils.deleteAll(dataStorePluginOptions);
+		testIngest(dataStorePluginOptions.createDataStore());
 
-		runKPlusPlus(
-				new SpatialQuery(
-						dataGenerator.getBoundingRegion()));
+		runKPlusPlus(new SpatialQuery(
+				dataGenerator.getBoundingRegion()));
 	}
 
 	private void runKPlusPlus(
@@ -266,8 +251,7 @@ public class GeoWaveKMeansIT
 				"bx1",
 				2, // level
 				resultCounLevel1);
-		Assert.assertTrue(
-				resultCounLevel2 >= 2);
+		Assert.assertTrue(resultCounLevel2 >= 2);
 		// for travis-ci to run, we want to limit the memory consumption
 		System.gc();
 	}
@@ -334,10 +318,8 @@ public class GeoWaveKMeansIT
 				"bx2",
 				2,
 				jumpRresultCounLevel1);
-		Assert.assertTrue(
-				jumpRresultCounLevel1 >= 2);
-		Assert.assertTrue(
-				jumpRresultCounLevel2 >= 2);
+		Assert.assertTrue(jumpRresultCounLevel1 >= 2);
+		Assert.assertTrue(jumpRresultCounLevel2 >= 2);
 		// for travis-ci to run, we want to limit the memory consumption
 		System.gc();
 	}
@@ -360,9 +342,8 @@ public class GeoWaveKMeansIT
 				adapterStore,
 				new SimpleFeatureItemWrapperFactory(),
 				"centroid",
-				internalAdapterStore.addAdapterId(
-						new ByteArrayId(
-								"centroid")),
+				internalAdapterStore.addAdapterId(new ByteArrayId(
+						"centroid")),
 				TestUtils.DEFAULT_SPATIAL_INDEX.getId().getString(),
 				batchID,
 				level);
@@ -373,9 +354,8 @@ public class GeoWaveKMeansIT
 				adapterStore,
 				new SimpleFeatureItemWrapperFactory(),
 				"convex_hull",
-				internalAdapterStore.addAdapterId(
-						new ByteArrayId(
-								"convex_hull")),
+				internalAdapterStore.addAdapterId(new ByteArrayId(
+						"convex_hull")),
 				TestUtils.DEFAULT_SPATIAL_INDEX.getId().getString(),
 				batchID,
 				level);
@@ -383,33 +363,24 @@ public class GeoWaveKMeansIT
 		int childCount = 0;
 		int parentCount = 0;
 		for (final String grp : centroidManager.getAllCentroidGroups()) {
-			final List<AnalyticItemWrapper<SimpleFeature>> centroids = centroidManager.getCentroidsForGroup(
-					grp);
-			final List<AnalyticItemWrapper<SimpleFeature>> hulls = hullManager.getCentroidsForGroup(
-					grp);
+			final List<AnalyticItemWrapper<SimpleFeature>> centroids = centroidManager.getCentroidsForGroup(grp);
+			final List<AnalyticItemWrapper<SimpleFeature>> hulls = hullManager.getCentroidsForGroup(grp);
 
 			for (final AnalyticItemWrapper<SimpleFeature> centroid : centroids) {
 				if (centroid.getAssociationCount() == 0) {
 					continue;
 				}
-				Assert.assertTrue(
-						centroid.getGeometry() != null);
-				Assert.assertTrue(
-						centroid.getBatchID() != null);
+				Assert.assertTrue(centroid.getGeometry() != null);
+				Assert.assertTrue(centroid.getBatchID() != null);
 				boolean found = false;
 				final List<SimpleFeature> features = new ArrayList<SimpleFeature>();
 				for (final AnalyticItemWrapper<SimpleFeature> hull : hulls) {
-					found |= (hull.getName().equals(
-							centroid.getName()));
-					Assert.assertTrue(
-							hull.getGeometry() != null);
-					Assert.assertTrue(
-							hull.getBatchID() != null);
-					features.add(
-							hull.getWrappedItem());
+					found |= (hull.getName().equals(centroid.getName()));
+					Assert.assertTrue(hull.getGeometry() != null);
+					Assert.assertTrue(hull.getBatchID() != null);
+					features.add(hull.getWrappedItem());
 				}
-				System.out.println(
-						features);
+				System.out.println(features);
 				Assert.assertTrue(
 						grp,
 						found);

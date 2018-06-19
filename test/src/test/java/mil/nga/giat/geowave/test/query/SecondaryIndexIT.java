@@ -223,7 +223,9 @@ public class SecondaryIndexIT
 
 		Assert.assertTrue(allSecondaryIndices.size() == 9);
 
-		InternalDataAdapter<SimpleFeature> internalDataAdapter = new InternalDataAdapterWrapper(dataAdapter, internalAdapterStore.getInternalAdapterId(dataAdapter.getAdapterId()));
+		InternalDataAdapter<SimpleFeature> internalDataAdapter = new InternalDataAdapterWrapper(
+				dataAdapter,
+				internalAdapterStore.getInternalAdapterId(dataAdapter.getAdapterId()));
 
 		for (final SecondaryIndex<SimpleFeature> secondaryIndex : allSecondaryIndices) {
 
@@ -447,7 +449,7 @@ public class SecondaryIndexIT
 						aFeature).getCompositeInsertionIds());
 			}
 		}
-		
+
 		internalAdapterStore = dataStoreOptions.createInternalAdapterStore();
 		allSecondaryIndices = dataAdapter.getSupportedSecondaryIndices();
 

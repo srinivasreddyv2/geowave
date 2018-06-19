@@ -173,11 +173,11 @@ public class InternalAdapterStoreImpl implements
 		}
 		return null;
 	}
-
+	
 	public static short getInitialInternalAdapterId(
 			final ByteArrayId adapterId ) {
 		final int shortRange = Short.MAX_VALUE - Short.MIN_VALUE;
-		final short internalAdapterId = (short) ((adapterId.hashCode() % shortRange) - Short.MIN_VALUE);
+		final short internalAdapterId = (short) (Math.abs((adapterId.hashCode() % shortRange)) - Short.MIN_VALUE);
 		return internalAdapterId;
 	}
 
@@ -221,7 +221,7 @@ public class InternalAdapterStoreImpl implements
 				return internalAdapterId;
 			}
 			internalAdapterId = getInitialInternalAdapterId(adapterId);
-			while (internalAdapterIdExists(internalAdapterId) || !isValid(internalAdapterId)) {
+			while (!isValid(internalAdapterId) || internalAdapterIdExists(internalAdapterId)) {
 				internalAdapterId++;
 			}
 			try (final MetadataWriter writer = operations.createMetadataWriter(MetadataType.INTERNAL_ADAPTER)) {

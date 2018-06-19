@@ -3,6 +3,7 @@ package mil.nga.giat.geowave.core.store.base;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -20,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
@@ -556,7 +559,7 @@ public class BaseDataStoreUtils
 				}
 			}
 		}
-		List<Short> internalAdapterIds = Lists.transform(
+		Collection<Short> internalAdapterIds = Collections2.filter(Lists.transform(
 				adapterIds,
 				new Function<ByteArrayId, Short>() {
 
@@ -565,7 +568,13 @@ public class BaseDataStoreUtils
 							ByteArrayId adapterId ) {
 						return internalAdapterStore.getInternalAdapterId(adapterId);
 					}
-				});
+				}), new Predicate<Short>() {
+
+					@Override
+					public boolean apply(
+							Short input ) {
+						return input != null;
+					}});
 		final List<Pair<PrimaryIndex, Short>> result = new ArrayList<>();
 		for (final Short internalAdapterId : internalAdapterIds) {
 			final AdapterToIndexMapping indices = adapterIndexMappingStore.getIndicesForAdapter(internalAdapterId);

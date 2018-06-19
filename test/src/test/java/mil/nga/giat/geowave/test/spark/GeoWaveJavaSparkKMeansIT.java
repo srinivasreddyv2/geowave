@@ -139,10 +139,12 @@ public class GeoWaveJavaSparkKMeansIT
 		long dur = (System.currentTimeMillis() - mark);
 		LOGGER.warn("KMeans duration: " + dur + " ms.");
 		// Write out the centroid features
-		
-		short centroidInternalAdapterId = inputDataStore.createInternalAdapterStore().getInternalAdapterId(new ByteArrayId(
+
+		short centroidInternalAdapterId = inputDataStore.createInternalAdapterStore().getInternalAdapterId(
+				new ByteArrayId(
 						"kmeans-centroids-test"));
-		DataAdapter centroidAdapter = inputDataStore.createAdapterStore().getAdapter(centroidInternalAdapterId);
+		DataAdapter centroidAdapter = inputDataStore.createAdapterStore().getAdapter(
+				centroidInternalAdapterId);
 
 		// Query back from the new adapter
 		mark = System.currentTimeMillis();
@@ -170,8 +172,9 @@ public class GeoWaveJavaSparkKMeansIT
 
 		}
 
-		short hullInternalAdapterId = inputDataStore.createInternalAdapterStore().getInternalAdapterId(new ByteArrayId(
-				"kmeans-hulls-test"));
+		short hullInternalAdapterId = inputDataStore.createInternalAdapterStore().getInternalAdapterId(
+				new ByteArrayId(
+						"kmeans-hulls-test"));
 		// Write out the hull features w/ metadata
 		DataAdapter hullAdapter = inputDataStore.createAdapterStore().getAdapter(
 				hullInternalAdapterId);

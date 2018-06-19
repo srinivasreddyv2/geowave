@@ -242,7 +242,7 @@ public class GeoWaveBasicSpatialVectorIT extends
 					+ e.getLocalizedMessage() + "'");
 		}
 
- 		TestUtils.deleteAll(dataStore);
+		TestUtils.deleteAll(dataStore);
 	}
 
 	@Override

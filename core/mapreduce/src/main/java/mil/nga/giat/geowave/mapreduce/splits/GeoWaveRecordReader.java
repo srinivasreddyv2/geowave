@@ -37,6 +37,7 @@ import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.CloseableIteratorWrapper;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
+import mil.nga.giat.geowave.core.store.adapter.AdapterStoreWrapper;
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.TransientAdapterStore;
 import mil.nga.giat.geowave.core.store.base.BaseDataStore;
@@ -234,7 +235,7 @@ public class GeoWaveRecordReader<T> extends
 				queryFilters);
 		final Reader reader = operations.createReader(new RecordReaderParams(
 				index,
-				adapterStore,
+				new AdapterStoreWrapper(adapterStore, internalAdapterStore),
 				queryOptions.getAdapterIds(),
 				rangeQueryOptions.getMaxResolutionSubsamplingPerDimension(),
 				rangeQueryOptions.getAggregation(),
