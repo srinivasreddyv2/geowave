@@ -121,11 +121,13 @@ public class JobContextInternalAdapterStore implements
 	@Override
 	public boolean remove(
 			final short internalAdapterId ) {
+		cache.inverse().remove(internalAdapterId);
 		return persistentInternalAdapterStore.remove(internalAdapterId);
 	}
 
 	@Override
 	public void removeAll() {
+		cache.clear();
 		persistentInternalAdapterStore.removeAll();
 	}
 

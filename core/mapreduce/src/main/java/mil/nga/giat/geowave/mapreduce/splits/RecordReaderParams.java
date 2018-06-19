@@ -4,25 +4,24 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
-import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.operations.BaseReaderParams;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
 
 public class RecordReaderParams extends
-		BaseReaderParams<ByteArrayId, DataAdapter<?>>
+		BaseReaderParams
 {
 	private final GeoWaveRowRange rowRange;
 
 	public RecordReaderParams(
 			final PrimaryIndex index,
 			final PersistentAdapterStore adapterStore,
-			final List<ByteArrayId> adapterIds,
+			final List<Short> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
-			final Pair<DataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
-			final Pair<List<String>, DataAdapter<?>> fieldSubsets,
+			final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
+			final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets,
 			final boolean isMixedVisibility,
 			final GeoWaveRowRange rowRange,
 			final Integer limit,

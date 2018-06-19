@@ -4,12 +4,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
 import mil.nga.giat.geowave.core.index.QueryRanges;
 import mil.nga.giat.geowave.core.index.sfc.data.MultiDimensionalNumericData;
-import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
-import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.filter.DistributableQueryFilter;
@@ -17,7 +14,7 @@ import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
 
 public class ReaderParams extends
-		BaseReaderParams<Short, InternalDataAdapter<?>>
+		BaseReaderParams
 {
 	private final boolean isServersideAggregation;
 	private final boolean isClientsideRowMerging;

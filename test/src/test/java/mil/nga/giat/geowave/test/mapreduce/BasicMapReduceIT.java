@@ -272,7 +272,8 @@ public class BasicMapReduceIT extends
 
 			if (expResults.count > 0) {
 				LOGGER.debug("Running test for adapter " + adapter.getAdapterId().getString());
-
+				Short i = dataStorePluginOptions.createInternalAdapterStore().getInternalAdapterId(adapter.getAdapterId());
+				System.err.println("ID " + i);
 				runTestJob(
 						expResults,
 						null,

@@ -7,20 +7,21 @@ import org.apache.commons.lang3.tuple.Pair;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
 import mil.nga.giat.geowave.core.index.sfc.data.MultiDimensionalNumericData;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
 import mil.nga.giat.geowave.core.store.filter.DistributableQueryFilter;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;
 
-abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?>>
+abstract public class BaseReaderParams
 {
 
 	private final PrimaryIndex index;
 	private final PersistentAdapterStore adapterStore;
-	private final List<IdType> adapterIds;
+	private final List<Short> adapterIds;
 	private final double[] maxResolutionSubsamplingPerDimension;
-	private final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation;
-	private final Pair<List<String>, AdapterType> fieldSubsets;
+	private final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation;
+	private final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets;
 	private final boolean isMixedVisibility;
 	private final Integer limit;
 	private final String[] additionalAuthorizations;
@@ -28,10 +29,10 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 	public BaseReaderParams(
 			final PrimaryIndex index,
 			final PersistentAdapterStore adapterStore,
-			final List<IdType> adapterIds,
+			final List<Short> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
-			final Pair<AdapterType, Aggregation<?, ?, ?>> aggregation,
-			final Pair<List<String>, AdapterType> fieldSubsets,
+			final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
+			final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets,
 			final boolean isMixedVisibility,
 			final Integer limit,
 			final String... additionalAuthorizations ) {
@@ -54,7 +55,7 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 		return adapterStore;
 	}
 
-	public List<IdType> getAdapterIds() {
+	public List<Short> getAdapterIds() {
 		return adapterIds;
 	}
 
@@ -62,11 +63,11 @@ abstract public class BaseReaderParams<IdType, AdapterType extends DataAdapter<?
 		return maxResolutionSubsamplingPerDimension;
 	}
 
-	public Pair<AdapterType, Aggregation<?, ?, ?>> getAggregation() {
+	public Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> getAggregation() {
 		return aggregation;
 	}
 
-	public Pair<List<String>, AdapterType> getFieldSubsets() {
+	public Pair<List<String>, InternalDataAdapter<?>> getFieldSubsets() {
 		return fieldSubsets;
 	}
 
