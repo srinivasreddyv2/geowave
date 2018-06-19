@@ -51,8 +51,10 @@ public class HadoopWritableSerializationTool
 	public HadoopWritableSerializationTool(
 			final JobContext jobContext ) {
 		this(
-				GeoWaveInputFormat.getJobContextAdapterStore(jobContext),
-				GeoWaveInputFormat.getJobContextInternalAdapterStore(jobContext));
+				GeoWaveInputFormat.getJobContextAdapterStore(
+						jobContext),
+				GeoWaveInputFormat.getJobContextInternalAdapterStore(
+						jobContext));
 	}
 
 	public HadoopWritableSerializationTool(
@@ -70,29 +72,46 @@ public class HadoopWritableSerializationTool
 	public InternalDataAdapter<?> getInternalAdapter(
 			final short internalAdapterId ) {
 		return new InternalDataAdapterWrapper(
-				(WritableDataAdapter) adapterStore.getAdapter(internalAdapterStore.getAdapterId(internalAdapterId)),
+				(WritableDataAdapter) adapterStore.getAdapter(
+						internalAdapterStore.getAdapterId(
+								internalAdapterId)),
 				internalAdapterId);
 	}
 
 	public DataAdapter<?> getAdapter(
 			final ByteArrayId adapterId ) {
-		return adapterStore.getAdapter(adapterId);
+		return adapterStore.getAdapter(
+				adapterId);
 	}
 
 	public HadoopWritableSerializer<Object, Writable> getHadoopWritableSerializerForAdapter(
 			final short internalAdapterId ) {
-		return getHadoopWritableSerializerForAdapter(internalAdapterStore.getAdapterId(internalAdapterId));
+		return getHadoopWritableSerializerForAdapter(
+				internalAdapterStore.getAdapterId(
+						internalAdapterId));
 	}
 
 	public HadoopWritableSerializer<Object, Writable> getHadoopWritableSerializerForAdapter(
 			final ByteArrayId adapterId ) {
 
-		HadoopWritableSerializer<Object, Writable> serializer = serializers.get(adapterId);
+		HadoopWritableSerializer<Object, Writable> serializer = serializers.get(
+				adapterId);
 		if (serializer == null) {
 			DataAdapter<?> adapter;
-			if ((adapterStore != null) && ((adapter = adapterStore.getAdapter(adapterId)) != null)
-					&& (adapter instanceof HadoopDataAdapter)) {
-				serializer = ((HadoopDataAdapter<Object, Writable>) adapter).createWritableSerializer();
+			
+			HadoopDataAdapter<Object, Writable> hadoopAdapter = null;
+			if (((adapterStore != null) && ((adapter = adapterStore.getAdapter(
+					adapterId)) != null))) {
+				if (adapter instanceof HadoopDataAdapter) {
+					hadoopAdapter = (HadoopDataAdapter<Object, Writable>) adapter;
+				}
+				else if ((adapter instanceof InternalDataAdapter)
+						&& (((InternalDataAdapter) adapter).getAdapter() instanceof HadoopDataAdapter)) {
+					hadoopAdapter = (HadoopDataAdapter<Object, Writable>) ((InternalDataAdapter) adapter).getAdapter();
+				}
+			}
+			if (hadoopAdapter != null) {
+				serializer = hadoopAdapter.createWritableSerializer();
 				serializers.put(
 						adapterId,
 						serializer);
@@ -104,7 +123,8 @@ public class HadoopWritableSerializationTool
 					@Override
 					public ObjectWritable toWritable(
 							final Object entry ) {
-						writable.set(entry);
+						writable.set(
+								entry);
 						return writable;
 					}
 
@@ -123,12 +143,14 @@ public class HadoopWritableSerializationTool
 			final short internalAdapterId,
 			final Object entry ) {
 		if (entry instanceof Writable) {
-			objectWritable.set(entry);
+			objectWritable.set(
+					entry);
 		}
 		else {
-			objectWritable.set(getHadoopWritableSerializerForAdapter(
-					internalAdapterId).toWritable(
-					entry));
+			objectWritable.set(
+					getHadoopWritableSerializerForAdapter(
+							internalAdapterId).toWritable(
+									entry));
 		}
 		return objectWritable;
 	}
@@ -139,7 +161,8 @@ public class HadoopWritableSerializationTool
 		final Object innerObj = writable.get();
 		return (innerObj instanceof Writable) ? getHadoopWritableSerializerForAdapter(
 				adapterID).fromWritable(
-				(Writable) innerObj) : innerObj;
+						(Writable) innerObj)
+				: innerObj;
 	}
 
 	public Object fromWritable(
@@ -148,6 +171,7 @@ public class HadoopWritableSerializationTool
 		final Object innerObj = writable.get();
 		return (innerObj instanceof Writable) ? getHadoopWritableSerializerForAdapter(
 				internalAdapterId).fromWritable(
-				(Writable) innerObj) : innerObj;
+						(Writable) innerObj)
+				: innerObj;
 	}
 }

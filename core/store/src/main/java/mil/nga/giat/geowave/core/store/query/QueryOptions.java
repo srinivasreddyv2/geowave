@@ -479,13 +479,6 @@ public class QueryOptions implements
 					idBytes));
 			count--;
 		}
-
-		if (adapterIds.size() > 0){
-			System.err.println(adapterIds.get(0).getString());
-		}
-		else{
-			System.err.println("empty");
-		}
 	}
 
 	public Pair<DataAdapter<?>, Aggregation<?, ?, ?>> getAggregation() {

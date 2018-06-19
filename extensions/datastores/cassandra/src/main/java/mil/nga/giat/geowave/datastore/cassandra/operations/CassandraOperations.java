@@ -198,7 +198,7 @@ public class CassandraOperations implements
 
 	public BatchedRangeRead getBatchedRangeRead(
 			final String tableName,
-			final List<Short> adapterIds,
+			final Collection<Short> adapterIds,
 			final Collection<SinglePartitionQueryRanges> ranges ) {
 		PreparedStatement preparedRead;
 		synchronized (state.preparedRangeReadsPerTable) {

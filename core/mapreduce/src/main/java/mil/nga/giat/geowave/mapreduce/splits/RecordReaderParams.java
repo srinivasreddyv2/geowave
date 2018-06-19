@@ -1,5 +1,6 @@
 package mil.nga.giat.geowave.mapreduce.splits;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,7 +19,7 @@ public class RecordReaderParams extends
 	public RecordReaderParams(
 			final PrimaryIndex index,
 			final PersistentAdapterStore adapterStore,
-			final List<Short> adapterIds,
+			final Collection<Short> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
 			final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
 			final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets,

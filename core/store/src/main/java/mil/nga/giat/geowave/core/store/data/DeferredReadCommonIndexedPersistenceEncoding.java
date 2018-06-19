@@ -67,7 +67,6 @@ public class DeferredReadCommonIndexedPersistenceEncoding extends
 						model,
 						field.getFieldPosition());
 				if (fieldId == null) {
-					System.err.println(field.getFieldPosition());
 					fieldId = adapter.getFieldIdForPosition(
 							model,
 							field.getFieldPosition());

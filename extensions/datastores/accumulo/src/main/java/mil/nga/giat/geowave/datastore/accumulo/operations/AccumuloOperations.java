@@ -953,7 +953,7 @@ public class AccumuloOperations implements
 
 			deleter.setRanges(Arrays.asList(new Range()));
 			deleter.fetchColumnFamily(new Text(
-					Short.toString(adapterId)));
+					ByteArrayUtils.shortToByteArray(adapterId)));
 			deleter.delete();
 			return true;
 		}
@@ -1046,7 +1046,7 @@ public class AccumuloOperations implements
 		if ((params.getAdapterIds() != null) && !params.getAdapterIds().isEmpty()) {
 			for (final short adapterId : params.getAdapterIds()) {
 				scanner.fetchColumnFamily(new Text(
-						Short.toString(adapterId)));
+						ByteArrayUtils.shortToByteArray(adapterId)));
 			}
 		}
 		return scanner;
@@ -1298,9 +1298,9 @@ public class AccumuloOperations implements
 			return null;
 		}
 		if ((params.getAdapterIds() != null) && !params.getAdapterIds().isEmpty()) {
-			for (final ByteArrayId adapterId : params.getAdapterIds()) {
+			for (final Short adapterId : params.getAdapterIds()) {
 				scanner.fetchColumnFamily(new Text(
-						adapterId.getBytes()));
+						ByteArrayUtils.shortToByteArray(adapterId)));
 			}
 		}
 		return scanner;

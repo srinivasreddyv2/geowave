@@ -214,7 +214,6 @@ public class InternalAdapterStoreImpl implements
 	public short addAdapterId(
 			final ByteArrayId adapterId ) {
 		synchronized (MUTEX) {
-			System.err.println("adding " + adapterId.getString());
 			Short internalAdapterId = internalGetInternalAdapterId(
 					adapterId,
 					false);

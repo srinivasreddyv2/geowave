@@ -1,5 +1,6 @@
 package mil.nga.giat.geowave.core.store.operations;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,7 +19,7 @@ abstract public class BaseReaderParams
 
 	private final PrimaryIndex index;
 	private final PersistentAdapterStore adapterStore;
-	private final List<Short> adapterIds;
+	private final Collection<Short> adapterIds;
 	private final double[] maxResolutionSubsamplingPerDimension;
 	private final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation;
 	private final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets;
@@ -29,7 +30,7 @@ abstract public class BaseReaderParams
 	public BaseReaderParams(
 			final PrimaryIndex index,
 			final PersistentAdapterStore adapterStore,
-			final List<Short> adapterIds,
+			final Collection<Short> adapterIds,
 			final double[] maxResolutionSubsamplingPerDimension,
 			final Pair<InternalDataAdapter<?>, Aggregation<?, ?, ?>> aggregation,
 			final Pair<List<String>, InternalDataAdapter<?>> fieldSubsets,
@@ -55,7 +56,7 @@ abstract public class BaseReaderParams
 		return adapterStore;
 	}
 
-	public List<Short> getAdapterIds() {
+	public Collection<Short> getAdapterIds() {
 		return adapterIds;
 	}
 

@@ -561,9 +561,6 @@ public class FeatureDataAdapter extends
 		if (reader == null) {
 			// Reader not in Map, go to the reprojected feature type and get the
 			// default reader
-			// System.err.println(fieldId);
-
-			// System.err.println(reprojectedFeatureType);
 			final AttributeDescriptor descriptor = reprojectedFeatureType.getDescriptor(fieldId.getString());
 			final Class<?> bindingClass = descriptor.getType().getBinding();
 			reader = (FieldReader<Object>) FieldUtils.getDefaultReaderForClass(bindingClass);

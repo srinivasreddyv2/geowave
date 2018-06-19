@@ -327,8 +327,8 @@ public class DynamoDBReader implements
 	private List<QueryRequest> addQueryRanges(
 			final String tableName,
 			final SinglePartitionQueryRanges r,
-			List<Short> internalAdapterIds,
-			final AdapterStore adapterStore ) {
+			Collection<Short> internalAdapterIds,
+			final PersistentAdapterStore adapterStore ) {
 		final List<QueryRequest> retVal = new ArrayList<>();
 		final ByteArrayId partitionKey = r.getPartitionKey();
 		final byte[] partitionId = ((partitionKey == null) || (partitionKey.getBytes().length == 0))
