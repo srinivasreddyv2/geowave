@@ -52,33 +52,26 @@ public class BatchedRangeRead
 				};
 				boundRead.set(
 						CassandraField.GW_SORT_KEY.getLowerBoundBindMarkerName(),
-						ByteBuffer.wrap(
-								start),
+						ByteBuffer.wrap(start),
 						ByteBuffer.class);
 
 				boundRead.set(
 						CassandraField.GW_SORT_KEY.getUpperBoundBindMarkerName(),
-						ByteBuffer.wrap(
-								end),
+						ByteBuffer.wrap(end),
 						ByteBuffer.class);
 				boundRead.set(
 						CassandraField.GW_PARTITION_ID_KEY.getBindMarkerName(),
-						ByteBuffer.wrap(
-								r.getPartitionKey().getBytes()),
+						ByteBuffer.wrap(r.getPartitionKey().getBytes()),
 						ByteBuffer.class);
 
 				boundRead.set(
 						CassandraField.GW_ADAPTER_ID_KEY.getBindMarkerName(),
 						Lists.newArrayList(internalAdapterIds),
-						TypeCodec.list(
-								TypeCodec.smallInt()));
-				statements.add(
-						boundRead);
+						TypeCodec.list(TypeCodec.smallInt()));
+				statements.add(boundRead);
 			}
 
 		}
-		return operations.executeQueryAsync(
-				statements.toArray(
-						new BoundStatement[] {}));
+		return operations.executeQueryAsync(statements.toArray(new BoundStatement[] {}));
 	}
 }

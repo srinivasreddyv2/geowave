@@ -173,7 +173,7 @@ public class InternalAdapterStoreImpl implements
 		}
 		return null;
 	}
-	
+
 	public static short getInitialInternalAdapterId(
 			final ByteArrayId adapterId ) {
 		final int shortRange = Short.MAX_VALUE - Short.MIN_VALUE;

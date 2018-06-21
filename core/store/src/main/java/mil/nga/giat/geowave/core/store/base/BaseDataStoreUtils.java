@@ -559,22 +559,25 @@ public class BaseDataStoreUtils
 				}
 			}
 		}
-		Collection<Short> internalAdapterIds = Collections2.filter(Lists.transform(
-				adapterIds,
-				new Function<ByteArrayId, Short>() {
+		Collection<Short> internalAdapterIds = Collections2.filter(
+				Lists.transform(
+						adapterIds,
+						new Function<ByteArrayId, Short>() {
 
-					@Override
-					public Short apply(
-							ByteArrayId adapterId ) {
-						return internalAdapterStore.getInternalAdapterId(adapterId);
-					}
-				}), new Predicate<Short>() {
+							@Override
+							public Short apply(
+									ByteArrayId adapterId ) {
+								return internalAdapterStore.getInternalAdapterId(adapterId);
+							}
+						}),
+				new Predicate<Short>() {
 
 					@Override
 					public boolean apply(
 							Short input ) {
 						return input != null;
-					}});
+					}
+				});
 		final List<Pair<PrimaryIndex, Short>> result = new ArrayList<>();
 		for (final Short internalAdapterId : internalAdapterIds) {
 			final AdapterToIndexMapping indices = adapterIndexMappingStore.getIndicesForAdapter(internalAdapterId);

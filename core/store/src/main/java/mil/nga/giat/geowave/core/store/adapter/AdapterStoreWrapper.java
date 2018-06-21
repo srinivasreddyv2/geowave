@@ -29,9 +29,7 @@ public class AdapterStoreWrapper implements
 	@Override
 	public void addAdapter(
 			final InternalDataAdapter<?> adapter ) {
-		adapterStore
-				.addAdapter(
-						adapter.getAdapter());
+		adapterStore.addAdapter(adapter.getAdapter());
 	}
 
 	@Override
@@ -41,11 +39,7 @@ public class AdapterStoreWrapper implements
 			return null;
 		}
 		return new InternalDataAdapterWrapper<>(
-				(WritableDataAdapter<?>) adapterStore
-						.getAdapter(
-								internalAdapterStore
-										.getAdapterId(
-												internalAdapterId)),
+				(WritableDataAdapter<?>) adapterStore.getAdapter(internalAdapterStore.getAdapterId(internalAdapterId)),
 				internalAdapterId);
 	}
 
@@ -53,9 +47,7 @@ public class AdapterStoreWrapper implements
 	public boolean adapterExists(
 			final Short internalAdapterId ) {
 		if (internalAdapterId != null) {
-			return internalAdapterStore
-					.getAdapterId(
-							internalAdapterId) != null;
+			return internalAdapterStore.getAdapterId(internalAdapterId) != null;
 
 		}
 		return false;
@@ -66,22 +58,19 @@ public class AdapterStoreWrapper implements
 		final CloseableIterator<DataAdapter<?>> it = adapterStore.getAdapters();
 		return new CloseableIteratorWrapper<>(
 				it,
-				Iterators
-						.transform(
-								it,
-								new Function<DataAdapter<?>, InternalDataAdapter<?>>() {
+				Iterators.transform(
+						it,
+						new Function<DataAdapter<?>, InternalDataAdapter<?>>() {
 
-									@Override
-									public InternalDataAdapter<?> apply(
-											final DataAdapter<?> input ) {
-										return new InternalDataAdapterWrapper<>(
-												(WritableDataAdapter<?>) input,
-												internalAdapterStore
-														.getInternalAdapterId(
-																input.getAdapterId()));
-									}
+							@Override
+							public InternalDataAdapter<?> apply(
+									final DataAdapter<?> input ) {
+								return new InternalDataAdapterWrapper<>(
+										(WritableDataAdapter<?>) input,
+										internalAdapterStore.getInternalAdapterId(input.getAdapterId()));
+							}
 
-								}));
+						}));
 	}
 
 	@Override
