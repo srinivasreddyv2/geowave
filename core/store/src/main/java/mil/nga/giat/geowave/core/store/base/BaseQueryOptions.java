@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -107,7 +108,11 @@ public class BaseQueryOptions
 						@Override
 						public boolean apply(
 								final Short input ) {
-							return input != null;
+							if (input == null) {
+								nullId = true;
+								return false;
+							}
+							return true;
 						}
 					});
 		}
@@ -215,7 +220,10 @@ public class BaseQueryOptions
 			return adapters.toArray(
 					new InternalDataAdapter[adapters.size()]);
 		}
-		final List<InternalDataAdapter> list = new ArrayList<>();
+		if (nullId) {
+			return new InternalDataAdapter[] {};
+		}
+		final List<InternalDataAdapter<?>> list = new ArrayList<>();
 		if ((adapterStore != null) && (adapterStore.getAdapters() != null)) {
 			try (CloseableIterator<InternalDataAdapter<?>> it = adapterStore.getAdapters()) {
 				while (it.hasNext()) {
@@ -264,6 +272,9 @@ public class BaseQueryOptions
 							it.next());
 				}
 			}
+		}
+		else if (adapters == null) {
+			adapters = Collections.emptyList();
 		}
 		final List<Pair<PrimaryIndex, InternalDataAdapter<?>>> result = new ArrayList<>();
 		for (final InternalDataAdapter<?> adapter : adapters) {
