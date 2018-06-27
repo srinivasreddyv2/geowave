@@ -7,7 +7,7 @@ public interface GeowaveColumnId
 
 }
 
-class shortColumnId implements
+class ShortColumnId implements
 		GeowaveColumnId
 {
 	@Override
@@ -24,20 +24,20 @@ class shortColumnId implements
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		shortColumnId other = (shortColumnId) obj;
+		ShortColumnId other = (ShortColumnId) obj;
 		if (columnId != other.columnId) return false;
 		return true;
 	}
 
 	private short columnId;
 
-	public shortColumnId(
+	public ShortColumnId(
 			short columnId ) {
 		this.columnId = columnId;
 	}
 }
 
-class byteArrayColumnId implements
+class ByteArrayColumnId implements
 		GeowaveColumnId
 {
 
@@ -57,7 +57,7 @@ class byteArrayColumnId implements
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		byteArrayColumnId other = (byteArrayColumnId) obj;
+		ByteArrayColumnId other = (ByteArrayColumnId) obj;
 		if (columnId == null) {
 			if (other.columnId != null) return false;
 		}
@@ -65,7 +65,7 @@ class byteArrayColumnId implements
 		return true;
 	}
 
-	public byteArrayColumnId(
+	public ByteArrayColumnId(
 			ByteArrayId columnId ) {
 		this.columnId = columnId;
 	}

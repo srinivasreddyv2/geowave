@@ -136,7 +136,7 @@ public class HBaseWriter implements
 					rowBytes);
 
 			put.addColumn(
-					ByteArrayUtils.shortToByteArray(row.getInternalAdapterId()),
+					StringUtils.stringToBinary(ByteArrayUtils.shortToString(row.getInternalAdapterId())),
 					value.getFieldMask(),
 					value.getValue());
 

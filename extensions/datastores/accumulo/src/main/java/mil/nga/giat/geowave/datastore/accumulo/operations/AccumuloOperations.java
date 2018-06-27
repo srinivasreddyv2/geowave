@@ -1046,7 +1046,7 @@ public class AccumuloOperations implements
 		if ((params.getAdapterIds() != null) && !params.getAdapterIds().isEmpty()) {
 			for (final short adapterId : params.getAdapterIds()) {
 				scanner.fetchColumnFamily(new Text(
-						ByteArrayUtils.shortToByteArray(adapterId)));
+						ByteArrayUtils.shortToString(adapterId)));
 			}
 		}
 		return scanner;
@@ -1300,7 +1300,7 @@ public class AccumuloOperations implements
 		if ((params.getAdapterIds() != null) && !params.getAdapterIds().isEmpty()) {
 			for (final Short adapterId : params.getAdapterIds()) {
 				scanner.fetchColumnFamily(new Text(
-						ByteArrayUtils.shortToByteArray(adapterId)));
+						ByteArrayUtils.shortToString(adapterId)));
 			}
 		}
 		return scanner;

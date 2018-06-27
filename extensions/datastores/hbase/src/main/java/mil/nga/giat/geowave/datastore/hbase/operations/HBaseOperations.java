@@ -312,8 +312,8 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(tableNameStr);
 
 		final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-		columnFamilies[0] = new ByteArrayColumnFamily(
-				ByteArrayUtils.shortToByteArray(columnFamily));
+		columnFamilies[0] = new StringColumnFamily(
+				ByteArrayUtils.shortToString(columnFamily));
 
 		try {
 			return verifyColumnFamilies(
@@ -859,8 +859,8 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(indexId.getString());
 
 		final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-		columnFamilies[0] = new ByteArrayColumnFamily(
-				ByteArrayUtils.shortToByteArray(internalAdapterId));
+		columnFamilies[0] = new StringColumnFamily(
+				ByteArrayUtils.shortToString(internalAdapterId));
 		try {
 			createTable(
 					columnFamilies,
@@ -882,8 +882,8 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(indexId.getString());
 		try {
 			final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-			columnFamilies[0] = new ByteArrayColumnFamily(
-					ByteArrayUtils.shortToByteArray(internalAdapterId));
+			columnFamilies[0] = new StringColumnFamily(
+					ByteArrayUtils.shortToString(internalAdapterId));
 
 			if (options.isCreateTable()) {
 				createTable(

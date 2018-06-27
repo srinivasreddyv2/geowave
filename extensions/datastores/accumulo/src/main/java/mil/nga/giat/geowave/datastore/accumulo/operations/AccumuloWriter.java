@@ -123,7 +123,7 @@ public class AccumuloWriter implements
 			if ((value.getVisibility() != null) && (value.getVisibility().length > 0)) {
 				mutation.put(
 						new Text(
-								ByteArrayUtils.shortToByteArray(row.getInternalAdapterId())),
+								ByteArrayUtils.shortToString(row.getInternalAdapterId())),
 						new Text(
 								value.getFieldMask()),
 						new ColumnVisibility(
@@ -134,7 +134,7 @@ public class AccumuloWriter implements
 			else {
 				mutation.put(
 						new Text(
-								ByteArrayUtils.shortToByteArray(row.getInternalAdapterId())),
+								ByteArrayUtils.shortToString(row.getInternalAdapterId())),
 						new Text(
 								value.getFieldMask()),
 						new Value(

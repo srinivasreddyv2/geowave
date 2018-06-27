@@ -21,6 +21,7 @@ import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.IndexUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
+import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRowImpl;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveValue;
@@ -410,7 +411,7 @@ public class HBaseReader implements
 						true, // because they're not added
 						readerParams.getIndex().getId().getString(),
 						false)) {
-					scanner.addFamily(ByteArrayUtils.shortToByteArray(adapterId));
+					scanner.addFamily(StringUtils.stringToBinary(ByteArrayUtils.shortToString(adapterId)));
 				}
 				else {
 					LOGGER.warn("Adapter ID: " + adapterId + " not found in table: "
