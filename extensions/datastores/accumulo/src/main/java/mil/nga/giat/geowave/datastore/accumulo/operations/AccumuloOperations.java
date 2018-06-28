@@ -953,7 +953,7 @@ public class AccumuloOperations implements
 
 			deleter.setRanges(Arrays.asList(new Range()));
 			deleter.fetchColumnFamily(new Text(
-					ByteArrayUtils.shortToByteArray(adapterId)));
+					ByteArrayUtils.shortToString(adapterId)));
 			deleter.delete();
 			return true;
 		}

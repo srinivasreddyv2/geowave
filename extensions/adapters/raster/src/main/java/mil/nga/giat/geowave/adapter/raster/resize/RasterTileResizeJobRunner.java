@@ -183,11 +183,11 @@ public class RasterTileResizeJobRunner extends
 				adapter.getAdapterId(),
 				internalAdapterId);
 
-		conf.setInt(
+		job.getConfiguration().setInt(
 				OLD_INTERNAL_ADAPTER_ID_KEY,
 				internalAdapterId);
 
-		conf.setInt(
+		job.getConfiguration().setInt(
 				NEW_INTERNAL_ADAPTER_ID_KEY,
 				newInternalAdapterId);
 		if (outputStoreOptions.getFactoryOptions().getStoreOptions().isPersistDataStatistics()) {

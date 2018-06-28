@@ -318,7 +318,7 @@ public class HBaseOperations implements
 		try {
 			return verifyColumnFamilies(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					enableVersioning,
 					tableName,
 					addIfNotExist);
@@ -864,7 +864,7 @@ public class HBaseOperations implements
 		try {
 			createTable(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					enableVersioning,
 					tableName);
 		}
@@ -888,14 +888,14 @@ public class HBaseOperations implements
 			if (options.isCreateTable()) {
 				createTable(
 						columnFamilies,
-						ByteArrayColumnFamilyFactory.getSingletonInstance(),
+						StringColumnFamilyFactory.getSingletonInstance(),
 						options.isServerSideLibraryEnabled(),
 						tableName);
 			}
 
 			verifyColumnFamilies(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					true,
 					tableName,
 					true);
