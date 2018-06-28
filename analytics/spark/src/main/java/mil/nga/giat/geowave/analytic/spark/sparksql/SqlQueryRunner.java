@@ -308,6 +308,9 @@ public class SqlQueryRunner
 
 			joinRunner.setPredicate(pred.predicate);
 
+			joinRunner.setLeftStore(leftStore.storeOptions);
+			joinRunner.setRightStore(rightStore.storeOptions);
+
 			// Execute the join
 			joinRunner.run();
 

@@ -80,7 +80,7 @@ public class DynamoDBReader implements
 		processAuthorizations(recordReaderParams.getAdditionalAuthorizations());
 		this.operations = operations;
 
-		// initRecordScanner();
+		initRecordScanner();
 	}
 
 	private void processAuthorizations(
@@ -127,40 +127,36 @@ public class DynamoDBReader implements
 				tableName);
 	}
 
-	// protected void initRecordScanner() {
-	// final String tableName =
-	// operations.getQualifiedTableName(recordReaderParams.getIndex().getId().getString());
-	//
-	// final ArrayList<ByteArrayId> adapterIds = Lists.newArrayList();
-	// if ((recordReaderParams.getAdapterIds() != null) &&
-	// !recordReaderParams.getAdapterIds().isEmpty()) {
-	// for (final ByteArrayId adapterId : recordReaderParams.getAdapterIds()) {
-	// adapterIds.add(adapterId);
-	// }
-	// }
-	//
-	// final List<QueryRequest> requests = new ArrayList<>();
-	//
-	// final GeoWaveRowRange range = recordReaderParams.getRowRange();
-	// for (final ByteArrayId adapterId : adapterIds) {
-	// final ByteArrayId startKey = range.isInfiniteStartSortKey() ? null : new
-	// ByteArrayId(
-	// range.getStartSortKey());
-	// final ByteArrayId stopKey = range.isInfiniteStopSortKey() ? null : new
-	// ByteArrayId(
-	// range.getEndSortKey());
-	// requests.add(getQuery(
-	// tableName,
-	// range.getPartitionKey(),
-	// new ByteArrayRange(
-	// startKey,
-	// stopKey),
-	// adapterId));
-	// }
-	// startRead(
-	// requests,
-	// tableName);
-	// }
+	protected void initRecordScanner() {
+		final String tableName = operations.getQualifiedTableName(recordReaderParams.getIndex().getId().getString());
+
+		final ArrayList<Short> adapterIds = Lists.newArrayList();
+		if ((recordReaderParams.getAdapterIds() != null) && !recordReaderParams.getAdapterIds().isEmpty()) {
+			for (final Short adapterId : recordReaderParams.getAdapterIds()) {
+				adapterIds.add(adapterId);
+			}
+		}
+
+		final List<QueryRequest> requests = new ArrayList<>();
+
+		final GeoWaveRowRange range = recordReaderParams.getRowRange();
+		for (final Short adapterId : adapterIds) {
+			final ByteArrayId startKey = range.isInfiniteStartSortKey() ? null : new ByteArrayId(
+					range.getStartSortKey());
+			final ByteArrayId stopKey = range.isInfiniteStopSortKey() ? null : new ByteArrayId(
+					range.getEndSortKey());
+			requests.add(getQuery(
+					tableName,
+					range.getPartitionKey(),
+					new ByteArrayRange(
+							startKey,
+							stopKey),
+					adapterId));
+		}
+		startRead(
+				requests,
+				tableName);
+	}
 
 	private void startRead(
 			final List<QueryRequest> requests,

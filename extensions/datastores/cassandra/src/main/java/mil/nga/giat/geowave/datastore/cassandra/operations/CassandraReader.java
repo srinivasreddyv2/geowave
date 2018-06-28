@@ -66,7 +66,7 @@ public class CassandraReader implements
 		wholeRowEncoding = recordReaderParams.isMixedVisibility() && !recordReaderParams.isServersideAggregation();
 		clientSideRowMerging = false;
 
-		// initRecordScanner();
+		initRecordScanner();
 	}
 
 	private CloseableIterator<CassandraRow> wrapResults(
@@ -122,38 +122,32 @@ public class CassandraReader implements
 
 	}
 
-	// protected void initRecordScanner() {
-	// final List<ByteArrayId> adapterIds = recordReaderParams.getAdapterIds()
-	// != null ? recordReaderParams
-	// .getAdapterIds() : Lists.newArrayList();
-	//
-	// final GeoWaveRowRange range = recordReaderParams.getRowRange();
-	// final ByteArrayId startKey = range.isInfiniteStartSortKey() ? null : new
-	// ByteArrayId(
-	// range.getStartSortKey());
-	// final ByteArrayId stopKey = range.isInfiniteStopSortKey() ? null : new
-	// ByteArrayId(
-	// range.getEndSortKey());
-	// final SinglePartitionQueryRanges partitionRange = new
-	// SinglePartitionQueryRanges(
-	// new ByteArrayId(
-	// range.getPartitionKey()),
-	// Collections.singleton(new ByteArrayRange(
-	// startKey,
-	// stopKey)));
-	// final CloseableIterator<CassandraRow> results =
-	// operations.getBatchedRangeRead(
-	// recordReaderParams.getIndex().getId().getString(),
-	// adapterIds,
-	// Collections.singleton(partitionRange)).results();
-	//
-	// final Set<String> authorizations =
-	// Sets.newHashSet(recordReaderParams.getAdditionalAuthorizations());
-	//
-	// iterator = wrapResults(
-	// results,
-	// authorizations);
-	// }
+	protected void initRecordScanner() {
+		final Collection<Short> adapterIds = recordReaderParams.getAdapterIds() != null ? recordReaderParams
+				.getAdapterIds() : Lists.newArrayList();
+
+		final GeoWaveRowRange range = recordReaderParams.getRowRange();
+		final ByteArrayId startKey = range.isInfiniteStartSortKey() ? null : new ByteArrayId(
+				range.getStartSortKey());
+		final ByteArrayId stopKey = range.isInfiniteStopSortKey() ? null : new ByteArrayId(
+				range.getEndSortKey());
+		final SinglePartitionQueryRanges partitionRange = new SinglePartitionQueryRanges(
+				new ByteArrayId(
+						range.getPartitionKey()),
+				Collections.singleton(new ByteArrayRange(
+						startKey,
+						stopKey)));
+		final CloseableIterator<CassandraRow> results = operations.getBatchedRangeRead(
+				recordReaderParams.getIndex().getId().getString(),
+				adapterIds,
+				Collections.singleton(partitionRange)).results();
+
+		final Set<String> authorizations = Sets.newHashSet(recordReaderParams.getAdditionalAuthorizations());
+
+		iterator = wrapResults(
+				results,
+				authorizations);
+	}
 
 	@Override
 	public void close()

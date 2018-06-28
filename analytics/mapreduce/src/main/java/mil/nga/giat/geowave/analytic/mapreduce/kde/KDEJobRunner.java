@@ -405,6 +405,19 @@ public class KDEJobRunner extends
 				job2Success = false;
 			}
 
+			CloseableIterator<Object> obj = outputDataStoreOptions.createDataStore().query(
+					new QueryOptions(
+							new ByteArrayId(
+									kdeCoverageName),
+							outputPrimaryIndex.getId()),
+					null);
+			int i = 0;
+			while (obj.hasNext()) {
+				obj.next();
+				i++;
+			}
+			System.err.println("there are '" + i + "' tiles");
+
 			if (rasterResizeOutputDataStoreOptions != null) {
 				// delegate to resize command to wrap it up with the correctly
 				// requested tile size

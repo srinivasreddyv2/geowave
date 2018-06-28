@@ -226,7 +226,7 @@ public class GeoWaveSparkSpatialJoinIT extends
 		InternalDataAdapter<?> hailAdapter = dataStore.createAdapterStore().getAdapter(
 				hailInternalAdapterId);
 		short tornadoInternalAdapterId = dataStore.createInternalAdapterStore().getInternalAdapterId(
-				hail_adapter);
+				tornado_adapter);
 		InternalDataAdapter<?> tornadoAdapter = dataStore.createAdapterStore().getAdapter(
 				tornadoInternalAdapterId);
 		try {

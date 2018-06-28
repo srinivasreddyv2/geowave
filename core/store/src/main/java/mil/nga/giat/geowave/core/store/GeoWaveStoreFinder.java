@@ -93,7 +93,8 @@ public class GeoWaveStoreFinder
 		}
 		return factory.getInternalAdapterStoreFactory().createStore(
 				ConfigUtils.populateOptionsFromList(
-						factory.getAdapterStoreFactory().createOptionsInstance(),
+						//factory.getAdapterStoreFactory().createOptionsInstance(),
+						factory.getInternalAdapterStoreFactory().createOptionsInstance(),
 						configOptions));
 	}
 

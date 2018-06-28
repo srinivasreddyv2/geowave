@@ -38,6 +38,7 @@ import mil.nga.giat.geowave.core.store.index.Index;
 import mil.nga.giat.geowave.core.store.index.IndexStore;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
+import mil.nga.giat.geowave.core.store.query.QueryOptions;
 import mil.nga.giat.geowave.mapreduce.GeoWaveConfiguratorBase;
 import mil.nga.giat.geowave.mapreduce.JobContextAdapterStore;
 import mil.nga.giat.geowave.mapreduce.JobContextInternalAdapterStore;
@@ -170,7 +171,7 @@ public class RasterTileResizeJobRunner extends
 		store.createWriter(
 				newAdapter,
 				index).close();
-		final short newInternalAdapterId = outputStoreOptions.createInternalAdapterStore().getInternalAdapterId(
+		final short newInternalAdapterId = outputStoreOptions.createInternalAdapterStore().addAdapterId(
 				newAdapter.getAdapterId());
 		// what if the adapter IDs are the same, but the internal IDs are
 		// different (unlikely corner case, but seemingly possible)
@@ -183,11 +184,11 @@ public class RasterTileResizeJobRunner extends
 				adapter.getAdapterId(),
 				internalAdapterId);
 
-		conf.setInt(
+		job.getConfiguration().setInt(
 				OLD_INTERNAL_ADAPTER_ID_KEY,
 				internalAdapterId);
 
-		conf.setInt(
+		job.getConfiguration().setInt(
 				NEW_INTERNAL_ADAPTER_ID_KEY,
 				newInternalAdapterId);
 		if (outputStoreOptions.getFactoryOptions().getStoreOptions().isPersistDataStatistics()) {
@@ -213,6 +214,20 @@ public class RasterTileResizeJobRunner extends
 					"Error waiting for map reduce tile resize job: ",
 					ex);
 		}
+
+		CloseableIterator<Object> obj = outputStoreOptions.createDataStore().query(
+				new QueryOptions(
+						new ByteArrayId(
+								rasterResizeOptions.getOutputCoverageName()),
+						index.getId()),
+				null);
+		int i = 0;
+		while (obj.hasNext()) {
+			obj.next();
+			i++;
+		}
+		System.err.println("Raster Resize: there are '" + i + "' tiles");
+
 		return retVal ? 0 : 1;
 	}
 
