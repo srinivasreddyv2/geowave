@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.store.adapter.RowMergingDataAdapter.RowTransform;
 import mil.nga.giat.geowave.core.store.server.RowMergingAdapterOptionProvider;
 import mil.nga.giat.geowave.mapreduce.URLClassloaderUtils;
@@ -28,7 +29,7 @@ public class RowMergingServerOp extends
 			final Cell cell,
 			final byte[] bytes ) {
 		return rowTransform.getRowAsMergeableObject(
-				ByteArrayUtils.byteArrayToShort(CellUtil.cloneFamily(cell)),
+				ByteArrayUtils.shortFromString(StringUtils.stringFromBinary(CellUtil.cloneFamily(cell))),
 				new ByteArrayId(
 						CellUtil.cloneQualifier(cell)),
 				bytes);
@@ -67,8 +68,8 @@ public class RowMergingServerOp extends
 					@Override
 					public GeowaveColumnId apply(
 							final String input ) {
-						return new shortColumnId(
-								Short.valueOf(input));
+						return new ShortColumnId(
+								ByteArrayUtils.shortFromString(input));
 					}
 				}));
 

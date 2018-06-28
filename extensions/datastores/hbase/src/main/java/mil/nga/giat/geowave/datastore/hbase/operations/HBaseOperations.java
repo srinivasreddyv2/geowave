@@ -312,13 +312,13 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(tableNameStr);
 
 		final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-		columnFamilies[0] = new ByteArrayColumnFamily(
-				ByteArrayUtils.shortToByteArray(columnFamily));
+		columnFamilies[0] = new StringColumnFamily(
+				ByteArrayUtils.shortToString(columnFamily));
 
 		try {
 			return verifyColumnFamilies(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					enableVersioning,
 					tableName,
 					addIfNotExist);
@@ -859,12 +859,12 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(indexId.getString());
 
 		final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-		columnFamilies[0] = new ByteArrayColumnFamily(
-				ByteArrayUtils.shortToByteArray(internalAdapterId));
+		columnFamilies[0] = new StringColumnFamily(
+				ByteArrayUtils.shortToString(internalAdapterId));
 		try {
 			createTable(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					enableVersioning,
 					tableName);
 		}
@@ -882,20 +882,20 @@ public class HBaseOperations implements
 		final TableName tableName = getTableName(indexId.getString());
 		try {
 			final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
-			columnFamilies[0] = new ByteArrayColumnFamily(
-					ByteArrayUtils.shortToByteArray(internalAdapterId));
+			columnFamilies[0] = new StringColumnFamily(
+					ByteArrayUtils.shortToString(internalAdapterId));
 
 			if (options.isCreateTable()) {
 				createTable(
 						columnFamilies,
-						ByteArrayColumnFamilyFactory.getSingletonInstance(),
+						StringColumnFamilyFactory.getSingletonInstance(),
 						options.isServerSideLibraryEnabled(),
 						tableName);
 			}
 
 			verifyColumnFamilies(
 					columnFamilies,
-					ByteArrayColumnFamilyFactory.getSingletonInstance(),
+					StringColumnFamilyFactory.getSingletonInstance(),
 					true,
 					tableName,
 					true);

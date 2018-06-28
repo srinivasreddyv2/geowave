@@ -215,19 +215,6 @@ public class RasterTileResizeJobRunner extends
 					ex);
 		}
 
-		CloseableIterator<Object> obj = outputStoreOptions.createDataStore().query(
-				new QueryOptions(
-						new ByteArrayId(
-								rasterResizeOptions.getOutputCoverageName()),
-						index.getId()),
-				null);
-		int i = 0;
-		while (obj.hasNext()) {
-			obj.next();
-			i++;
-		}
-		System.err.println("Raster Resize: there are '" + i + "' tiles");
-
 		return retVal ? 0 : 1;
 	}
 

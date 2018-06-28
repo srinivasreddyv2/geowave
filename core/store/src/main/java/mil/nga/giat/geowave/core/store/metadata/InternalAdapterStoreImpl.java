@@ -181,23 +181,6 @@ public class InternalAdapterStoreImpl implements
 		return internalAdapterId;
 	}
 
-	private static boolean isValid(
-			final short n ) {
-
-		final byte[] b = ByteArrayUtils.shortToByteArray(n);
-
-		if (b[0] == '.') {
-			return false;
-		}
-
-		for (int i = 0; i < b.length; i++) {
-			if (Character.isISOControl(b[i]) || (b[i] == ':') || (b[i] == '\\') || (b[i] == '/')) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	private boolean internalAdapterIdExists(
 			final short internalAdapterId ) {
 		return internalGetAdapterId(
@@ -221,7 +204,7 @@ public class InternalAdapterStoreImpl implements
 				return internalAdapterId;
 			}
 			internalAdapterId = getInitialInternalAdapterId(adapterId);
-			while (!isValid(internalAdapterId) || internalAdapterIdExists(internalAdapterId)) {
+			while (internalAdapterIdExists(internalAdapterId)) {
 				internalAdapterId++;
 			}
 			try (final MetadataWriter writer = operations.createMetadataWriter(MetadataType.INTERNAL_ADAPTER)) {

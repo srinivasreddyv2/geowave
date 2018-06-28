@@ -11,6 +11,8 @@ import org.apache.accumulo.core.client.TableNotFoundException;
 import org.apache.accumulo.core.data.Range;
 import org.apache.accumulo.core.data.TabletId;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /*if[accumulo.api=1.7]
  import org.apache.accumulo.core.util.UtilWaitThread;
  import org.apache.accumulo.core.client.mock.MockInstance;
@@ -40,6 +42,7 @@ import mil.nga.giat.geowave.datastore.accumulo.operations.AccumuloOperations;
 
 class BackwardCompatibleTabletLocatorFactory
 {
+	private final static Logger LOGGER = LoggerFactory.getLogger(BackwardCompatibleTabletLocatorFactory.class);
 	protected static interface BackwardCompatibleTabletLocator
 	{
 		public Map<TabletId, List<Range>> getLocationsGroupedByTablet();

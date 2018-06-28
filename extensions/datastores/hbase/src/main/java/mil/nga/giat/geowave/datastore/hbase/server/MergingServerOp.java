@@ -24,6 +24,7 @@ import com.google.common.collect.Sets;
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
+import mil.nga.giat.geowave.core.index.StringUtils;
 import mil.nga.giat.geowave.core.store.operations.MetadataType;
 import mil.nga.giat.geowave.mapreduce.URLClassloaderUtils;
 
@@ -87,12 +88,12 @@ public class MergingServerOp implements
 						// TODO consider avoiding extra byte array allocations
 						final byte[] familyBytes = CellUtil.cloneFamily(cell);
 						GeowaveColumnId familyId = null;
-						if (columnFamilyIds.iterator().next() instanceof shortColumnId) {
-							familyId = new shortColumnId(
-									ByteArrayUtils.byteArrayToShort(familyBytes));
+						if (columnFamilyIds.iterator().next() instanceof ShortColumnId) {
+							familyId = new ShortColumnId(
+									ByteArrayUtils.shortFromString(StringUtils.stringFromBinary(familyBytes)));
 						}
-						else if (columnFamilyIds.iterator().next() instanceof byteArrayColumnId) {
-							familyId = new byteArrayColumnId(
+						else if (columnFamilyIds.iterator().next() instanceof ByteArrayColumnId) {
+							familyId = new ByteArrayColumnId(
 									new ByteArrayId(
 											familyBytes));
 						}
@@ -237,7 +238,7 @@ public class MergingServerOp implements
 					@Override
 					public GeowaveColumnId apply(
 							final String input ) {
-						return new byteArrayColumnId(
+						return new ByteArrayColumnId(
 								new ByteArrayId(
 										input));
 					}
@@ -273,5 +274,5 @@ public class MergingServerOp implements
 
 	@Override
 	public void fromBinary(
-			byte[] bytes ) {}
+			final byte[] bytes ) {}
 }
