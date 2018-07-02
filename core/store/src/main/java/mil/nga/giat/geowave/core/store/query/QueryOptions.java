@@ -77,6 +77,13 @@ public class QueryOptions implements
 	 */
 	private static final long serialVersionUID = 544085046847603371L;
 
+	private static ScanCallback<Object, GeoWaveRow> DEFAULT_CALLBACK = new ScanCallback<Object, GeoWaveRow>() {
+		@Override
+		public void entryScanned(
+				final Object entry,
+				final GeoWaveRow row ) {}
+	};
+
 	@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {
 		"SE_TRANSIENT_FIELD_NOT_RESTORED"
 	})
@@ -91,6 +98,7 @@ public class QueryOptions implements
 	private Pair<DataAdapter<?>, Aggregation<?, ?, ?>> aggregationAdapterPair;
 	private Integer limit = -1;
 	private double[] maxResolutionSubsamplingPerDimension = null;
+	private transient ScanCallback<?, ?> scanCallback = DEFAULT_CALLBACK;
 	private String[] authorizations = new String[0];
 	private Pair<List<String>, DataAdapter<?>> fieldIdsAdapterPair;
 
@@ -146,6 +154,7 @@ public class QueryOptions implements
 		adapterIds = options.adapterIds;
 		adapters = options.adapters;
 		limit = options.limit;
+		scanCallback = options.scanCallback;
 		authorizations = options.authorizations;
 		adapters = options.adapters;
 		index = options.index;
@@ -172,6 +181,7 @@ public class QueryOptions implements
 		setAdapter(adapter);
 		setIndex(index);
 		setLimit(limit);
+		this.scanCallback = scanCallback;
 		this.authorizations = authorizations;
 	}
 
@@ -323,6 +333,20 @@ public class QueryOptions implements
 
 	public boolean isAllAdapters() {
 		return ((adapterIds == null) || adapterIds.isEmpty());
+	}
+
+	public ScanCallback<?, ?> getScanCallback() {
+		return scanCallback == null ? DEFAULT_CALLBACK : scanCallback;
+	}
+
+	/**
+	 * @param scanCallback
+	 *            a function called for each item discovered per the query
+	 *            constraints
+	 */
+	public void setScanCallback(
+			final ScanCallback<?, ?> scanCallback ) {
+		this.scanCallback = scanCallback;
 	}
 
 	/**
@@ -560,4 +584,5 @@ public class QueryOptions implements
 		}
 		return true;
 	}
+
 }
