@@ -364,6 +364,203 @@ public class QueryOptions implements
 	}
 
 	/**
+<<<<<<< HEAD
+=======
+	 * Return the set of adapter/index associations. If the adapters are not
+	 * provided, then look up all of them. If the index is not provided, then
+	 * look up all of them.
+	 *
+	 * DataStores are responsible for selecting a single adapter/index per
+	 * query. For deletions, the Data Stores are interested in all the
+	 * associations.
+	 *
+	 * @param adapterStore
+	 * @param
+	 * @param indexStore
+	 * @return
+	 * @throws IOException
+	 */
+
+	public List<Pair<PrimaryIndex, List<DataAdapter<Object>>>> getIndicesForAdapters(
+			final AdapterStore adapterStore,
+			final AdapterIndexMappingStore adapterIndexMappingStore,
+			final IndexStore indexStore )
+			throws IOException {
+		return combineByIndex(compileIndicesForAdapters(
+				adapterStore,
+				adapterIndexMappingStore,
+				indexStore));
+	}
+
+	/**
+	 * Return a set list adapter/index associations. If the adapters are not
+	 * provided, then look up all of them. If the index is not provided, then
+	 * look up all of them. The full set of adapter/index associations is
+	 * reduced so that a single index is queried per adapter and the number
+	 * indices queried is minimized.
+	 *
+	 * DataStores are responsible for selecting a single adapter/index per
+	 * query. For deletions, the Data Stores are interested in all the
+	 * associations.
+	 *
+	 * @param adapterStore
+	 * @param adapterIndexMappingStore
+	 * @param indexStore
+	 * @return
+	 * @throws IOException
+	 */
+	public List<Pair<PrimaryIndex, List<DataAdapter<Object>>>> getAdaptersWithMinimalSetOfIndices(
+			final AdapterStore adapterStore,
+			final AdapterIndexMappingStore adapterIndexMappingStore,
+			final IndexStore indexStore )
+			throws IOException {
+		return reduceIndicesAndGroupByIndex(compileIndicesForAdapters(
+				adapterStore,
+				adapterIndexMappingStore,
+				indexStore));
+	}
+
+	private List<Pair<PrimaryIndex, DataAdapter<Object>>> compileIndicesForAdapters(
+			final AdapterStore adapterStore,
+			final AdapterIndexMappingStore adapterIndexMappingStore,
+			final IndexStore indexStore )
+			throws IOException {
+		if ((adapterIds != null) && !adapterIds.isEmpty()) {
+			if ((adapters == null) || adapters.isEmpty()) {
+				adapters = new ArrayList<DataAdapter<Object>>();
+				for (final ByteArrayId id : adapterIds) {
+					final DataAdapter<Object> adapter = (DataAdapter<Object>) adapterStore.getAdapter(id);
+					if (adapter != null) {
+						adapters.add(adapter);
+					}
+				}
+			}
+		}
+		else {
+			adapters = new ArrayList<DataAdapter<Object>>();
+			try (CloseableIterator<DataAdapter<?>> it = adapterStore.getAdapters()) {
+				while (it.hasNext()) {
+					adapters.add((DataAdapter<Object>) it.next());
+				}
+			}
+		}
+		final List<Pair<PrimaryIndex, DataAdapter<Object>>> result = new ArrayList<Pair<PrimaryIndex, DataAdapter<Object>>>();
+		for (final DataAdapter<Object> adapter : adapters) {
+			final AdapterToIndexMapping indices = adapterIndexMappingStore.getIndicesForAdapter(adapter.getAdapterId());
+			if (index != null) {
+				result.add(Pair.of(
+						index,
+						adapter));
+			}
+			else if ((indexId != null) && indices.contains(indexId)) {
+				if (index == null) {
+					index = (PrimaryIndex) indexStore.getIndex(indexId);
+					result.add(Pair.of(
+							index,
+							adapter));
+				}
+			}
+			else if (indices.isNotEmpty()) {
+				for (final ByteArrayId id : indices.getIndexIds()) {
+					final PrimaryIndex pIndex = (PrimaryIndex) indexStore.getIndex(id);
+					// this could happen if persistent was turned off
+					if (pIndex != null) {
+						result.add(Pair.of(
+								pIndex,
+								adapter));
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	public CloseableIterator<DataAdapter<?>> getAdapters(
+			final AdapterStore adapterStore ) {
+		if ((adapterIds != null) && !adapterIds.isEmpty()) {
+			if ((adapters == null) || adapters.isEmpty()) {
+				adapters = new ArrayList<DataAdapter<Object>>();
+				for (final ByteArrayId id : adapterIds) {
+					final DataAdapter<Object> adapter = (DataAdapter<Object>) adapterStore.getAdapter(id);
+					if (adapter != null) {
+						adapters.add(adapter);
+					}
+				}
+			}
+			return new CloseableIterator.Wrapper(
+					adapters.iterator());
+		}
+		return adapterStore.getAdapters();
+	}
+
+	public DataAdapter[] getAdaptersArray(
+			final AdapterStore adapterStore )
+			throws IOException {
+		if ((adapterIds != null) && !adapterIds.isEmpty()) {
+			if ((adapters == null) || adapters.isEmpty()) {
+				adapters = new ArrayList<DataAdapter<Object>>();
+				for (final ByteArrayId id : adapterIds) {
+					final DataAdapter<Object> adapter = (DataAdapter<Object>) adapterStore.getAdapter(id);
+					if (adapter != null) {
+						adapters.add(adapter);
+					}
+				}
+			}
+			return adapters.toArray(new DataAdapter[adapters.size()]);
+		}
+		final List<DataAdapter> list = new ArrayList<DataAdapter>();
+		if (adapterStore != null) {
+			CloseableIterator<DataAdapter<?>> it = adapterStore.getAdapters();
+			if (it != null) {
+				while (it.hasNext()) {
+					list.add(it.next());
+				}
+				it.close();
+			}
+		}
+		return list.toArray(new DataAdapter[list.size()]);
+	}
+
+	public List<ByteArrayId> getAdapterIds(
+			final AdapterStore adapterStore )
+			throws IOException {
+		final List<ByteArrayId> ids = new ArrayList<ByteArrayId>();
+		if ((adapterIds == null) || adapterIds.isEmpty()) {
+			try (CloseableIterator<DataAdapter<?>> it = getAdapters(adapterStore)) {
+				while (it.hasNext()) {
+					ids.add(it.next().getAdapterId());
+				}
+			}
+		}
+		else {
+			ids.addAll(adapterIds);
+		}
+		return ids;
+	}
+
+	public List<ByteArrayId> getValidAdapterIds(
+			final AdapterStore adapterStore,
+			final AdapterIndexMappingStore adapterIndexMappingStore )
+			throws IOException {
+		// Grab the list of adapter ids, either from the query (if included),
+		// Or the whole list from the adapter store...
+		final List<ByteArrayId> adapterIds = getAdapterIds(adapterStore);
+
+		// Then for each adapter, verify that it exists in the index-adapter
+		// mapping
+		Iterator<ByteArrayId> adapterIterator = adapterIds.iterator();
+		while (adapterIterator.hasNext()) {
+			AdapterToIndexMapping mapping = adapterIndexMappingStore.getIndicesForAdapter(adapterIterator.next());
+			if (!mapping.contains(indexId)) {
+				adapterIterator.remove();
+			}
+		}
+
+		return adapterIds;
+	}
+
+	/**
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 	 *
 	 * @return a paring of fieldIds and their associated data adapter >>>>>>>
 	 *         wip: bitmask approach

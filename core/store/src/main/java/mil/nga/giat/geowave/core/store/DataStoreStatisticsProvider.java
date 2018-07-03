@@ -72,13 +72,22 @@ public class DataStoreStatisticsProvider<T> implements
 
 		DataStatistics<T> stats = null;
 		if (statisticsType.equals(RowRangeHistogramStatistics.STATS_TYPE)) {
+<<<<<<< HEAD
 			stats = new RowRangeHistogramStatisticsSet(
 					adapter.getInternalAdapterId(),
+=======
+			return new RowRangeHistogramStatisticsSet(
+					adapter.getAdapterId(),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					index.getId());
 		}
 		if (statisticsType.equals(PartitionStatistics.STATS_TYPE)) {
 			return new PartitionStatistics(
+<<<<<<< HEAD
 					adapter.getInternalAdapterId(),
+=======
+					adapter.getAdapterId(),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					index.getId());
 		}
 		if (statisticsType.equals(IndexMetaDataSet.STATS_TYPE)) {

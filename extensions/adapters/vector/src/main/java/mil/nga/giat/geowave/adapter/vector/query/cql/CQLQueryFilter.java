@@ -59,6 +59,7 @@ public class CQLQueryFilter implements
 			final CommonIndexModel indexModel,
 			final IndexedPersistenceEncoding persistenceEncoding ) {
 		if ((filter != null) && (indexModel != null) && (adapter != null)) {
+<<<<<<< HEAD
 			final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
 			if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
 				((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(
@@ -68,6 +69,20 @@ public class CQLQueryFilter implements
 						.getAdapterExtendedData();
 				if (existingExtValues != null) {
 					adapterExtendedValues.addValues(existingExtValues.getValues());
+=======
+			if (adapter.getAdapterId().equals(
+					persistenceEncoding.getAdapterId())) {
+				final PersistentDataset<Object> adapterExtendedValues = new PersistentDataset<Object>();
+				if (persistenceEncoding instanceof AbstractAdapterPersistenceEncoding) {
+					((AbstractAdapterPersistenceEncoding) persistenceEncoding).convertUnknownValues(
+							adapter,
+							indexModel);
+					final PersistentDataset<Object> existingExtValues = ((AbstractAdapterPersistenceEncoding) persistenceEncoding)
+							.getAdapterExtendedData();
+					if (existingExtValues != null) {
+						adapterExtendedValues.addValues(existingExtValues.getValues());
+					}
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				}
 			}
 			final IndexedAdapterPersistenceEncoding encoding = new IndexedAdapterPersistenceEncoding(

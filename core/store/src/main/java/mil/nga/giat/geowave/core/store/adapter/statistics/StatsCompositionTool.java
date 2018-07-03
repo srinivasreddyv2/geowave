@@ -55,7 +55,11 @@ public class StatsCompositionTool<T> implements
 	protected boolean skipFlush = false;
 
 	public StatsCompositionTool(
+<<<<<<< HEAD
 			final DataStoreStatisticsProvider<T> statisticsProvider,
+=======
+			final StatisticsProvider<T> statisticsProvider,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final DataStatisticsStore statisticsStore,
 			final PrimaryIndex index,
 			final DataAdapter<T> adapter ) {

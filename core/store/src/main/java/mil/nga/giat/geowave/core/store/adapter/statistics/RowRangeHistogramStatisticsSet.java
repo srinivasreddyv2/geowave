@@ -33,7 +33,11 @@ public class RowRangeHistogramStatisticsSet<T> extends
 	}
 
 	public RowRangeHistogramStatisticsSet(
+<<<<<<< HEAD
 			Short dataAdapterId,
+=======
+			ByteArrayId dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			ByteArrayId indexId ) {
 		super(
 				dataAdapterId,
@@ -45,7 +49,11 @@ public class RowRangeHistogramStatisticsSet<T> extends
 		RowRangeHistogramStatistics<T> histogram = histogramPerPartition.get(partitionKey);
 		if (histogram == null) {
 			histogram = new RowRangeHistogramStatistics<>(
+<<<<<<< HEAD
 					internalDataAdapterId,
+=======
+					dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					statisticsId,
 					partitionKey);
 			histogramPerPartition.put(

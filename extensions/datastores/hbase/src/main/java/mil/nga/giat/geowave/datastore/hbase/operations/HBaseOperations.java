@@ -247,6 +247,48 @@ public class HBaseOperations implements
 	public TableName getTableName(
 			final String tableName ) {
 		return TableName.valueOf(getQualifiedTableName(tableName));
+<<<<<<< HEAD
+=======
+	}
+
+	public HBaseWriter createWriter(
+			final String sTableName,
+			final String[] columnFamilies,
+			final boolean createTable )
+			throws IOException {
+		return createWriter(
+				sTableName,
+				columnFamilies,
+				createTable,
+				null);
+	}
+
+	public HBaseWriter createWriter(
+			final String sTableName,
+			final String[] columnFamilies,
+			final boolean createTable,
+			final Set<ByteArrayId> splits )
+			throws IOException {
+		final TableName tableName = getTableName(sTableName);
+
+		if (createTable) {
+			createTable(
+					columnFamilies,
+					true,
+					tableName);
+		}
+
+		verifyColumnFamilies(
+				columnFamilies,
+				true,
+				tableName,
+				true);
+
+		return new HBaseWriter(
+				getBufferedMutator(tableName),
+				this,
+				sTableName);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 	}
 
 	protected void createTable(
@@ -346,7 +388,11 @@ public class HBaseOperations implements
 			final boolean addIfNotExist )
 			throws IOException {
 		// Check the cache first and create the update list
+<<<<<<< HEAD
 		Set<GeoWaveColumnFamily> cfCacheSet = cfCache.get(tableName);
+=======
+		Set<String> cfCacheSet = cfCache.get(tableName);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 
 		if (cfCacheSet == null) {
 			cfCacheSet = new HashSet<>();
@@ -355,8 +401,13 @@ public class HBaseOperations implements
 					cfCacheSet);
 		}
 
+<<<<<<< HEAD
 		final HashSet<GeoWaveColumnFamily> newCFs = new HashSet<>();
 		for (final GeoWaveColumnFamily columnFamily : columnFamilies) {
+=======
+		final HashSet<String> newCFs = new HashSet<>();
+		for (final String columnFamily : columnFamilies) {
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			if (!cfCacheSet.contains(columnFamily)) {
 				newCFs.add(columnFamily);
 			}
@@ -374,9 +425,15 @@ public class HBaseOperations implements
 					final HTableDescriptor existingTableDescriptor = admin.getTableDescriptor(tableName);
 					final HColumnDescriptor[] existingColumnDescriptors = existingTableDescriptor.getColumnFamilies();
 					for (final HColumnDescriptor hColumnDescriptor : existingColumnDescriptors) {
+<<<<<<< HEAD
 						existingColumnFamilies.add(columnFamilyFactory.fromColumnDescriptor(hColumnDescriptor));
 					}
 					for (final GeoWaveColumnFamily columnFamily : newCFs) {
+=======
+						existingColumnFamilies.add(hColumnDescriptor.getNameAsString());
+					}
+					for (final String columnFamily : newCFs) {
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 						if (!existingColumnFamilies.contains(columnFamily)) {
 							newColumnFamilies.add(columnFamily);
 						}
@@ -520,7 +577,11 @@ public class HBaseOperations implements
 				RowMergingAdapterOptionProvider.ROW_MERGING_ADAPTER_CACHE_ID,
 				tableNamespace,
 				HBaseStoreFactoryFamily.TYPE).add(
+<<<<<<< HEAD
 				internalAdapterId,
+=======
+				adapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				indexId);
 	}
 
@@ -540,7 +601,11 @@ public class HBaseOperations implements
 			try (final CloseableIterator<GeoWaveMetadata> it = createMetadataReader(
 					MetadataType.ADAPTER).query(
 					new MetadataQuery(
+<<<<<<< HEAD
 							ByteArrayUtils.shortToByteArray(adapterId),
+=======
+							adapterId.getBytes(),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 							null,
 							additionalAuthorizations))) {
 				if (!it.hasNext()) {
@@ -564,7 +629,11 @@ public class HBaseOperations implements
 				index = (PrimaryIndex) URLClassloaderUtils.fromBinary(indexMd.getValue());
 			}
 			final Scan scan = new Scan();
+<<<<<<< HEAD
 			scan.addFamily(ByteArrayUtils.shortToByteArray(adapterId));
+=======
+			scan.addFamily(adapterId.getBytes());
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			scanner = getScannedResults(
 					scan,
 					indexId.getString());
@@ -911,7 +980,11 @@ public class HBaseOperations implements
 	public void createTable(
 			final ByteArrayId indexId,
 			final boolean enableVersioning,
+<<<<<<< HEAD
 			final short internalAdapterId ) {
+=======
+			final ByteArrayId adapterId ) {
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		final TableName tableName = getTableName(indexId.getString());
 
 		final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
@@ -934,7 +1007,11 @@ public class HBaseOperations implements
 	@Override
 	public Writer createWriter(
 			final ByteArrayId indexId,
+<<<<<<< HEAD
 			final short internalAdapterId ) {
+=======
+			final ByteArrayId adapterId ) {
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		final TableName tableName = getTableName(indexId.getString());
 		try {
 			final GeoWaveColumnFamily[] columnFamilies = new GeoWaveColumnFamily[1];
@@ -1183,8 +1260,16 @@ public class HBaseOperations implements
 			}
 			if (readerParams.getAggregation().getLeft() != null) {
 				if (readerParams.getAggregation().getRight() instanceof CommonIndexAggregation) {
+<<<<<<< HEAD
 					requestBuilder.setInternalAdapterId(ByteString.copyFrom(ByteArrayUtils
 							.shortToByteArray(readerParams.getAggregation().getLeft().getInternalAdapterId())));
+=======
+					requestBuilder.setAdapterId(ByteString.copyFrom(readerParams
+							.getAggregation()
+							.getLeft()
+							.getAdapterId()
+							.getBytes()));
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				}
 				else {
 					requestBuilder.setAdapter(ByteString.copyFrom(URLClassloaderUtils.toBinary(readerParams
@@ -1251,7 +1336,11 @@ public class HBaseOperations implements
 				catch (RegionException e) {
 					retries++;
 					if (retries <= MAX_AGGREGATE_RETRIES) {
+<<<<<<< HEAD
 						LOGGER.warn("GREP Aggregate timed out due to unavailable region. Retrying (" + retries + " of "
+=======
+						LOGGER.warn("Aggregate timed out due to unavailable region. Retrying (" + retries + " of "
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 								+ MAX_AGGREGATE_RETRIES + ")");
 						shouldRetry = true;
 					}
@@ -1621,7 +1710,10 @@ public class HBaseOperations implements
 			if (!indexExists(AbstractGeoWavePersistence.METADATA_INDEX_ID)) {
 				createTable(
 						HBaseOperations.METADATA_CFS_VERSIONING,
+<<<<<<< HEAD
 						StringColumnFamilyFactory.getSingletonInstance(),
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 						getTableName(getQualifiedTableName(AbstractGeoWavePersistence.METADATA_TABLE)));
 			}
 

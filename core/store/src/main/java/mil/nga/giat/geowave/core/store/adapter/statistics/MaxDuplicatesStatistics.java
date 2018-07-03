@@ -44,10 +44,17 @@ public class MaxDuplicatesStatistics<T> extends
 	}
 
 	public MaxDuplicatesStatistics(
+<<<<<<< HEAD
 			final short internalDataAdapterId,
 			final ByteArrayId indexId ) {
 		super(
 				internalDataAdapterId,
+=======
+			final ByteArrayId dataAdapterId,
+			final ByteArrayId indexId ) {
+		super(
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				composeId(indexId));
 	}
 

@@ -78,7 +78,11 @@ public class MergeDataCommand extends
 					"Cannot find index(s) by name: " + indexList);
 		}
 		inputIndexOptions = indexLoader.getLoadedIndexes();
+<<<<<<< HEAD
 		final PersistentAdapterStore adapterStore = inputStoreOptions.createAdapterStore();
+=======
+		final AdapterStore adapterStore = inputStoreOptions.createAdapterStore();
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		final AdapterIndexMappingStore adapterIndexMappingStore = inputStoreOptions.createAdapterIndexMappingStore();
 		final DataStoreOperations operations = inputStoreOptions.createDataStoreOperations();
 

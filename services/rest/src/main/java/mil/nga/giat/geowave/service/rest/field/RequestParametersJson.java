@@ -63,6 +63,13 @@ public class RequestParametersJson extends
 
 	private Object[] jsonArrayToArray(
 			JSONArray jsonArray ) {
+<<<<<<< HEAD
+=======
+		if (jsonArray == null) {
+			return null;
+		}
+
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		// Initialize the output Array.
 		int jsonArrayLenth = jsonArray.length();
 		Object[] outArray = new Object[jsonArrayLenth];
@@ -75,6 +82,13 @@ public class RequestParametersJson extends
 
 	private List<Object> jsonArrayToList(
 			JSONArray jsonArray ) {
+<<<<<<< HEAD
+=======
+		if (jsonArray == null) {
+			return null;
+		}
+
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		// Initialize the output List.
 		int jsonArrayLenth = jsonArray.length();
 		List<Object> outList = new ArrayList<Object>();

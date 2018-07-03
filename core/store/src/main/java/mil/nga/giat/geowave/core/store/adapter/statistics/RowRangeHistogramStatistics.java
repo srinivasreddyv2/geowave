@@ -11,8 +11,11 @@
 package mil.nga.giat.geowave.core.store.adapter.statistics;
 
 import java.nio.ByteBuffer;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -41,14 +44,18 @@ public class RowRangeHistogramStatistics<T> extends
 	public static final ByteArrayId STATS_TYPE = new ByteArrayId(
 			"ROW_RANGE_HISTOGRAM");
 	private NumericHistogram histogram;
+<<<<<<< HEAD
 	private static final NumericHistogramFactory HistFactory = new MinimalBinDistanceHistogramFactory();
 	private Map<ByteArrayId, NumericHistogram> histogramPerPartition = new HashMap<ByteArrayId, NumericHistogram>();
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 
 	public RowRangeHistogramStatistics() {
 		super();
 	}
 
 	public RowRangeHistogramStatistics(
+<<<<<<< HEAD
 			final ByteArrayId statisticsId ) {
 		this(
 				null,
@@ -62,6 +69,13 @@ public class RowRangeHistogramStatistics<T> extends
 			final ByteArrayId partitionKey ) {
 		super(
 				internalDataAdapterId,
+=======
+			final ByteArrayId dataAdapterId,
+			final ByteArrayId indexId,
+			final ByteArrayId partitionKey ) {
+		super(
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				composeId(
 						indexId,
 						partitionKey));
@@ -88,7 +102,11 @@ public class RowRangeHistogramStatistics<T> extends
 	public DataStatistics<T> duplicate() {
 		final Pair<ByteArrayId, ByteArrayId> pair = decomposeIndexAndPartitionFromId(statisticsId);
 		return new RowRangeHistogramStatistics<T>(
+<<<<<<< HEAD
 				internalDataAdapterId,
+=======
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				pair.getLeft(), // indexId
 				pair.getRight());
 	}
@@ -254,9 +272,12 @@ public class RowRangeHistogramStatistics<T> extends
 				STATS_TYPE.getString());
 		final Pair<ByteArrayId, ByteArrayId> indexAndPartition = decomposeIndexAndPartitionFromId(statisticsId);
 		jo.put(
+<<<<<<< HEAD
 				"dataAdapterID",
 				store.getAdapterId(internalDataAdapterId));
 		jo.put(
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				"index",
 				indexAndPartition.getLeft().getString());
 		jo.put(

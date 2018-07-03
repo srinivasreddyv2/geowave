@@ -27,7 +27,10 @@ import mil.nga.giat.geowave.core.index.ByteArrayUtils;
 import mil.nga.giat.geowave.core.index.IndexUtils;
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.index.StringUtils;
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRowImpl;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRowIteratorTransformer;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveValue;
@@ -444,7 +447,11 @@ public class HBaseReader<T> implements
 		final Integer limit = readerParams.getLimit();
 		final List<byte[]> families = Lists.newArrayList();
 		if ((readerParams.getAdapterIds() != null) && !readerParams.getAdapterIds().isEmpty()) {
+<<<<<<< HEAD
 			for (final Short adapterId : readerParams.getAdapterIds()) {
+=======
+			for (final ByteArrayId adapterId : readerParams.getAdapterIds()) {
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				// TODO: This prevents the client from sending bad
 				// column family
 				// requests to hbase. There may be a more efficient way
@@ -456,7 +463,11 @@ public class HBaseReader<T> implements
 						true, // because they're not added
 						readerParams.getIndex().getId().getString(),
 						false)) {
+<<<<<<< HEAD
 					families.add(StringUtils.stringToBinary(ByteArrayUtils.shortToString(adapterId)));
+=======
+					families.add(adapterId.getBytes());
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				}
 				else {
 					LOGGER.warn("Adapter ID: " + adapterId + " not found in table: "

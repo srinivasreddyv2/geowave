@@ -41,9 +41,13 @@ import mil.nga.giat.geowave.core.cli.parser.ManualOperationParams;
 import mil.nga.giat.geowave.core.store.CloseableIterator;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.cli.config.AddStoreCommand;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+=======
+import mil.nga.giat.geowave.core.store.cli.config.AddStoreCommand;
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.store.cli.remote.options.DataStorePluginOptions;
 import mil.nga.giat.geowave.test.GeoWaveITRunner;
 import mil.nga.giat.geowave.test.TestUtils;

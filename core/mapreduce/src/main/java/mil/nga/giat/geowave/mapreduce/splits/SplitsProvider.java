@@ -167,9 +167,15 @@ public class SplitsProvider
 			final TreeSet<IntermediateSplitInfo> splits,
 			final DataStoreOperations operations,
 			final PrimaryIndex index,
+<<<<<<< HEAD
 			final List<Short> adapterIds,
 			final Map<Pair<PrimaryIndex, ByteArrayId>, RowRangeHistogramStatistics<?>> statsCache,
 			final TransientAdapterStore adapterStore,
+=======
+			final List<DataAdapter<Object>> adapters,
+			final Map<Pair<PrimaryIndex, ByteArrayId>, RowRangeHistogramStatistics<?>> statsCache,
+			final AdapterStore adapterStore,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final DataStatisticsStore statsStore,
 			final Integer maxSplits,
 			final DistributableQuery query,
@@ -204,7 +210,11 @@ public class SplitsProvider
 
 			final PartitionStatistics<?> statistics = getPartitionStats(
 					index,
+<<<<<<< HEAD
 					adapterIds,
+=======
+					adapters,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					adapterStore,
 					statsStore,
 					authorizations);
@@ -222,7 +232,11 @@ public class SplitsProvider
 					final double cardinality = getCardinality(
 							getHistStats(
 									index,
+<<<<<<< HEAD
 									adapterIds,
+=======
+									adapters,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 									adapterStore,
 									statsStore,
 									statsCache,
@@ -255,7 +269,11 @@ public class SplitsProvider
 				final double cardinality = getCardinality(
 						getHistStats(
 								index,
+<<<<<<< HEAD
 								adapterIds,
+=======
+								adapters,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 								adapterStore,
 								statsStore,
 								statsCache,
@@ -370,7 +388,11 @@ public class SplitsProvider
 		RowRangeHistogramStatistics<?> singleStats = null;
 		for (final Short adapterId : adapterIds) {
 			final RowRangeHistogramStatistics<?> rowStat = (RowRangeHistogramStatistics<?>) store.getDataStatistics(
+<<<<<<< HEAD
 					adapterId,
+=======
+					adapter.getAdapterId(),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					RowRangeHistogramStatistics.composeId(
 							index.getId(),
 							partitionKey),
@@ -388,14 +410,24 @@ public class SplitsProvider
 
 	protected PartitionStatistics<?> getPartitionStats(
 			final PrimaryIndex index,
+<<<<<<< HEAD
 			final List<Short> adapterIds,
+=======
+			final List<DataAdapter<Object>> adapters,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final AdapterStore adapterStore,
 			final DataStatisticsStore store,
 			final String[] authorizations ) {
 		PartitionStatistics<?> singleStats = null;
+<<<<<<< HEAD
 		for (final Short adapterId : adapterIds) {
 			final PartitionStatistics<?> rowStat = (PartitionStatistics<?>) store.getDataStatistics(
 					adapterId,
+=======
+		for (final DataAdapter<?> adapter : adapters) {
+			final PartitionStatistics<?> rowStat = (PartitionStatistics<?>) store.getDataStatistics(
+					adapter.getAdapterId(),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					PartitionStatistics.composeId(index.getId()),
 					authorizations);
 			if (singleStats == null) {

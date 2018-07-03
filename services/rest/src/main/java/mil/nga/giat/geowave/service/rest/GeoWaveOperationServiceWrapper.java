@@ -2,6 +2,10 @@ package mil.nga.giat.geowave.service.rest;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -186,6 +190,15 @@ public class GeoWaveOperationServiceWrapper<T> extends
 			}
 			else if (f.getType().isArray()) {
 				objValue = requestParameters.getArray(f.getName());
+<<<<<<< HEAD
+=======
+				if (objValue != null) {
+					objValue = Arrays.copyOf(
+							(Object[]) objValue,
+							((Object[]) objValue).length,
+							f.getType());
+				}
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			}
 			else {
 				final String strValue = (String) requestParameters.getString(f.getName());
@@ -257,7 +270,7 @@ public class GeoWaveOperationServiceWrapper<T> extends
 					operation);
 		}
 		catch (final Exception e) {
-			LOGGER.error("Entered an error handling a request.", e.getMessage());
+			LOGGER.error("Could not convert parameters", e);
 			setStatus(
 					Status.CLIENT_ERROR_BAD_REQUEST,
 					e.getMessage());
@@ -306,7 +319,11 @@ public class GeoWaveOperationServiceWrapper<T> extends
 		catch (final NotAuthorizedException e){
 			LOGGER.error(
 					"Entered an error handling a request.",
+<<<<<<< HEAD
 					e.getMessage());
+=======
+					e);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final RestOperationStatusMessage rm = new RestOperationStatusMessage();
 			rm.status = RestOperationStatusMessage.StatusType.ERROR;
 			rm.message = e.getMessage();
@@ -317,7 +334,11 @@ public class GeoWaveOperationServiceWrapper<T> extends
 		catch (final ForbiddenException e){
 			LOGGER.error(
 					"Entered an error handling a request.",
+<<<<<<< HEAD
 					e.getMessage());
+=======
+					e);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final RestOperationStatusMessage rm = new RestOperationStatusMessage();
 			rm.status = RestOperationStatusMessage.StatusType.ERROR;
 			rm.message = e.getMessage();
@@ -328,7 +349,11 @@ public class GeoWaveOperationServiceWrapper<T> extends
 		catch (final TargetNotFoundException e){
 			LOGGER.error(
 					"Entered an error handling a request.",
+<<<<<<< HEAD
 					e.getMessage());
+=======
+					e);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final RestOperationStatusMessage rm = new RestOperationStatusMessage();
 			rm.status = RestOperationStatusMessage.StatusType.ERROR;
 			rm.message = e.getMessage();
@@ -339,7 +364,11 @@ public class GeoWaveOperationServiceWrapper<T> extends
 		catch (final DuplicateEntryException e){
 			LOGGER.error(
 					"Entered an error handling a request.",
+<<<<<<< HEAD
 					e.getMessage());
+=======
+					e);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final RestOperationStatusMessage rm = new RestOperationStatusMessage();
 			rm.status = RestOperationStatusMessage.StatusType.ERROR;
 			rm.message = e.getMessage();
@@ -350,7 +379,7 @@ public class GeoWaveOperationServiceWrapper<T> extends
 		catch (final Exception e) {
 			LOGGER.error(
 					"Entered an error handling a request.",
-					e.getMessage());
+					e);
 			final RestOperationStatusMessage rm = new RestOperationStatusMessage();
 			rm.status = RestOperationStatusMessage.StatusType.ERROR;
 			rm.message = "exception occurred";

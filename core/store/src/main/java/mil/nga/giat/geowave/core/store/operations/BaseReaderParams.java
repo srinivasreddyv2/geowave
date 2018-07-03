@@ -8,9 +8,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import mil.nga.giat.geowave.core.index.MultiDimensionalCoordinateRangesArray;
 import mil.nga.giat.geowave.core.index.sfc.data.MultiDimensionalNumericData;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.store.adapter.InternalDataAdapter;
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRowIteratorTransformer;
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+=======
+import mil.nga.giat.geowave.core.store.entities.GeoWaveRowIteratorTransformer;
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.store.filter.DistributableQueryFilter;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.query.aggregate.Aggregation;

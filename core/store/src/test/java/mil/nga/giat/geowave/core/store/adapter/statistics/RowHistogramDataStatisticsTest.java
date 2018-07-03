@@ -47,6 +47,11 @@ public class RowHistogramDataStatisticsTest
 				(short) -1,
 				new ByteArrayId(
 						"20030"),
+<<<<<<< HEAD:core/store/src/test/java/mil/nga/giat/geowave/core/store/adapter/statistics/RowHistogramDataStatisticsTest.java
+=======
+				new ByteArrayId(
+						"20030"),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64:core/store/src/test/java/mil/nga/giat/geowave/core/store/adapter/statistics/RowHistogramDataStatisticsTest.java
 				null);
 
 		for (long i = 0; i < 10000; i++) {
@@ -82,6 +87,11 @@ public class RowHistogramDataStatisticsTest
 				(short) -1,
 				new ByteArrayId(
 						"20030"),
+<<<<<<< HEAD:core/store/src/test/java/mil/nga/giat/geowave/core/store/adapter/statistics/RowHistogramDataStatisticsTest.java
+=======
+				new ByteArrayId(
+						"20030"),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64:core/store/src/test/java/mil/nga/giat/geowave/core/store/adapter/statistics/RowHistogramDataStatisticsTest.java
 				null);
 
 		for (long j = 10000; j < 20000; j++) {

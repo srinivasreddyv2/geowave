@@ -68,7 +68,10 @@ import mil.nga.giat.geowave.core.store.DataStoreOptions;
 import mil.nga.giat.geowave.core.store.adapter.AdapterIndexMappingStore;
 import mil.nga.giat.geowave.core.store.adapter.AdapterStore;
 import mil.nga.giat.geowave.core.store.adapter.DataAdapter;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.store.adapter.PersistentAdapterStore;
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRowIteratorTransformer;
 import mil.nga.giat.geowave.core.store.index.PrimaryIndex;
 import mil.nga.giat.geowave.core.store.metadata.AbstractGeoWavePersistence;

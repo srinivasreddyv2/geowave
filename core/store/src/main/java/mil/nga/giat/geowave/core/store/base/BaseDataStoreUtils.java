@@ -29,7 +29,10 @@ import com.google.common.collect.Lists;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.InsertionIds;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.store.AdapterToIndexMapping;
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.index.Mergeable;
 import mil.nga.giat.geowave.core.index.persist.Persistable;
 import mil.nga.giat.geowave.core.store.CloseableIterator;

@@ -6,7 +6,10 @@ import java.util.Set;
 
 import mil.nga.giat.geowave.core.index.ByteArrayId;
 import mil.nga.giat.geowave.core.index.Mergeable;
+<<<<<<< HEAD
 import mil.nga.giat.geowave.core.store.adapter.InternalAdapterStore;
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 import mil.nga.giat.geowave.core.store.entities.GeoWaveRow;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -31,10 +34,17 @@ public class PartitionStatistics<T> extends
 	}
 
 	public PartitionStatistics(
+<<<<<<< HEAD
 			final Short internalAdapterId,
 			final ByteArrayId indexId ) {
 		super(
 				internalAdapterId,
+=======
+			final ByteArrayId dataAdapterId,
+			final ByteArrayId indexId ) {
+		super(
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				composeId(indexId));
 	}
 
@@ -48,7 +58,11 @@ public class PartitionStatistics<T> extends
 	@Override
 	public DataStatistics<T> duplicate() {
 		return new PartitionStatistics<T>(
+<<<<<<< HEAD
 				internalDataAdapterId,
+=======
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				decomposeIndexIdFromId(statisticsId)); // indexId
 	}
 
@@ -172,8 +186,12 @@ public class PartitionStatistics<T> extends
 	 */
 
 	@Override
+<<<<<<< HEAD
 	public JSONObject toJSONObject(
 			final InternalAdapterStore store )
+=======
+	public JSONObject toJSONObject()
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			throws JSONException {
 		final JSONObject jo = new JSONObject();
 		jo.put(
@@ -183,9 +201,12 @@ public class PartitionStatistics<T> extends
 		jo.put(
 				"statisticsID",
 				statisticsId.getString());
+<<<<<<< HEAD
 		jo.put(
 				"dataAdapterID",
 				store.getAdapterId(internalDataAdapterId));
+=======
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 		final JSONArray partitionsArray = new JSONArray();
 		for (final ByteArrayId p : partitions) {
 			final JSONObject partition = new JSONObject();

@@ -835,6 +835,7 @@ public class AccumuloOptionsTest
 						Object fieldValue ) {
 					if (id.equals(GEOM)) {
 						geom = (Geometry) fieldValue;
+<<<<<<< HEAD
 					}
 					else if (id.equals(ID)) {
 						this.id = (String) fieldValue;
@@ -847,6 +848,20 @@ public class AccumuloOptionsTest
 					if (values.containsKey(GEOM)) {
 						geom = (Geometry) values.get(GEOM);
 					}
+=======
+					}
+					else if (id.equals(ID)) {
+						this.id = (String) fieldValue;
+					}
+				}
+
+				@Override
+				public void setFields(
+						Map<ByteArrayId, Object> values ) {
+					if (values.containsKey(GEOM)) {
+						geom = (Geometry) values.get(GEOM);
+					}
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 					if (values.containsKey(ID)) {
 						this.id = (String) values.get(ID);
 					}

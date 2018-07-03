@@ -168,12 +168,16 @@ public class DeleteWriterTest
 				operations,
 				options);
 
+<<<<<<< HEAD
 		internalAdapterStore = new InternalAdapterStoreImpl(
 				operations);
 
 		statsStore = new DataStatisticsStoreImpl(
 				operations,
 				options);
+=======
+		statsStore = ((AccumuloDataStore) mockDataStore).getStatisticsStore();
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 
 		adapter = new TestGeometryAdapter();
 		final GeometryFactory factory = new GeometryFactory();

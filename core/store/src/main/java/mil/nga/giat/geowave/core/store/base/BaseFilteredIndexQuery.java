@@ -149,12 +149,20 @@ abstract class BaseFilteredIndexQuery extends
 
 	private <T> GeoWaveRowIteratorTransformer<T> getRowTransformer(
 			final DataStoreOptions options,
+<<<<<<< HEAD
 			final PersistentAdapterStore adapterStore,
+=======
+			final AdapterStore adapterStore,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final double[] maxResolutionSubsamplingPerDimension,
 			final boolean decodePersistenceEncoding ) {
 		final @Nullable QueryFilter clientFilter = getClientFilter(options);
 		if (options == null || !options.isServerSideLibraryEnabled()) {
+<<<<<<< HEAD
 			final Map<Short, RowMergingDataAdapter> mergingAdapters = getMergingAdapters(adapterStore);
+=======
+			final Map<ByteArrayId, RowMergingDataAdapter> mergingAdapters = getMergingAdapters(adapterStore);
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 
 			if (!mergingAdapters.isEmpty()) {
 				return new GeoWaveRowIteratorTransformer<T>() {

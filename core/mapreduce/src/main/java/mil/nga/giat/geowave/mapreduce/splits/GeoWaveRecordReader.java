@@ -235,6 +235,7 @@ public class GeoWaveRecordReader<T> extends
 		final QueryFilter singleFilter = ((queryFilters == null) || queryFilters.isEmpty()) ? null : queryFilters
 				.size() == 1 ? queryFilters.get(0) : new FilterList<QueryFilter>(
 				queryFilters);
+<<<<<<< HEAD
 		final Reader reader = operations.createReader(new RecordReaderParams(
 				index,
 				new AdapterStoreWrapper(
@@ -259,6 +260,39 @@ public class GeoWaveRecordReader<T> extends
 						internalAdapterStore,
 						index,
 						isOutputWritable));
+=======
+		try {
+			final Reader reader = operations.createReader(new RecordReaderParams(
+					index,
+					adapterStore,
+					rangeQueryOptions.getValidAdapterIds(
+							adapterStore,
+							aimStore),
+					rangeQueryOptions.getMaxResolutionSubsamplingPerDimension(),
+					rangeQueryOptions.getAggregation(),
+					rangeQueryOptions.getFieldIdsAdapterPair(),
+					mixedVisibility,
+					range,
+					queryOptions.getLimit(),
+					GeoWaveRowIteratorTransformer.NO_OP_TRANSFORMER,
+					rangeQueryOptions.getAuthorizations()));
+			return new CloseableIteratorWrapper(
+					new ReaderClosableWrapper(
+							reader),
+					new InputFormatIteratorWrapper<>(
+							reader,
+							singleFilter,
+							adapterStore,
+							index,
+							isOutputWritable));
+		}
+		catch (final IOException e) {
+			LOGGER.warn(
+					"Unable to get adapter IDs",
+					e);
+		}
+		return new CloseableIterator.Empty();
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 	}
 
 	@Override

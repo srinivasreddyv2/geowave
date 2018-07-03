@@ -34,13 +34,22 @@ public class PartitionStatisticsTest
 		return GeoWaveKeyImpl.createKeys(
 				insertionIds,
 				new byte[] {},
+<<<<<<< HEAD
 				(short) -1)[0];
+=======
+				new byte[] {})[0];
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 	}
 
 	@Test
 	public void testIngest() {
 		final PartitionStatistics<Integer> stats = new PartitionStatistics<Integer>(
+<<<<<<< HEAD
 				(short) -1,
+=======
+				new ByteArrayId(
+						"20030"),
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				new ByteArrayId(
 						"20030"));
 

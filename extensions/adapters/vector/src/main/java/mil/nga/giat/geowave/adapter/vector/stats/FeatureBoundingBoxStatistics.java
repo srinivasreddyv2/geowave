@@ -43,6 +43,7 @@ public class FeatureBoundingBoxStatistics extends
 	}
 
 	public FeatureBoundingBoxStatistics(
+<<<<<<< HEAD
 			final String fieldName ) {
 		this(
 				null,
@@ -54,12 +55,19 @@ public class FeatureBoundingBoxStatistics extends
 			final String fieldName ) {
 		this(
 				internalDataAdapterId,
+=======
+			final ByteArrayId dataAdapterId,
+			final String fieldName ) {
+		this(
+				dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 				fieldName,
 				null,
 				null);
 	}
 
 	public FeatureBoundingBoxStatistics(
+<<<<<<< HEAD
 			final String fieldName,
 			final SimpleFeatureType reprojectedType,
 			final MathTransform transform ) {
@@ -72,6 +80,9 @@ public class FeatureBoundingBoxStatistics extends
 
 	public FeatureBoundingBoxStatistics(
 			final Short internalDataAdapterId,
+=======
+			final ByteArrayId dataAdapterId,
+>>>>>>> 97581d11d4ec86c2a91acd029a4b7e9991bb9c64
 			final String fieldName,
 			final SimpleFeatureType reprojectedType,
 			final MathTransform transform ) {
