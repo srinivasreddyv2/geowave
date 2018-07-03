@@ -116,7 +116,7 @@ public class DBScanJobRunner extends
 				}
 				catch (final Throwable ex) {
 					// occurs when codec is not installed.
-					LOGGER.warn(
+					LOGGER.info(
 							"Not configuable in this context",
 							ex);
 				}
@@ -169,14 +169,13 @@ public class DBScanJobRunner extends
 						new String[0],
 						namespaceURI,
 						ClusteringUtils.CLUSTERING_CRS));
-		
+
 		final ByteArrayId adapterByteId = new ByteArrayId(
 				adapterID);
 		JobContextInternalAdapterStore.addInternalDataAdapter(
 				config,
 				adapterByteId,
-				InternalAdapterStoreImpl.getInitialInternalAdapterId(
-				adapterByteId));
+				InternalAdapterStoreImpl.getInitialInternalAdapterId(adapterByteId));
 
 		final Projection<?> projectionFunction = runTimeProperties.getClassInstance(
 				HullParameters.Hull.PROJECTION_CLASS,
